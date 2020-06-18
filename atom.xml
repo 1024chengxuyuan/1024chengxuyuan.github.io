@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Hexo</title>
+  
+  
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="http://yoursite.com/"/>
+  <updated>2020-06-18T01:25:30.491Z</updated>
+  <id>http://yoursite.com/</id>
+  
+  <author>
+    <name>野生程序猿</name>
+    
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>一张图读懂Jvm</title>
+    <link href="http://yoursite.com/2020/06/18/%E4%B8%80%E5%BC%A0%E5%9B%BE%E8%AF%BB%E6%87%82Jvm/"/>
+    <id>http://yoursite.com/2020/06/18/%E4%B8%80%E5%BC%A0%E5%9B%BE%E8%AF%BB%E6%87%82Jvm/</id>
+    <published>2020-06-18T01:07:56.000Z</published>
+    <updated>2020-06-18T01:25:30.491Z</updated>
+    
+    <content type="html"><![CDATA[<p>的的肥肉TVi返回给i的方法风格豆腐干地方地方豆腐干反对改革通过</p>]]></content>
+    
+    <summary type="html">
+    
+      一张图带你读懂Java虚拟机
+    
+    </summary>
+    
+    
+      <category term="Java虚拟机" scheme="http://yoursite.com/categories/Java%E8%99%9A%E6%8B%9F%E6%9C%BA/"/>
+    
+    
+      <category term="Java虚拟机" scheme="http://yoursite.com/tags/Java%E8%99%9A%E6%8B%9F%E6%9C%BA/"/>
+    
+      <category term="Java內存模型" scheme="http://yoursite.com/tags/Java%E5%85%A7%E5%AD%98%E6%A8%A1%E5%9E%8B/"/>
+    
+      <category term="垃圾回收机制" scheme="http://yoursite.com/tags/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E6%9C%BA%E5%88%B6/"/>
+    
+  </entry>
+  
+</feed>
