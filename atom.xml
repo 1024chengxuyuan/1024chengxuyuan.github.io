@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://1024chengxuyuan.github.io/"/>
-  <updated>2020-06-18T10:12:24.745Z</updated>
+  <updated>2020-06-18T10:33:26.511Z</updated>
   <id>https://1024chengxuyuan.github.io/</id>
   
   <author>
@@ -15,6 +15,35 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>零拷贝</title>
+    <link href="https://1024chengxuyuan.github.io/2020/06/18/%E9%9B%B6%E6%8B%B7%E8%B4%9D/"/>
+    <id>https://1024chengxuyuan.github.io/2020/06/18/%E9%9B%B6%E6%8B%B7%E8%B4%9D/</id>
+    <published>2020-06-18T10:27:35.000Z</published>
+    <updated>2020-06-18T10:33:26.511Z</updated>
+    
+    <content type="html"><![CDATA[<p>最近，菜鸟面试时时常被问到你了解零拷贝不？平常接触到的哪些技术用到了零拷贝，菜鸟被问的傻眼了，回家赶紧学习了一下零拷贝的知识。</p><h1 id="Q1-什么是零拷贝？"><a href="#Q1-什么是零拷贝？" class="headerlink" title="Q1:什么是零拷贝？"></a>Q1:什么是零拷贝？</h1><p>为了更好地理解问题的解决方案，我们首先需要了解问题本身。让我们看一下网络服务器通过网络将文件中存储的数据提供给客户端的简单过程所涉及的内容。这是一些示例代码：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">File file &#x3D; new File(&quot;index.html&quot;);</span><br><span class="line">RandomAccessFile raf &#x3D; new RandomAccessFile(file, &quot;rw&quot;);</span><br><span class="line"></span><br><span class="line">byte[] arr &#x3D; new byte[(int) file.length()];</span><br><span class="line">raf.read(arr);</span><br><span class="line"></span><br><span class="line">Socket socket &#x3D; new ServerSocket(8080).accept();</span><br><span class="line"> socket.getOutputStream().write(arr);</span><br></pre></td></tr></table></figure><p>看起来很简单；您会认为仅使用这两个系统调用就不会有太多开销。实际上，这离事实还远。在这两个调用之后，数据已被至少复制了四次，并且几乎执行了许多用户/内核上下文切换。（实际上，此过程要复杂得多，但我想保持简单）。为了更好地了解所涉及的过程，请看一下图1。上面显示了上下文切换，下面显示了复制操作。<br><img src="/2020/06/18/%E9%9B%B6%E6%8B%B7%E8%B4%9D/1.png" alt><br>该I/O操作包含以下步骤：</p><ul><li><p><strong>第一步</strong>：读取系统调用导致上下文从用户模式切换到内核模式。第一个副本由DMA引擎执行，该引擎从磁盘读取index.html文件内容并将其存储到内核地址空间缓冲区中。<strong>该过程进行了一次数据拷贝和一次上下文切换</strong>。</p></li><li><p><strong>第二步</strong>：将数据从内核缓冲区复制到用户缓冲区，然后读取的系统调用返回。调用返回导致上下文从内核切换回用户模式。现在，数据存储在用户地址空间缓冲区中，并且可以重新开始。<strong>该过程进行了一次数据拷贝和一次上下文切换</strong>。</p></li><li><p><strong>第三步</strong>：调用write方法导致上下文从用户模式切换到内核模式。执行第三次复制以再次将数据放入内核地址空间Socket缓冲区。但是，这次将数据放入另一个缓冲区中，该缓冲区专门与套接字关联。<strong>该过程进行了一次数据拷贝和一次上下文切换</strong>。</p></li><li><p><strong>第四步</strong>：write系统调用返回，创建我们的第四个上下文开关。独立且异步地，当DMA引擎将数据从内核缓冲区传递到协议引擎时，发生第四次复制。</p></li></ul><p>如您所见，实际上并不需要大量的数据复制。可以消除某些重复以减少开销并提高性能。为了消除开销，我们可以从消除内核和用户缓冲区之间的某些复制开始。<br>为了减少上下文切换和数据拷贝带来的开销，可以使用mmap优化与sendFile优化</p><h2 id="mmap"><a href="#mmap" class="headerlink" title="mmap"></a>mmap</h2><p>mmap系统调用使DMA引擎将文件内容复制到内核缓冲区中。然后与用户进程共享缓冲区，而无需在内核和用户内存空间之间执行任何复制。<br><img src="/2020/06/18/%E9%9B%B6%E6%8B%B7%E8%B4%9D/2.png" alt="mmap优化流程"><br>user buffer 和 kernel buffer 共享 index.html。如果你想把硬盘的 index.html 传输到网络中，再也不用拷贝到用户空间，再从用户空间拷贝到 Socket 缓冲区。</p><p>现在，你只需要从内核缓冲区拷贝到 Socket 缓冲区即可，这将减少一次内存拷贝，但不减少上下文切换次数。</p><h2 id="Sendfile"><a href="#Sendfile" class="headerlink" title="Sendfile"></a>Sendfile</h2><p>在内核版本2.1中，引入了sendfile系统调用，以简化网络上以及两个本地文件之间的数据传输。数据根本不经过用户态，直接从内核缓冲区进入到 Socket Buffer，同时，由于和用户态完全无关，就减少了一次上下文切换。<br><img src="/2020/06/18/%E9%9B%B6%E6%8B%B7%E8%B4%9D/3.png" alt="sendfile优化流程"></p><ul><li><strong>第一步</strong>：sendfile系统调用使DMA引擎将文件内容复制到内核缓冲区中。然后，数据被内核复制到与套接字关联的内核缓冲区中。</li><li><strong>第二步</strong>：第三份复制发生在DMA引擎将数据从内核套接字缓冲区传递到协议引擎时。</li></ul><p>此时，数据经过了 3 次拷贝，3 次上下文切换。<br>我们已经能够避免让内核创建多个副本，但是我们仍然只剩下一个副本。也可以避免吗？绝对在硬件的帮助下。为了消除内核完成的所有数据重复，我们需要一个支持收集操作的网络接口。这只是意味着等待传输的数据不需要在连续的内存中；它可以分散在各个存储位置。在内核版本2.4中，对套接字缓冲区描述符进行了修改，以适应这些要求-在Linux中称为零拷贝。这种方法不仅减少了多个上下文切换，而且还消除了处理器进行的数据重复。<br><img src="/2020/06/18/%E9%9B%B6%E6%8B%B7%E8%B4%9D/4.png" alt="sendfile再优化"></p><ul><li><strong>第一步</strong>：sendfile系统调用使DMA引擎将文件内容复制到内核缓冲区中。</li><li><strong>第二步</strong>：没有数据复制到套接字缓冲区中。而是仅将具有有关数据的行踪和长度信息的描述符附加到套接字缓冲区。DMA引擎将数据直接从内核缓冲区传递到协议引擎，从而消除了剩余的最终副本。<h1 id="Q2：sendfile不是说零拷贝么？怎么还存在两次拷贝？"><a href="#Q2：sendfile不是说零拷贝么？怎么还存在两次拷贝？" class="headerlink" title="Q2：sendfile不是说零拷贝么？怎么还存在两次拷贝？"></a>Q2：sendfile不是说零拷贝么？怎么还存在两次拷贝？</h1>由于实际上数据仍然是从磁盘复制到内存以及从内存复制到线路，因此有人可能会认为这不是真正的零副本。但是，从操作系统的角度来看，这是零副本，因为在内核缓冲区之间不重复数据。<h1 id="Q3-零拷贝有哪些性能优势？"><a href="#Q3-零拷贝有哪些性能优势？" class="headerlink" title="Q3:零拷贝有哪些性能优势？"></a>Q3:零拷贝有哪些性能优势？</h1></li><li>更少的上下文切换</li><li>更少的CPU数据缓存污染</li><li>无需CPU校验和计算。<h1 id="Q4：sendfile与mmap有什么区别？"><a href="#Q4：sendfile与mmap有什么区别？" class="headerlink" title="Q4：sendfile与mmap有什么区别？"></a>Q4：sendfile与mmap有什么区别？</h1></li></ul><ol><li>mmap 适合小数据量读写，sendFile 适合大文件传输。</li><li>mmap 需要 4 次上下文切换，3 次数据拷贝；sendFile 需要 3 次上下文切换，最少 2 次数据拷贝。</li><li>sendFile 可以利用 DMA 方式，减少 CPU 拷贝，mmap 则不能（必须从内核拷贝到 Socket 缓冲区）。</li></ol><p>rocketMQ 在消费消息时，使用了 mmap。kafka 使用了 sendFile。</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;最近，菜鸟面试时时常被问到你了解零拷贝不？平常接触到的哪些技术用到了零拷贝，菜鸟被问的傻眼了，回家赶紧学习了一下零拷贝的知识。&lt;/p&gt;
+&lt;h1 id=&quot;Q1-什么是零拷贝？&quot;&gt;&lt;a href=&quot;#Q1-什么是零拷贝？&quot; class=&quot;headerlink&quot; title=&quot;Q
+      
+    
+    </summary>
+    
+    
+      <category term="Java內存模型" scheme="https://1024chengxuyuan.github.io/categories/Java%E5%85%A7%E5%AD%98%E6%A8%A1%E5%9E%8B/"/>
+    
+    
+      <category term="JMM內存模型" scheme="https://1024chengxuyuan.github.io/tags/JMM%E5%85%A7%E5%AD%98%E6%A8%A1%E5%9E%8B/"/>
+    
+      <category term="Java性能优化" scheme="https://1024chengxuyuan.github.io/tags/Java%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/"/>
+    
+  </entry>
   
   <entry>
     <title>Java面试遇到的哪些坑-ArrayList循环遍历删除元素</title>
