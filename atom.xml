@@ -5,9 +5,9 @@
   
   <link href="/atom.xml" rel="self"/>
   
-  <link href="http://yoursite.com/"/>
+  <link href="https://1024chengxuyuan.github.io/"/>
   <updated>2020-06-18T06:19:27.331Z</updated>
-  <id>http://yoursite.com/</id>
+  <id>https://1024chengxuyuan.github.io/</id>
   
   <author>
     <name>野生程序猿</name>
@@ -18,8 +18,8 @@
   
   <entry>
     <title>jvm</title>
-    <link href="http://yoursite.com/2020/06/18/jvm/"/>
-    <id>http://yoursite.com/2020/06/18/jvm/</id>
+    <link href="https://1024chengxuyuan.github.io/2020/06/18/jvm/"/>
+    <id>https://1024chengxuyuan.github.io/2020/06/18/jvm/</id>
     <published>2020-06-18T06:07:47.000Z</published>
     <updated>2020-06-18T06:19:27.331Z</updated>
     
@@ -43,8 +43,8 @@
   
   <entry>
     <title>haha.md</title>
-    <link href="http://yoursite.com/2020/06/18/haha-md/"/>
-    <id>http://yoursite.com/2020/06/18/haha-md/</id>
+    <link href="https://1024chengxuyuan.github.io/2020/06/18/haha-md/"/>
+    <id>https://1024chengxuyuan.github.io/2020/06/18/haha-md/</id>
     <published>2020-06-18T06:04:41.000Z</published>
     <updated>2020-06-18T06:04:41.271Z</updated>
     
@@ -58,8 +58,8 @@
   
   <entry>
     <title>一张图读懂Jvm</title>
-    <link href="http://yoursite.com/2020/06/18/%E4%B8%80%E5%BC%A0%E5%9B%BE%E8%AF%BB%E6%87%82Jvm/"/>
-    <id>http://yoursite.com/2020/06/18/%E4%B8%80%E5%BC%A0%E5%9B%BE%E8%AF%BB%E6%87%82Jvm/</id>
+    <link href="https://1024chengxuyuan.github.io/2020/06/18/%E4%B8%80%E5%BC%A0%E5%9B%BE%E8%AF%BB%E6%87%82Jvm/"/>
+    <id>https://1024chengxuyuan.github.io/2020/06/18/%E4%B8%80%E5%BC%A0%E5%9B%BE%E8%AF%BB%E6%87%82Jvm/</id>
     <published>2020-06-18T01:07:56.000Z</published>
     <updated>2020-06-18T06:16:38.754Z</updated>
     
@@ -72,14 +72,14 @@
     </summary>
     
     
-      <category term="Java虚拟机" scheme="http://yoursite.com/categories/Java%E8%99%9A%E6%8B%9F%E6%9C%BA/"/>
+      <category term="Java虚拟机" scheme="https://1024chengxuyuan.github.io/categories/Java%E8%99%9A%E6%8B%9F%E6%9C%BA/"/>
     
     
-      <category term="Java虚拟机" scheme="http://yoursite.com/tags/Java%E8%99%9A%E6%8B%9F%E6%9C%BA/"/>
+      <category term="Java虚拟机" scheme="https://1024chengxuyuan.github.io/tags/Java%E8%99%9A%E6%8B%9F%E6%9C%BA/"/>
     
-      <category term="Java內存模型" scheme="http://yoursite.com/tags/Java%E5%85%A7%E5%AD%98%E6%A8%A1%E5%9E%8B/"/>
+      <category term="Java內存模型" scheme="https://1024chengxuyuan.github.io/tags/Java%E5%85%A7%E5%AD%98%E6%A8%A1%E5%9E%8B/"/>
     
-      <category term="垃圾回收机制" scheme="http://yoursite.com/tags/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E6%9C%BA%E5%88%B6/"/>
+      <category term="垃圾回收机制" scheme="https://1024chengxuyuan.github.io/tags/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E6%9C%BA%E5%88%B6/"/>
     
   </entry>
   
