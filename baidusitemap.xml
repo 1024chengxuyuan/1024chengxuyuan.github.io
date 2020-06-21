@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://1024chengxuyuan.github.io/2020/06/21/Timer%E5%92%8CTimerTask/</loc>
+    <lastmod>2020-06-21</lastmod>
+  </url>  <url>
+    <loc>https://1024chengxuyuan.github.io/2020/06/21/Java%E7%BA%BF%E7%A8%8B%E9%9D%A2%E8%AF%95%E9%A2%98/</loc>
+    <lastmod>2020-06-21</lastmod>
+  </url>  <url>
     <loc>https://1024chengxuyuan.github.io/2020/06/21/%E7%BA%BF%E7%A8%8B%E9%97%B4%E5%8D%8F%E4%BD%9C%E7%9A%84%E4%B8%A4%E7%A7%8D%E6%96%B9%E5%BC%8F%EF%BC%9Await%E3%80%81notify%E3%80%81notifyAll%E5%92%8CCondition/</loc>
     <lastmod>2020-06-21</lastmod>
   </url>  <url>
