@@ -32,7 +32,7 @@
 <meta property="og:image" content="https://1024chengxuyuan.github.io/2020/06/23/AQS%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E4%BB%A5%E5%8F%8A%E6%BA%90%E7%A0%81%E8%AF%A6%E8%A7%A3/6.png">
 <meta property="og:image" content="https://1024chengxuyuan.github.io/2020/06/23/AQS%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E4%BB%A5%E5%8F%8A%E6%BA%90%E7%A0%81%E8%AF%A6%E8%A7%A3/7.png">
 <meta property="article:published_time" content="2020-06-23T09:55:48.000Z">
-<meta property="article:modified_time" content="2020-06-24T07:41:00.583Z">
+<meta property="article:modified_time" content="2020-06-24T07:47:23.772Z">
 <meta property="article:author" content="野生程序猿">
 <meta property="article:tag" content="JMM內存模型">
 <meta property="article:tag" content="Java并发编程">
@@ -402,7 +402,7 @@
 <p><strong>注意：AQS是自旋锁：</strong>在等待唤醒的时候，经常会使用自旋（while(!cas())）的方式，不停地尝试获取锁，直到被其他线程获取成功</p>
 <p><strong>实现了AQS的锁有：自旋锁、互斥锁、读锁写锁、条件产量、信号量、栅栏都是AQS的衍生物</strong></p>
 <h1 id="AQS的实现原理"><a href="#AQS的实现原理" class="headerlink" title="AQS的实现原理"></a>AQS的实现原理</h1><p><img src="/2020/06/23/AQS%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E4%BB%A5%E5%8F%8A%E6%BA%90%E7%A0%81%E8%AF%A6%E8%A7%A3/1.png" alt="同步队列的基本结构"></p>
-<center>同步队列的基本结构
+<center>同步队列的基本结构</center>
 
 <p>如图示，AQS维护了一个volatile int state和一个FIFO线程等待队列，多线程争用资源被阻塞的时候就会进入这个队列。state就是共享资源，其访问方式有如下三种：<br>getState();setState();compareAndSetState();</p>
 <p>AQS 定义了两种资源共享方式：<br>1.<strong>Exclusive</strong>：独占，只有一个线程能执行，如ReentrantLock<br>2.<strong>Share</strong>：共享，多个线程可以同时执行，如Semaphore、CountDownLatch、ReadWriteLock，CyclicBarrier</p>
@@ -473,7 +473,7 @@
 <li>入队之后排队获取锁的核心方法acquireQueued()，节点排队获取锁是一个自旋过程。当且仅当当前节点的前驱节点为头节点并且获取同步状态时，节点出队并且该节点引用的线程获取到锁。否则不满足条件时会不断自旋将前驱节点的状态置为SIGNAL后调用LockSupport.part()将当前线程阻塞。</li>
 <li>释放锁时会唤醒后继结点（后继结点不为null）。</li>
 </ul>
-</center>
+
       
     </div>
     <div class="article-footer">
