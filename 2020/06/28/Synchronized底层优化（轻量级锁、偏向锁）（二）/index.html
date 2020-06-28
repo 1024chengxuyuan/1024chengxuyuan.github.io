@@ -30,7 +30,7 @@
 <meta property="og:image" content="https://1024chengxuyuan.github.io/2020/06/28/Synchronized%E5%BA%95%E5%B1%82%E4%BC%98%E5%8C%96%EF%BC%88%E8%BD%BB%E9%87%8F%E7%BA%A7%E9%94%81%E3%80%81%E5%81%8F%E5%90%91%E9%94%81%EF%BC%89%EF%BC%88%E4%BA%8C%EF%BC%89/3.png">
 <meta property="og:image" content="https://1024chengxuyuan.github.io/2020/06/28/Synchronized%E5%BA%95%E5%B1%82%E4%BC%98%E5%8C%96%EF%BC%88%E8%BD%BB%E9%87%8F%E7%BA%A7%E9%94%81%E3%80%81%E5%81%8F%E5%90%91%E9%94%81%EF%BC%89%EF%BC%88%E4%BA%8C%EF%BC%89/4.png">
 <meta property="article:published_time" content="2020-06-28T02:14:14.000Z">
-<meta property="article:modified_time" content="2020-06-28T03:05:32.245Z">
+<meta property="article:modified_time" content="2020-06-28T03:26:52.607Z">
 <meta property="article:author" content="野生程序猿">
 <meta property="article:tag" content="JMM內存模型">
 <meta property="article:tag" content="Java并发编程">
@@ -457,7 +457,7 @@
 <h4 id="2、轻量级锁的解锁过程："><a href="#2、轻量级锁的解锁过程：" class="headerlink" title="2、轻量级锁的解锁过程："></a><strong>2、轻量级锁的解锁过程：</strong></h4><p>　　（1）通过CAS操作尝试把线程中复制的Displaced Mark Word对象替换当前的Mark Word。</p>
 <p>　　（2）如果替换成功，整个同步过程就完成了。</p>
 <p>　　（3）如果替换失败，说明有其他线程尝试过获取该锁（此时锁已膨胀），那就要在释放锁的同时，唤醒被挂起的线程。</p>
-<h3 id="三、偏向锁"><a href="#三、偏向锁" class="headerlink" title="三、偏向锁"></a><strong>三、偏向锁</strong></h3><p>　　引入偏向锁是为了在无多线程竞争的情况下尽量减少不必要的轻量级锁执行路径，因为轻量级锁的获取及释放依赖多次CAS原子指令，而偏向锁只需要在置换ThreadID的时候依赖一次CAS原子指令（由于一旦出现多线程竞争的情况就必须撤销偏向锁，所以偏向锁的撤销操作的性能损耗必须小于节省下来的CAS原子指令的性能消耗）。上面说过，轻量级锁是为了在线程交替执行同步块时提高性能，而偏向锁则是在只有一个线程执行同步块时进一步提高性能。</p>
+<h3 id="三、偏向锁"><a href="#三、偏向锁" class="headerlink" title="三、偏向锁"></a><strong>三、偏向锁</strong></h3><p>　　引入偏向锁是为了在无多线程竞争的情况下尽量减少不必要的轻量级锁执行路径，因为轻量级锁的获取及释放依赖多次CAS原子指令，而偏向锁只需要在置换ThreadID的时候依赖一次CAS原子指令（由于一旦出现多线程竞争的情况就必须撤销偏向锁，所以偏向锁的撤销操作的性能损耗必须小于节省下来的CAS原子指令的性能消耗）。上面说过，<strong>轻量级锁是为了在线程交替执行同步块时提高性能，而偏向锁则是在只有一个线程执行同步块时进一步提高性能</strong>。</p>
 <h4 id="1、偏向锁获取过程："><a href="#1、偏向锁获取过程：" class="headerlink" title="1、偏向锁获取过程："></a><strong>1、偏向锁获取过程：</strong></h4><p>　　（1）访问Mark Word中偏向锁的标识是否设置成1，锁标志位是否为01——确认为可偏向状态。</p>
 <p>　　（2）如果为可偏向状态，则测试线程ID是否指向当前线程，如果是，进入步骤（5），否则进入步骤（3）。</p>
 <p>　　（3）如果线程ID并未指向当前线程，则通过CAS操作竞争锁。如果竞争成功，则将Mark Word中线程ID设置为当前线程ID，然后执行（5）；如果竞争失败，执行（4）。</p>
