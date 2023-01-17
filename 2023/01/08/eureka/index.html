@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>Eureka | Hexo</title>
+  <meta name="description" content="Eureka1.认识微服务随着互联网行业的发展，对服务的要求也越来越高，服务架构也从单体架构逐渐演变为现在流行的微服务架构。这些架构之间有怎样的差别呢？ 1.0.学习目标了解微服务架构的优缺点 1.1.单体架构单体架构：将业务的所有功能集中在一个项目中开发，打成一个包部署。  单体架构的优缺点如下： 优点：  架构简单 部署成本低  缺点：  耦合度高（维护困难、升级困难）  1.2.分布式架构分">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Eureka">
+<meta property="og:url" content="https://1024chengxuyuan.github.io/2023/01/08/eureka/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Eureka1.认识微服务随着互联网行业的发展，对服务的要求也越来越高，服务架构也从单体架构逐渐演变为现在流行的微服务架构。这些架构之间有怎样的差别呢？ 1.0.学习目标了解微服务架构的优缺点 1.1.单体架构单体架构：将业务的所有功能集中在一个项目中开发，打成一个包部署。  单体架构的优缺点如下： 优点：  架构简单 部署成本低  缺点：  耦合度高（维护困难、升级困难）  1.2.分布式架构分">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/Eureka/image-20210713202807818.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/Eureka/image-20210713203124797.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/Eureka/image-20210713203753373.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/Eureka/image-20210713204155887.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/Eureka/image-20210713205003790.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/Eureka/image-20210713210800950.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/Eureka/image-20210713211009593.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/Eureka/image-20210713211417049.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/Eureka/image-20210713211550169.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/Eureka/image-20210713211657319.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/Eureka/image-20210713211814094.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/Eureka/image-20210713212656887.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/Eureka/image-20210713212349272.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/Eureka/image-20210713212336185.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/Eureka/image-20210713212513324.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/Eureka/image-20210713220736408.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/Eureka/image-20210713212749575.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/Eureka/image-20210713212901725.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/Eureka/image-20210713213146089.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/Eureka/image-20210713213213075.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/Eureka/image-20210713213312278.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/Eureka/image-20210713213959569.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/Eureka/image-20210713214404481.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/Eureka/image-20210713214925388.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/Eureka/image-20210713220104956.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/Eureka/image-20210713220509769.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/Eureka/image-20210713220605881.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/Eureka/image-20210713220857396.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/Eureka/image-20210713221339022.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/Eureka/image-20210713222157190.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/Eureka/image-20210713222656562.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/Eureka/image-20210713222757702.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/Eureka/image-20210713222841951.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/Eureka/image-20210713223041491.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/Eureka/image-20210713223150650.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/Eureka/image-20210713224049419.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/Eureka/image-20210713224245731.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/Eureka/image-20210713232522531.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/Eureka/image-20210713232658928.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/Eureka/image-20210713235235219.png">
+<meta property="article:published_time" content="2023-01-08T11:53:55.000Z">
+<meta property="article:modified_time" content="2023-01-08T12:22:14.273Z">
+<meta property="article:author" content="野生程序猿">
+<meta property="article:tag" content="Eureka">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://1024chengxuyuan.github.io/Eureka/image-20210713202807818.png">
+  <!-- Canonical links -->
+  <link rel="canonical" href="https://1024chengxuyuan.github.io/2023/01/08/eureka/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+  
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body class="main-center" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://1024chengxuyuan.github.io" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">野生程序猿</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md">Java Developer</h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> Shanghai, China</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav ">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">分类</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags">
+            
+            <i class="icon icon-tags"></i>
+            
+            <span class="menu-title">标签</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-repository">
+          <a href="/repository">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">项目</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-books">
+          <a href="/books">
+            
+            <i class="icon icon-book-fill"></i>
+            
+            <span class="menu-title">书单</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links">
+            
+            <i class="icon icon-friendship"></i>
+            
+            <span class="menu-title">友链</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">关于</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/1024chengxuyuan" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/cofess" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/iwebued" target="_blank" title="Twitter" data-toggle=tooltip data-placement=top><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="https://www.behance.net/cofess" target="_blank" title="Behance" data-toggle=tooltip data-placement=top><i class="icon icon-behance"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">公告</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <p>欢迎交流与分享经验!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%85%A7%E5%AD%98%E6%A8%A1%E5%9E%8B/">Java內存模型</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">Java并发编程</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Jvm/">Jvm</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/MicroService/">MicroService</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Netty/">Netty</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/RabbitMQ/">RabbitMQ</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot/">SpringBoot</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringCloudAlibaba/">SpringCloudAlibaba</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/elasticsearch/">elasticsearch</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/redis/">redis</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/">消息队列</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E7%A8%8B%E6%8A%80%E5%B7%A7/">编程技巧</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/">项目管理工具</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget-body">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Eureka/" rel="tag">Eureka</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Feign/" rel="tag">Feign</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gateway/" rel="tag">Gateway</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JMM%E5%85%A7%E5%AD%98%E6%A8%A1%E5%9E%8B/" rel="tag">JMM內存模型</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E5%9F%BA%E7%A1%80/" rel="tag">Java基础</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/" rel="tag">Java并发编程</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" rel="tag">Java性能优化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E6%A1%86%E6%9E%B6/" rel="tag">Java框架</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E8%99%9A%E6%8B%9F%E6%9C%BA/" rel="tag">Java虚拟机</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jvm%E6%A8%A1%E5%9E%8B/" rel="tag">Jvm模型</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kafka/" rel="tag">Kafka</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MicroService/" rel="tag">MicroService</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nacos/" rel="tag">Nacos</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/" rel="tag">Netty</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RabbitMQ/" rel="tag">RabbitMQ</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ribbon/" rel="tag">Ribbon</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RocketMQ/" rel="tag">RocketMQ</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Seata/" rel="tag">Seata</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sentinel/" rel="tag">Sentinel</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elasticsearch/" rel="tag">elasticsearch</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/" rel="tag">排序算法</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" rel="tag">消息队列</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%93%E5%AD%98/" rel="tag">缓存</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/" rel="tag">项目管理工具</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget-body tagcloud">
+      <a href="/tags/Docker/" style="font-size: 13px;">Docker</a> <a href="/tags/Eureka/" style="font-size: 13px;">Eureka</a> <a href="/tags/Feign/" style="font-size: 13px;">Feign</a> <a href="/tags/Gateway/" style="font-size: 13px;">Gateway</a> <a href="/tags/JMM%E5%85%A7%E5%AD%98%E6%A8%A1%E5%9E%8B/" style="font-size: 13.86px;">JMM內存模型</a> <a href="/tags/Java%E5%9F%BA%E7%A1%80/" style="font-size: 13.29px;">Java基础</a> <a href="/tags/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/" style="font-size: 13.71px;">Java并发编程</a> <a href="/tags/Java%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" style="font-size: 13px;">Java性能优化</a> <a href="/tags/Java%E6%A1%86%E6%9E%B6/" style="font-size: 13px;">Java框架</a> <a href="/tags/Java%E8%99%9A%E6%8B%9F%E6%9C%BA/" style="font-size: 13.14px;">Java虚拟机</a> <a href="/tags/Jvm%E6%A8%A1%E5%9E%8B/" style="font-size: 13.14px;">Jvm模型</a> <a href="/tags/Kafka/" style="font-size: 13.57px;">Kafka</a> <a href="/tags/MicroService/" style="font-size: 13px;">MicroService</a> <a href="/tags/Nacos/" style="font-size: 13.14px;">Nacos</a> <a href="/tags/Netty/" style="font-size: 13.43px;">Netty</a> <a href="/tags/RabbitMQ/" style="font-size: 14px;">RabbitMQ</a> <a href="/tags/Redis/" style="font-size: 13px;">Redis</a> <a href="/tags/Ribbon/" style="font-size: 13px;">Ribbon</a> <a href="/tags/RocketMQ/" style="font-size: 13.57px;">RocketMQ</a> <a href="/tags/Seata/" style="font-size: 13px;">Seata</a> <a href="/tags/Sentinel/" style="font-size: 13.14px;">Sentinel</a> <a href="/tags/SpringBoot/" style="font-size: 13px;">SpringBoot</a> <a href="/tags/elasticsearch/" style="font-size: 13.43px;">elasticsearch</a> <a href="/tags/redis/" style="font-size: 13.14px;">redis</a> <a href="/tags/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/" style="font-size: 13px;">排序算法</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 13.43px;">数据结构</a> <a href="/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" style="font-size: 13.57px;">消息队列</a> <a href="/tags/%E7%BC%93%E5%AD%98/" style="font-size: 13px;">缓存</a> <a href="/tags/%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/" style="font-size: 13px;">项目管理工具</a>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">一月 2023</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">一月 2022</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">六月 2020</a><span class="archive-list-count">15</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Netty/">Netty</a>
+              </p>
+              <p class="item-title">
+                <a href="/2023/01/17/NettySourceCode/" class="title">Netty04-优化与源码</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2023-01-17T02:59:34.000Z" itemprop="datePublished">2023-01-17</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Netty/">Netty</a>
+              </p>
+              <p class="item-title">
+                <a href="/2023/01/17/NettyAdvanced/" class="title">Netty03-进阶</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2023-01-17T02:59:17.000Z" itemprop="datePublished">2023-01-17</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Netty/">Netty</a>
+              </p>
+              <p class="item-title">
+                <a href="/2023/01/17/NettyEntry/" class="title">Netty02-入门</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2023-01-17T02:57:41.000Z" itemprop="datePublished">2023-01-17</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Netty/">Netty</a>
+              </p>
+              <p class="item-title">
+                <a href="/2023/01/17/Netty01-nio/" class="title">Netty01-nio</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2023-01-17T02:53:36.000Z" itemprop="datePublished">2023-01-17</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/SpringCloudAlibaba/">SpringCloudAlibaba</a>
+              </p>
+              <p class="item-title">
+                <a href="/2023/01/12/SentinelSourceCode/" class="title">Sentinal源码分析</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2023-01-12T13:35:16.000Z" itemprop="datePublished">2023-01-12</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+<aside class="sidebar sidebar-toc collapse" id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <nav id="toc" class="article-toc">
+      <h3 class="toc-title">文章目录</h3>
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Eureka"><span class="toc-number">1.</span> <span class="toc-text">Eureka</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#1-%E8%AE%A4%E8%AF%86%E5%BE%AE%E6%9C%8D%E5%8A%A1"><span class="toc-number">2.</span> <span class="toc-text">1.认识微服务</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-0-%E5%AD%A6%E4%B9%A0%E7%9B%AE%E6%A0%87"><span class="toc-number">2.1.</span> <span class="toc-text">1.0.学习目标</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-1-%E5%8D%95%E4%BD%93%E6%9E%B6%E6%9E%84"><span class="toc-number">2.2.</span> <span class="toc-text">1.1.单体架构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-2-%E5%88%86%E5%B8%83%E5%BC%8F%E6%9E%B6%E6%9E%84"><span class="toc-number">2.3.</span> <span class="toc-text">1.2.分布式架构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-3-%E5%BE%AE%E6%9C%8D%E5%8A%A1"><span class="toc-number">2.4.</span> <span class="toc-text">1.3.微服务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-4-SpringCloud"><span class="toc-number">2.5.</span> <span class="toc-text">1.4.SpringCloud</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-5-%E6%80%BB%E7%BB%93"><span class="toc-number">2.6.</span> <span class="toc-text">1.5.总结</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-%E6%9C%8D%E5%8A%A1%E6%8B%86%E5%88%86%E5%92%8C%E8%BF%9C%E7%A8%8B%E8%B0%83%E7%94%A8"><span class="toc-number">3.</span> <span class="toc-text">2.服务拆分和远程调用</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-1-%E6%9C%8D%E5%8A%A1%E6%8B%86%E5%88%86%E5%8E%9F%E5%88%99"><span class="toc-number">3.1.</span> <span class="toc-text">2.1.服务拆分原则</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-2-%E6%9C%8D%E5%8A%A1%E6%8B%86%E5%88%86%E7%A4%BA%E4%BE%8B"><span class="toc-number">3.2.</span> <span class="toc-text">2.2.服务拆分示例</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-1-%E5%AF%BC%E5%85%A5Sql%E8%AF%AD%E5%8F%A5"><span class="toc-number">3.2.1.</span> <span class="toc-text">2.2.1.导入Sql语句</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-2-%E5%AF%BC%E5%85%A5demo%E5%B7%A5%E7%A8%8B"><span class="toc-number">3.2.2.</span> <span class="toc-text">2.2.2.导入demo工程</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-3-%E5%AE%9E%E7%8E%B0%E8%BF%9C%E7%A8%8B%E8%B0%83%E7%94%A8%E6%A1%88%E4%BE%8B"><span class="toc-number">3.3.</span> <span class="toc-text">2.3.实现远程调用案例</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-1-%E6%A1%88%E4%BE%8B%E9%9C%80%E6%B1%82%EF%BC%9A"><span class="toc-number">3.3.1.</span> <span class="toc-text">2.3.1.案例需求：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-2-%E6%B3%A8%E5%86%8CRestTemplate"><span class="toc-number">3.3.2.</span> <span class="toc-text">2.3.2.注册RestTemplate</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-3-%E5%AE%9E%E7%8E%B0%E8%BF%9C%E7%A8%8B%E8%B0%83%E7%94%A8"><span class="toc-number">3.3.3.</span> <span class="toc-text">2.3.3.实现远程调用</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-4-%E6%8F%90%E4%BE%9B%E8%80%85%E4%B8%8E%E6%B6%88%E8%B4%B9%E8%80%85"><span class="toc-number">3.4.</span> <span class="toc-text">2.4.提供者与消费者</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-Eureka%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83"><span class="toc-number">4.</span> <span class="toc-text">3.Eureka注册中心</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#3-1-Eureka%E7%9A%84%E7%BB%93%E6%9E%84%E5%92%8C%E4%BD%9C%E7%94%A8"><span class="toc-number">4.1.</span> <span class="toc-text">3.1.Eureka的结构和作用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-2-%E6%90%AD%E5%BB%BAeureka-server"><span class="toc-number">4.2.</span> <span class="toc-text">3.2.搭建eureka-server</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-1-%E5%88%9B%E5%BB%BAeureka-server%E6%9C%8D%E5%8A%A1"><span class="toc-number">4.2.1.</span> <span class="toc-text">3.2.1.创建eureka-server服务</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-2-%E5%BC%95%E5%85%A5eureka%E4%BE%9D%E8%B5%96"><span class="toc-number">4.2.2.</span> <span class="toc-text">3.2.2.引入eureka依赖</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-3-%E7%BC%96%E5%86%99%E5%90%AF%E5%8A%A8%E7%B1%BB"><span class="toc-number">4.2.3.</span> <span class="toc-text">3.2.3.编写启动类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-4-%E7%BC%96%E5%86%99%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="toc-number">4.2.4.</span> <span class="toc-text">3.2.4.编写配置文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-5-%E5%90%AF%E5%8A%A8%E6%9C%8D%E5%8A%A1"><span class="toc-number">4.2.5.</span> <span class="toc-text">3.2.5.启动服务</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-3-%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C"><span class="toc-number">4.3.</span> <span class="toc-text">3.3.服务注册</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%EF%BC%89%E5%BC%95%E5%85%A5%E4%BE%9D%E8%B5%96"><span class="toc-number">4.3.1.</span> <span class="toc-text">1）引入依赖</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%EF%BC%89%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="toc-number">4.3.2.</span> <span class="toc-text">2）配置文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3%EF%BC%89%E5%90%AF%E5%8A%A8%E5%A4%9A%E4%B8%AAuser-service%E5%AE%9E%E4%BE%8B"><span class="toc-number">4.3.3.</span> <span class="toc-text">3）启动多个user-service实例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-4-%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="toc-number">4.4.</span> <span class="toc-text">3.4.服务发现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%EF%BC%89%E5%BC%95%E5%85%A5%E4%BE%9D%E8%B5%96-1"><span class="toc-number">4.4.1.</span> <span class="toc-text">1）引入依赖</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%EF%BC%89%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6-1"><span class="toc-number">4.4.2.</span> <span class="toc-text">2）配置文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3%EF%BC%89%E6%9C%8D%E5%8A%A1%E6%8B%89%E5%8F%96%E5%92%8C%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1"><span class="toc-number">4.4.3.</span> <span class="toc-text">3）服务拉取和负载均衡</span></a></li></ol></li></ol></li></ol>
+    </nav>
+  </div>
+</aside>
+
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-Eureka" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Eureka
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2023/01/08/eureka/" class="article-date">
+	  <time datetime="2023-01-08T11:53:55.000Z" itemprop="datePublished">2023-01-08</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/SpringCloudAlibaba/">SpringCloudAlibaba</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/Eureka/" rel="tag">Eureka</a>
+  </span>
+
+
+        
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2023/01/08/eureka/#comments" class="article-comment-link">评论</a></span>
+        
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <h1 id="Eureka"><a href="#Eureka" class="headerlink" title="Eureka"></a>Eureka</h1><h1 id="1-认识微服务"><a href="#1-认识微服务" class="headerlink" title="1.认识微服务"></a>1.认识微服务</h1><p>随着互联网行业的发展，对服务的要求也越来越高，服务架构也从单体架构逐渐演变为现在流行的微服务架构。这些架构之间有怎样的差别呢？</p>
+<h2 id="1-0-学习目标"><a href="#1-0-学习目标" class="headerlink" title="1.0.学习目标"></a>1.0.学习目标</h2><p>了解微服务架构的优缺点</p>
+<h2 id="1-1-单体架构"><a href="#1-1-单体架构" class="headerlink" title="1.1.单体架构"></a>1.1.单体架构</h2><p><strong>单体架构</strong>：将业务的所有功能集中在一个项目中开发，打成一个包部署。</p>
+<p><img src="/Eureka/image-20210713202807818.png" alt="image-20210713202807818"></p>
+<p>单体架构的优缺点如下：</p>
+<p><strong>优点：</strong></p>
+<ul>
+<li>架构简单</li>
+<li>部署成本低</li>
+</ul>
+<p><strong>缺点：</strong></p>
+<ul>
+<li>耦合度高（维护困难、升级困难）</li>
+</ul>
+<h2 id="1-2-分布式架构"><a href="#1-2-分布式架构" class="headerlink" title="1.2.分布式架构"></a>1.2.分布式架构</h2><p><strong>分布式架构</strong>：根据业务功能对系统做拆分，每个业务功能模块作为独立项目开发，称为一个服务。</p>
+<p><img src="/Eureka/image-20210713203124797.png" alt="image-20210713203124797"></p>
+<p>分布式架构的优缺点：</p>
+<p><strong>优点：</strong></p>
+<ul>
+<li>降低服务耦合</li>
+<li>有利于服务升级和拓展</li>
+</ul>
+<p><strong>缺点：</strong></p>
+<ul>
+<li>服务调用关系错综复杂</li>
+</ul>
+<p>分布式架构虽然降低了服务耦合，但是服务拆分时也有很多问题需要思考：</p>
+<ul>
+<li>服务拆分的粒度如何界定？</li>
+<li>服务之间如何调用？</li>
+<li>服务的调用关系如何管理？</li>
+</ul>
+<p>人们需要制定一套行之有效的标准来约束分布式架构。</p>
+<h2 id="1-3-微服务"><a href="#1-3-微服务" class="headerlink" title="1.3.微服务"></a>1.3.微服务</h2><p>微服务的架构特征：</p>
+<ul>
+<li>单一职责：微服务拆分粒度更小，每一个服务都对应唯一的业务能力，做到单一职责</li>
+<li>自治：团队独立、技术独立、数据独立，独立部署和交付</li>
+<li>面向服务：服务提供统一标准的接口，与语言和技术无关</li>
+<li>隔离性强：服务调用做好隔离、容错、降级，避免出现级联问题</li>
+</ul>
+<p><img src="/Eureka/image-20210713203753373.png" alt="image-20210713203753373"></p>
+<p>微服务的上述特性其实是在给分布式架构制定一个标准，进一步降低服务之间的耦合度，提供服务的独立性和灵活性。做到高内聚，低耦合。</p>
+<p>因此，可以认为<strong>微服务</strong>是一种经过良好架构设计的<strong>分布式架构方案</strong> 。</p>
+<p>但方案该怎么落地？选用什么样的技术栈？全球的互联网公司都在积极尝试自己的微服务落地方案。</p>
+<p>其中在Java领域最引人注目的就是SpringCloud提供的方案了。</p>
+<h2 id="1-4-SpringCloud"><a href="#1-4-SpringCloud" class="headerlink" title="1.4.SpringCloud"></a>1.4.SpringCloud</h2><p>SpringCloud是目前国内使用最广泛的微服务框架。官网地址：<a target="_blank" rel="noopener" href="https://spring.io/projects/spring-cloud%E3%80%82">https://spring.io/projects/spring-cloud。</a></p>
+<p>SpringCloud集成了各种微服务功能组件，并基于SpringBoot实现了这些组件的自动装配，从而提供了良好的开箱即用体验。</p>
+<p>其中常见的组件包括：</p>
+<p><img src="/Eureka/image-20210713204155887.png" alt="image-20210713204155887"></p>
+<p>另外，SpringCloud底层是依赖于SpringBoot的，并且有版本的兼容关系，如下：</p>
+<p><img src="/Eureka/image-20210713205003790.png" alt="image-20210713205003790"></p>
+<p>我们课堂学习的版本是 Hoxton.SR10，因此对应的SpringBoot版本是2.3.x版本。</p>
+<h2 id="1-5-总结"><a href="#1-5-总结" class="headerlink" title="1.5.总结"></a>1.5.总结</h2><ul>
+<li><p>单体架构：简单方便，高度耦合，扩展性差，适合小型项目。例如：学生管理系统</p>
+</li>
+<li><p>分布式架构：松耦合，扩展性好，但架构复杂，难度大。适合大型互联网项目，例如：京东、淘宝</p>
+</li>
+<li><p>微服务：一种良好的分布式架构方案</p>
+<p>①优点：拆分粒度更小、服务更独立、耦合度更低</p>
+<p>②缺点：架构非常复杂，运维、监控、部署难度提高</p>
+</li>
+<li><p>SpringCloud是微服务架构的一站式解决方案，集成了各种优秀微服务功能组件</p>
+</li>
+</ul>
+<h1 id="2-服务拆分和远程调用"><a href="#2-服务拆分和远程调用" class="headerlink" title="2.服务拆分和远程调用"></a>2.服务拆分和远程调用</h1><p>任何分布式架构都离不开服务的拆分，微服务也是一样。</p>
+<h2 id="2-1-服务拆分原则"><a href="#2-1-服务拆分原则" class="headerlink" title="2.1.服务拆分原则"></a>2.1.服务拆分原则</h2><p>这里我总结了微服务拆分时的几个原则：</p>
+<ul>
+<li>不同微服务，不要重复开发相同业务</li>
+<li>微服务数据独立，不要访问其它微服务的数据库</li>
+<li>微服务可以将自己的业务暴露为接口，供其它微服务调用</li>
+</ul>
+<p><img src="/Eureka/image-20210713210800950.png" alt="image-20210713210800950"></p>
+<h2 id="2-2-服务拆分示例"><a href="#2-2-服务拆分示例" class="headerlink" title="2.2.服务拆分示例"></a>2.2.服务拆分示例</h2><p>以课前资料中的微服务cloud-demo为例，其结构如下：</p>
+<p><img src="/Eureka/image-20210713211009593.png" alt="image-20210713211009593"></p>
+<p>cloud-demo：父工程，管理依赖</p>
+<ul>
+<li>order-service：订单微服务，负责订单相关业务</li>
+<li>user-service：用户微服务，负责用户相关业务</li>
+</ul>
+<p>要求：</p>
+<ul>
+<li>订单微服务和用户微服务都必须有各自的数据库，相互独立</li>
+<li>订单服务和用户服务都对外暴露Restful的接口</li>
+<li>订单服务如果需要查询用户信息，只能调用用户服务的Restful接口，不能查询用户数据库</li>
+</ul>
+<h3 id="2-2-1-导入Sql语句"><a href="#2-2-1-导入Sql语句" class="headerlink" title="2.2.1.导入Sql语句"></a>2.2.1.导入Sql语句</h3><p>首先，将课前资料提供的<code>cloud-order.sql</code>和<code>cloud-user.sql</code>导入到mysql中：</p>
+<p><img src="/Eureka/image-20210713211417049.png" alt="image-20210713211417049"></p>
+<p>cloud-user表中初始数据如下：</p>
+<p><img src="/Eureka/image-20210713211550169.png" alt="image-20210713211550169"></p>
+<p>cloud-order表中初始数据如下：</p>
+<p><img src="/Eureka/image-20210713211657319.png" alt="image-20210713211657319"></p>
+<p>cloud-order表中持有cloud-user表中的id字段。</p>
+<h3 id="2-2-2-导入demo工程"><a href="#2-2-2-导入demo工程" class="headerlink" title="2.2.2.导入demo工程"></a>2.2.2.导入demo工程</h3><p>用IDEA导入课前资料提供的Demo：</p>
+<p><img src="/Eureka/image-20210713211814094.png" alt="image-20210713211814094"></p>
+<p>项目结构如下：</p>
+<p><img src="/Eureka/image-20210713212656887.png" alt="image-20210713212656887"></p>
+<p>导入后，会在IDEA右下角出现弹窗：</p>
+<p><img src="/Eureka/image-20210713212349272.png" alt="image-20210713212349272"></p>
+<p>点击弹窗，然后按下图选择：</p>
+<p><img src="/Eureka/image-20210713212336185.png" alt="image-20210713212336185"></p>
+<p>会出现这样的菜单：</p>
+<p><img src="/Eureka/image-20210713212513324.png" alt="image-20210713212513324"></p>
+<p>配置下项目使用的JDK：</p>
+<p><img src="/Eureka/image-20210713220736408.png" alt="image-20210713220736408"></p>
+<h2 id="2-3-实现远程调用案例"><a href="#2-3-实现远程调用案例" class="headerlink" title="2.3.实现远程调用案例"></a>2.3.实现远程调用案例</h2><p>在order-service服务中，有一个根据id查询订单的接口：</p>
+<p><img src="/Eureka/image-20210713212749575.png" alt="image-20210713212749575"></p>
+<p>根据id查询订单，返回值是Order对象，如图：</p>
+<p><img src="/Eureka/image-20210713212901725.png" alt="image-20210713212901725"></p>
+<p>其中的user为null</p>
+<p>在user-service中有一个根据id查询用户的接口：</p>
+<p><img src="/Eureka/image-20210713213146089.png" alt="image-20210713213146089"></p>
+<p>查询的结果如图：</p>
+<p><img src="/Eureka/image-20210713213213075.png" alt="image-20210713213213075"></p>
+<h3 id="2-3-1-案例需求："><a href="#2-3-1-案例需求：" class="headerlink" title="2.3.1.案例需求："></a>2.3.1.案例需求：</h3><p>修改order-service中的根据id查询订单业务，要求在查询订单的同时，根据订单中包含的userId查询出用户信息，一起返回。</p>
+<p><img src="/Eureka/image-20210713213312278.png" alt="image-20210713213312278"></p>
+<p>因此，我们需要在order-service中 向user-service发起一个http的请求，调用<a target="_blank" rel="noopener" href="http://localhost:8081/user/%7BuserId%7D%E8%BF%99%E4%B8%AA%E6%8E%A5%E5%8F%A3%E3%80%82">http://localhost:8081/user/{userId}这个接口。</a></p>
+<p>大概的步骤是这样的：</p>
+<ul>
+<li>注册一个RestTemplate的实例到Spring容器</li>
+<li>修改order-service服务中的OrderService类中的queryOrderById方法，根据Order对象中的userId查询User</li>
+<li>将查询的User填充到Order对象，一起返回</li>
+</ul>
+<h3 id="2-3-2-注册RestTemplate"><a href="#2-3-2-注册RestTemplate" class="headerlink" title="2.3.2.注册RestTemplate"></a>2.3.2.注册RestTemplate</h3><p>首先，我们在order-service服务中的OrderApplication启动类中，注册RestTemplate实例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> cn.itcast.order;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.mybatis.spring.annotation.MapperScan;</span><br><span class="line"><span class="keyword">import</span> org.springframework.boot.SpringApplication;</span><br><span class="line"><span class="keyword">import</span> org.springframework.boot.autoconfigure.SpringBootApplication;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Bean;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.client.RestTemplate;</span><br><span class="line"></span><br><span class="line"><span class="meta">@MapperScan(&quot;cn.itcast.order.mapper&quot;)</span></span><br><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">OrderApplication</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        SpringApplication.run(OrderApplication.class, args);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="keyword">public</span> RestTemplate <span class="title function_">restTemplate</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">RestTemplate</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="2-3-3-实现远程调用"><a href="#2-3-3-实现远程调用" class="headerlink" title="2.3.3.实现远程调用"></a>2.3.3.实现远程调用</h3><p>修改order-service服务中的cn.itcast.order.service包下的OrderService类中的queryOrderById方法：</p>
+<p><img src="/Eureka/image-20210713213959569.png" alt="image-20210713213959569"></p>
+<h2 id="2-4-提供者与消费者"><a href="#2-4-提供者与消费者" class="headerlink" title="2.4.提供者与消费者"></a>2.4.提供者与消费者</h2><p>在服务调用关系中，会有两个不同的角色：</p>
+<p><strong>服务提供者</strong>：一次业务中，被其它微服务调用的服务。（提供接口给其它微服务）</p>
+<p><strong>服务消费者</strong>：一次业务中，调用其它微服务的服务。（调用其它微服务提供的接口）</p>
+<p><img src="/Eureka/image-20210713214404481.png" alt="image-20210713214404481"></p>
+<p>但是，服务提供者与服务消费者的角色并不是绝对的，而是相对于业务而言。</p>
+<p>如果服务A调用了服务B，而服务B又调用了服务C，服务B的角色是什么？</p>
+<ul>
+<li>对于A调用B的业务而言：A是服务消费者，B是服务提供者</li>
+<li>对于B调用C的业务而言：B是服务消费者，C是服务提供者</li>
+</ul>
+<p>因此，服务B既可以是服务提供者，也可以是服务消费者。</p>
+<h1 id="3-Eureka注册中心"><a href="#3-Eureka注册中心" class="headerlink" title="3.Eureka注册中心"></a>3.Eureka注册中心</h1><p>假如我们的服务提供者user-service部署了多个实例，如图：</p>
+<p><img src="/Eureka/image-20210713214925388.png" alt="image-20210713214925388"></p>
+<p>大家思考几个问题：</p>
+<ul>
+<li>order-service在发起远程调用的时候，该如何得知user-service实例的ip地址和端口？</li>
+<li>有多个user-service实例地址，order-service调用时该如何选择？</li>
+<li>order-service如何得知某个user-service实例是否依然健康，是不是已经宕机？</li>
+</ul>
+<h2 id="3-1-Eureka的结构和作用"><a href="#3-1-Eureka的结构和作用" class="headerlink" title="3.1.Eureka的结构和作用"></a>3.1.Eureka的结构和作用</h2><p>这些问题都需要利用SpringCloud中的注册中心来解决，其中最广为人知的注册中心就是Eureka，其结构如下：</p>
+<p><img src="/Eureka/image-20210713220104956.png" alt="image-20210713220104956"></p>
+<p>回答之前的各个问题。</p>
+<p>问题1：order-service如何得知user-service实例地址？</p>
+<p>获取地址信息的流程如下：</p>
+<ul>
+<li>user-service服务实例启动后，将自己的信息注册到eureka-server（Eureka服务端）。这个叫服务注册</li>
+<li>eureka-server保存服务名称到服务实例地址列表的映射关系</li>
+<li>order-service根据服务名称，拉取实例地址列表。这个叫服务发现或服务拉取</li>
+</ul>
+<p>问题2：order-service如何从多个user-service实例中选择具体的实例？</p>
+<ul>
+<li>order-service从实例列表中利用负载均衡算法选中一个实例地址</li>
+<li>向该实例地址发起远程调用</li>
+</ul>
+<p>问题3：order-service如何得知某个user-service实例是否依然健康，是不是已经宕机？</p>
+<ul>
+<li>user-service会每隔一段时间（默认30秒）向eureka-server发起请求，报告自己状态，称为心跳</li>
+<li>当超过一定时间没有发送心跳时，eureka-server会认为微服务实例故障，将该实例从服务列表中剔除</li>
+<li>order-service拉取服务时，就能将故障实例排除了</li>
+</ul>
+<blockquote>
+<p>注意：一个微服务，既可以是服务提供者，又可以是服务消费者，因此eureka将服务注册、服务发现等功能统一封装到了eureka-client端</p>
+</blockquote>
+<p>因此，接下来我们动手实践的步骤包括：</p>
+<p><img src="/Eureka/image-20210713220509769.png" alt="image-20210713220509769"></p>
+<h2 id="3-2-搭建eureka-server"><a href="#3-2-搭建eureka-server" class="headerlink" title="3.2.搭建eureka-server"></a>3.2.搭建eureka-server</h2><p>首先大家注册中心服务端：eureka-server，这必须是一个独立的微服务</p>
+<h3 id="3-2-1-创建eureka-server服务"><a href="#3-2-1-创建eureka-server服务" class="headerlink" title="3.2.1.创建eureka-server服务"></a>3.2.1.创建eureka-server服务</h3><p>在cloud-demo父工程下，创建一个子模块：</p>
+<p><img src="/Eureka/image-20210713220605881.png" alt="image-20210713220605881"></p>
+<p>填写模块信息：</p>
+<p><img src="/Eureka/image-20210713220857396.png" alt="image-20210713220857396"></p>
+<p>然后填写服务信息：</p>
+<p><img src="/Eureka/image-20210713221339022.png" alt="image-20210713221339022"></p>
+<h3 id="3-2-2-引入eureka依赖"><a href="#3-2-2-引入eureka依赖" class="headerlink" title="3.2.2.引入eureka依赖"></a>3.2.2.引入eureka依赖</h3><p>引入SpringCloud为eureka提供的starter依赖：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-netflix-eureka-server<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="3-2-3-编写启动类"><a href="#3-2-3-编写启动类" class="headerlink" title="3.2.3.编写启动类"></a>3.2.3.编写启动类</h3><p>给eureka-server服务编写一个启动类，一定要添加一个@EnableEurekaServer注解，开启eureka的注册中心功能：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> cn.itcast.eureka;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.boot.SpringApplication;</span><br><span class="line"><span class="keyword">import</span> org.springframework.boot.autoconfigure.SpringBootApplication;</span><br><span class="line"><span class="keyword">import</span> org.springframework.cloud.netflix.eureka.server.EnableEurekaServer;</span><br><span class="line"></span><br><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="meta">@EnableEurekaServer</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">EurekaApplication</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        SpringApplication.run(EurekaApplication.class, args);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="3-2-4-编写配置文件"><a href="#3-2-4-编写配置文件" class="headerlink" title="3.2.4.编写配置文件"></a>3.2.4.编写配置文件</h3><p>编写一个application.yml文件，内容如下：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">10086</span></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">application:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">eureka-server</span></span><br><span class="line"><span class="attr">eureka:</span></span><br><span class="line">  <span class="attr">client:</span></span><br><span class="line">    <span class="attr">service-url:</span> </span><br><span class="line">      <span class="attr">defaultZone:</span> <span class="string">http://127.0.0.1:10086/eureka</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="3-2-5-启动服务"><a href="#3-2-5-启动服务" class="headerlink" title="3.2.5.启动服务"></a>3.2.5.启动服务</h3><p>启动微服务，然后在浏览器访问：<a target="_blank" rel="noopener" href="http://127.0.0.1:10086/">http://127.0.0.1:10086</a></p>
+<p>看到下面结果应该是成功了：</p>
+<p><img src="/Eureka/image-20210713222157190.png" alt="image-20210713222157190"></p>
+<h2 id="3-3-服务注册"><a href="#3-3-服务注册" class="headerlink" title="3.3.服务注册"></a>3.3.服务注册</h2><p>下面，我们将user-service注册到eureka-server中去。</p>
+<h3 id="1）引入依赖"><a href="#1）引入依赖" class="headerlink" title="1）引入依赖"></a>1）引入依赖</h3><p>在user-service的pom文件中，引入下面的eureka-client依赖：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-netflix-eureka-client<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="2）配置文件"><a href="#2）配置文件" class="headerlink" title="2）配置文件"></a>2）配置文件</h3><p>在user-service中，修改application.yml文件，添加服务名称、eureka地址：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">application:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">userservice</span></span><br><span class="line"><span class="attr">eureka:</span></span><br><span class="line">  <span class="attr">client:</span></span><br><span class="line">    <span class="attr">service-url:</span></span><br><span class="line">      <span class="attr">defaultZone:</span> <span class="string">http://127.0.0.1:10086/eureka</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="3）启动多个user-service实例"><a href="#3）启动多个user-service实例" class="headerlink" title="3）启动多个user-service实例"></a>3）启动多个user-service实例</h3><p>为了演示一个服务有多个实例的场景，我们添加一个SpringBoot的启动配置，再启动一个user-service。</p>
+<p>首先，复制原来的user-service启动配置：</p>
+<p><img src="/Eureka/image-20210713222656562.png" alt="image-20210713222656562"></p>
+<p>然后，在弹出的窗口中，填写信息：</p>
+<p><img src="/Eureka/image-20210713222757702.png" alt="image-20210713222757702"></p>
+<p>现在，SpringBoot窗口会出现两个user-service启动配置：</p>
+<p><img src="/Eureka/image-20210713222841951.png" alt="image-20210713222841951"></p>
+<p>不过，第一个是8081端口，第二个是8082端口。</p>
+<p>启动两个user-service实例：</p>
+<p><img src="/Eureka/image-20210713223041491.png" alt="image-20210713223041491"></p>
+<p>查看eureka-server管理页面：</p>
+<p><img src="/Eureka/image-20210713223150650.png" alt="image-20210713223150650"></p>
+<h2 id="3-4-服务发现"><a href="#3-4-服务发现" class="headerlink" title="3.4.服务发现"></a>3.4.服务发现</h2><p>下面，我们将order-service的逻辑修改：向eureka-server拉取user-service的信息，实现服务发现。</p>
+<h3 id="1）引入依赖-1"><a href="#1）引入依赖-1" class="headerlink" title="1）引入依赖"></a>1）引入依赖</h3><p>之前说过，服务发现、服务注册统一都封装在eureka-client依赖，因此这一步与服务注册时一致。</p>
+<p>在order-service的pom文件中，引入下面的eureka-client依赖：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-netflix-eureka-client<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="2）配置文件-1"><a href="#2）配置文件-1" class="headerlink" title="2）配置文件"></a>2）配置文件</h3><p>服务发现也需要知道eureka地址，因此第二步与服务注册一致，都是配置eureka信息：</p>
+<p>在order-service中，修改application.yml文件，添加服务名称、eureka地址：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">application:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">orderservice</span></span><br><span class="line"><span class="attr">eureka:</span></span><br><span class="line">  <span class="attr">client:</span></span><br><span class="line">    <span class="attr">service-url:</span></span><br><span class="line">      <span class="attr">defaultZone:</span> <span class="string">http://127.0.0.1:10086/eureka</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="3）服务拉取和负载均衡"><a href="#3）服务拉取和负载均衡" class="headerlink" title="3）服务拉取和负载均衡"></a>3）服务拉取和负载均衡</h3><p>最后，我们要去eureka-server中拉取user-service服务的实例列表，并且实现负载均衡。</p>
+<p>不过这些动作不用我们去做，只需要添加一些注解即可。</p>
+<p>在order-service的OrderApplication中，给RestTemplate这个Bean添加一个@LoadBalanced注解：</p>
+<p><img src="/Eureka/image-20210713224049419.png" alt="image-20210713224049419"></p>
+<p>修改order-service服务中的cn.itcast.order.service包下的OrderService类中的queryOrderById方法。修改访问的url路径，用服务名代替ip、端口：</p>
+<p><img src="/Eureka/image-20210713224245731.png" alt="image-20210713224245731"></p>
+<p>spring会自动帮助我们从eureka-server端，根据userservice这个服务名称，获取实例列表，而后完成负载均衡。</p>
+<ul>
+<li>127.0.0.1:8083</li>
+</ul>
+<p>假如这些实例分布于全国各地的不同机房，例如：</p>
+<ul>
+<li>127.0.0.1:8081，在上海机房</li>
+<li>127.0.0.1:8082，在上海机房</li>
+<li>127.0.0.1:8083，在杭州机房</li>
+</ul>
+<p>Nacos就将同一机房内的实例 划分为一个<strong>集群</strong>。</p>
+<p>也就是说，user-service是服务，一个服务可以包含多个集群，如杭州、上海，每个集群下可以有多个实例，形成分级模型，如图：</p>
+<p><img src="/Eureka/image-20210713232522531.png" alt="image-20210713232522531"></p>
+<p>微服务互相访问时，应该尽可能访问同集群实例，因为本地访问速度更快。当本集群内不可用时，才访问其它集群。例如：</p>
+<p><img src="/Eureka/image-20210713232658928.png" alt="image-20210713232658928"></p>
+<p>杭州机房内的order-service应该优先访问同机房的user-service。</p>
+<p>弹出的编辑窗口，修改权重：</p>
+<p><img src="/Eureka/image-20210713235235219.png" alt="image-20210713235235219"></p>
+<blockquote>
+<p><strong>注意</strong>：如果权重修改为0，则该实例永远不会被访问</p>
+</blockquote>
+
+			
+			<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Eureka"><span class="toc-text">Eureka</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#1-%E8%AE%A4%E8%AF%86%E5%BE%AE%E6%9C%8D%E5%8A%A1"><span class="toc-text">1.认识微服务</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-0-%E5%AD%A6%E4%B9%A0%E7%9B%AE%E6%A0%87"><span class="toc-text">1.0.学习目标</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-1-%E5%8D%95%E4%BD%93%E6%9E%B6%E6%9E%84"><span class="toc-text">1.1.单体架构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-2-%E5%88%86%E5%B8%83%E5%BC%8F%E6%9E%B6%E6%9E%84"><span class="toc-text">1.2.分布式架构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-3-%E5%BE%AE%E6%9C%8D%E5%8A%A1"><span class="toc-text">1.3.微服务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-4-SpringCloud"><span class="toc-text">1.4.SpringCloud</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-5-%E6%80%BB%E7%BB%93"><span class="toc-text">1.5.总结</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-%E6%9C%8D%E5%8A%A1%E6%8B%86%E5%88%86%E5%92%8C%E8%BF%9C%E7%A8%8B%E8%B0%83%E7%94%A8"><span class="toc-text">2.服务拆分和远程调用</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-1-%E6%9C%8D%E5%8A%A1%E6%8B%86%E5%88%86%E5%8E%9F%E5%88%99"><span class="toc-text">2.1.服务拆分原则</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-2-%E6%9C%8D%E5%8A%A1%E6%8B%86%E5%88%86%E7%A4%BA%E4%BE%8B"><span class="toc-text">2.2.服务拆分示例</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-1-%E5%AF%BC%E5%85%A5Sql%E8%AF%AD%E5%8F%A5"><span class="toc-text">2.2.1.导入Sql语句</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-2-%E5%AF%BC%E5%85%A5demo%E5%B7%A5%E7%A8%8B"><span class="toc-text">2.2.2.导入demo工程</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-3-%E5%AE%9E%E7%8E%B0%E8%BF%9C%E7%A8%8B%E8%B0%83%E7%94%A8%E6%A1%88%E4%BE%8B"><span class="toc-text">2.3.实现远程调用案例</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-1-%E6%A1%88%E4%BE%8B%E9%9C%80%E6%B1%82%EF%BC%9A"><span class="toc-text">2.3.1.案例需求：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-2-%E6%B3%A8%E5%86%8CRestTemplate"><span class="toc-text">2.3.2.注册RestTemplate</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-3-%E5%AE%9E%E7%8E%B0%E8%BF%9C%E7%A8%8B%E8%B0%83%E7%94%A8"><span class="toc-text">2.3.3.实现远程调用</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-4-%E6%8F%90%E4%BE%9B%E8%80%85%E4%B8%8E%E6%B6%88%E8%B4%B9%E8%80%85"><span class="toc-text">2.4.提供者与消费者</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-Eureka%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83"><span class="toc-text">3.Eureka注册中心</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#3-1-Eureka%E7%9A%84%E7%BB%93%E6%9E%84%E5%92%8C%E4%BD%9C%E7%94%A8"><span class="toc-text">3.1.Eureka的结构和作用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-2-%E6%90%AD%E5%BB%BAeureka-server"><span class="toc-text">3.2.搭建eureka-server</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-1-%E5%88%9B%E5%BB%BAeureka-server%E6%9C%8D%E5%8A%A1"><span class="toc-text">3.2.1.创建eureka-server服务</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-2-%E5%BC%95%E5%85%A5eureka%E4%BE%9D%E8%B5%96"><span class="toc-text">3.2.2.引入eureka依赖</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-3-%E7%BC%96%E5%86%99%E5%90%AF%E5%8A%A8%E7%B1%BB"><span class="toc-text">3.2.3.编写启动类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-4-%E7%BC%96%E5%86%99%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="toc-text">3.2.4.编写配置文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-5-%E5%90%AF%E5%8A%A8%E6%9C%8D%E5%8A%A1"><span class="toc-text">3.2.5.启动服务</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-3-%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C"><span class="toc-text">3.3.服务注册</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%EF%BC%89%E5%BC%95%E5%85%A5%E4%BE%9D%E8%B5%96"><span class="toc-text">1）引入依赖</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%EF%BC%89%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="toc-text">2）配置文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3%EF%BC%89%E5%90%AF%E5%8A%A8%E5%A4%9A%E4%B8%AAuser-service%E5%AE%9E%E4%BE%8B"><span class="toc-text">3）启动多个user-service实例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-4-%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="toc-text">3.4.服务发现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%EF%BC%89%E5%BC%95%E5%85%A5%E4%BE%9D%E8%B5%96-1"><span class="toc-text">1）引入依赖</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%EF%BC%89%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6-1"><span class="toc-text">2）配置文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3%EF%BC%89%E6%9C%8D%E5%8A%A1%E6%8B%89%E5%8F%96%E5%92%8C%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1"><span class="toc-text">3）服务拉取和负载均衡</span></a></li></ol></li></ol></li></ol>
+			</div>
+		
+      
+    </div>
+    <div class="article-footer">
+	<blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="https://1024chengxuyuan.github.io/2023/01/08/eureka/" title="Eureka" target="_blank" rel="external">https://1024chengxuyuan.github.io/2023/01/08/eureka/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://1024chengxuyuan.github.io" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/avatar.jpg" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://1024chengxuyuan.github.io" target="_blank"><span class="text-dark">野生程序猿</span><small class="ml-1x">Java Developer</small></a></h3>
+        <div>一枚野生程序猿。</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+      <div id="lv-container" data-id="city" data-uid="MTAyMC81MDU0Ny8yNzAzMA==">
+        <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+      </div>    
+    
+  </section>
+
+
+   
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    <li class="prev">
+      <a href="/2023/01/08/Ribbon/" title="Ribbon"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
+    </li>
+    
+    
+    <li class="next">
+      <a href="/2023/01/08/elasticsearch_load/" title="安装elasticsearch"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+    <li class="toggle-toc">
+      <a class="toggle-btn collapsed" data-toggle="collapse" href="#collapseToc" aria-expanded="false" title="文章目录" role="button">
+        <span>[&nbsp;</span><span>文章目录</span>
+        <i class="text-collapsed icon icon-anchor"></i>
+        <i class="text-in icon icon-close"></i>
+        <span>]</span>
+      </a>
+    </li>
+    
+  </ul>
+  
+  
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-fancy btn-donate pop-onhover bg-gradient-warning" data-toggle="modal" data-target="#donateModal"><span>赏</span></button>
+  <!-- <div class="wave-icon wave-icon-danger btn-donate" data-toggle="modal" data-target="#donateModal">
+    <div class="wave-circle"><span class="icon"><i class="icon icon-bill"></i></span></div>
+  </div> -->
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter" data-mobile-sites="weibo,qq,qzone"></div>
+    
+  </div>
+  </div>
+</nav>
+  
+<!-- Modal -->
+<div class="modal modal-center modal-small modal-xs-full fade" id="donateModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content donate">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <div class="modal-body">
+        <div class="donate-box">
+          <div class="donate-head">
+            <p>感谢您的支持，我会继续努力的!</p>
+          </div>
+          <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade active in" id="alipay">
+              <div class="donate-payimg">
+                <img src="/images/donate/alipayimg.png" alt="扫码支持" title="扫一扫" />
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开支付宝扫一扫，即可进行扫码打赏哦</p>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="wechatpay">
+              <div class="donate-payimg">
+                <img src="/images/donate/wechatpayimg.png" alt="扫码支持" title="扫一扫" />
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开微信扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+          <div class="donate-footer">
+            <ul class="nav nav-tabs nav-justified" role="tablist">
+              <li role="presentation" class="active">
+                <a href="#alipay" id="alipay-tab" role="tab" data-toggle="tab" aria-controls="alipay" aria-expanded="true"><i class="icon icon-alipay"></i> 支付宝</a>
+              </li>
+              <li role="presentation" class="">
+                <a href="#wechatpay" role="tab" id="wechatpay-tab" data-toggle="tab" aria-controls="wechatpay" aria-expanded="false"><i class="icon icon-wepay"></i> 微信支付</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/1024chengxuyuan" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/cofess" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/iwebued" target="_blank" title="Twitter" data-toggle=tooltip data-placement=top><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="https://www.behance.net/cofess" target="_blank" title="Behance" data-toggle=tooltip data-placement=top><i class="icon icon-behance"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        &copy; 2023 野生程序猿
+        
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+	<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span>本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+
+
+
+
+   
+
+
+
+
+   
+    
+<script defer type="text/javascript">
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+
+    if (typeof LivereTower === 'function') { return; }
+
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+</script>
+
+
+
+
+
+
+
+
+</body>
+</html>

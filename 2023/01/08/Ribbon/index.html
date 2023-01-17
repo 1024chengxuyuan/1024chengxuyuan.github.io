@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>Ribbon | Hexo</title>
+  <meta name="description" content="Ribbon上一节中，我们添加了@LoadBalanced注解，即可实现负载均衡功能，这是什么原理呢？ 1.负载均衡原理SpringCloud底层其实是利用了一个名为Ribbon的组件，来实现负载均衡功能的。  那么我们发出的请求明明是http:&#x2F;&#x2F;userservice&#x2F;user&#x2F;1，怎么变成了http:&#x2F;&#x2F;localhost:8081的呢？ 2.源码跟踪为什么我们只输入了service名称就可">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Ribbon">
+<meta property="og:url" content="https://1024chengxuyuan.github.io/2023/01/08/Ribbon/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Ribbon上一节中，我们添加了@LoadBalanced注解，即可实现负载均衡功能，这是什么原理呢？ 1.负载均衡原理SpringCloud底层其实是利用了一个名为Ribbon的组件，来实现负载均衡功能的。  那么我们发出的请求明明是http:&#x2F;&#x2F;userservice&#x2F;user&#x2F;1，怎么变成了http:&#x2F;&#x2F;localhost:8081的呢？ 2.源码跟踪为什么我们只输入了service名称就可">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/Ribbon/image-20210713224517686.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/Ribbon/1525620483637.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/Ribbon/1525620787090.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/Ribbon/1525620835911.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/Ribbon/1525620835911.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/Ribbon/1544361421671.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/Ribbon/1525622652849.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/Ribbon/1525622699666.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/Ribbon/1525622754316.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/Ribbon/image-20210713224724673.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/Ribbon/image-20210713225653000.png">
+<meta property="article:published_time" content="2023-01-08T11:54:09.000Z">
+<meta property="article:modified_time" content="2023-01-08T12:22:17.360Z">
+<meta property="article:author" content="野生程序猿">
+<meta property="article:tag" content="Ribbon">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://1024chengxuyuan.github.io/Ribbon/image-20210713224517686.png">
+  <!-- Canonical links -->
+  <link rel="canonical" href="https://1024chengxuyuan.github.io/2023/01/08/Ribbon/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+  
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body class="main-center" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://1024chengxuyuan.github.io" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">野生程序猿</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md">Java Developer</h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> Shanghai, China</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav ">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">分类</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags">
+            
+            <i class="icon icon-tags"></i>
+            
+            <span class="menu-title">标签</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-repository">
+          <a href="/repository">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">项目</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-books">
+          <a href="/books">
+            
+            <i class="icon icon-book-fill"></i>
+            
+            <span class="menu-title">书单</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links">
+            
+            <i class="icon icon-friendship"></i>
+            
+            <span class="menu-title">友链</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">关于</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/1024chengxuyuan" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/cofess" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/iwebued" target="_blank" title="Twitter" data-toggle=tooltip data-placement=top><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="https://www.behance.net/cofess" target="_blank" title="Behance" data-toggle=tooltip data-placement=top><i class="icon icon-behance"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">公告</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <p>欢迎交流与分享经验!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%85%A7%E5%AD%98%E6%A8%A1%E5%9E%8B/">Java內存模型</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">Java并发编程</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Jvm/">Jvm</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/MicroService/">MicroService</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Netty/">Netty</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/RabbitMQ/">RabbitMQ</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot/">SpringBoot</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringCloudAlibaba/">SpringCloudAlibaba</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/elasticsearch/">elasticsearch</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/redis/">redis</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/">消息队列</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E7%A8%8B%E6%8A%80%E5%B7%A7/">编程技巧</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/">项目管理工具</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget-body">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Eureka/" rel="tag">Eureka</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Feign/" rel="tag">Feign</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gateway/" rel="tag">Gateway</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JMM%E5%85%A7%E5%AD%98%E6%A8%A1%E5%9E%8B/" rel="tag">JMM內存模型</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E5%9F%BA%E7%A1%80/" rel="tag">Java基础</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/" rel="tag">Java并发编程</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" rel="tag">Java性能优化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E6%A1%86%E6%9E%B6/" rel="tag">Java框架</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E8%99%9A%E6%8B%9F%E6%9C%BA/" rel="tag">Java虚拟机</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jvm%E6%A8%A1%E5%9E%8B/" rel="tag">Jvm模型</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kafka/" rel="tag">Kafka</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MicroService/" rel="tag">MicroService</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nacos/" rel="tag">Nacos</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/" rel="tag">Netty</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RabbitMQ/" rel="tag">RabbitMQ</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ribbon/" rel="tag">Ribbon</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RocketMQ/" rel="tag">RocketMQ</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Seata/" rel="tag">Seata</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sentinel/" rel="tag">Sentinel</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elasticsearch/" rel="tag">elasticsearch</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/" rel="tag">排序算法</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" rel="tag">消息队列</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%93%E5%AD%98/" rel="tag">缓存</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/" rel="tag">项目管理工具</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget-body tagcloud">
+      <a href="/tags/Docker/" style="font-size: 13px;">Docker</a> <a href="/tags/Eureka/" style="font-size: 13px;">Eureka</a> <a href="/tags/Feign/" style="font-size: 13px;">Feign</a> <a href="/tags/Gateway/" style="font-size: 13px;">Gateway</a> <a href="/tags/JMM%E5%85%A7%E5%AD%98%E6%A8%A1%E5%9E%8B/" style="font-size: 13.86px;">JMM內存模型</a> <a href="/tags/Java%E5%9F%BA%E7%A1%80/" style="font-size: 13.29px;">Java基础</a> <a href="/tags/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/" style="font-size: 13.71px;">Java并发编程</a> <a href="/tags/Java%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" style="font-size: 13px;">Java性能优化</a> <a href="/tags/Java%E6%A1%86%E6%9E%B6/" style="font-size: 13px;">Java框架</a> <a href="/tags/Java%E8%99%9A%E6%8B%9F%E6%9C%BA/" style="font-size: 13.14px;">Java虚拟机</a> <a href="/tags/Jvm%E6%A8%A1%E5%9E%8B/" style="font-size: 13.14px;">Jvm模型</a> <a href="/tags/Kafka/" style="font-size: 13.57px;">Kafka</a> <a href="/tags/MicroService/" style="font-size: 13px;">MicroService</a> <a href="/tags/Nacos/" style="font-size: 13.14px;">Nacos</a> <a href="/tags/Netty/" style="font-size: 13.43px;">Netty</a> <a href="/tags/RabbitMQ/" style="font-size: 14px;">RabbitMQ</a> <a href="/tags/Redis/" style="font-size: 13px;">Redis</a> <a href="/tags/Ribbon/" style="font-size: 13px;">Ribbon</a> <a href="/tags/RocketMQ/" style="font-size: 13.57px;">RocketMQ</a> <a href="/tags/Seata/" style="font-size: 13px;">Seata</a> <a href="/tags/Sentinel/" style="font-size: 13.14px;">Sentinel</a> <a href="/tags/SpringBoot/" style="font-size: 13px;">SpringBoot</a> <a href="/tags/elasticsearch/" style="font-size: 13.43px;">elasticsearch</a> <a href="/tags/redis/" style="font-size: 13.14px;">redis</a> <a href="/tags/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/" style="font-size: 13px;">排序算法</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 13.43px;">数据结构</a> <a href="/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" style="font-size: 13.57px;">消息队列</a> <a href="/tags/%E7%BC%93%E5%AD%98/" style="font-size: 13px;">缓存</a> <a href="/tags/%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/" style="font-size: 13px;">项目管理工具</a>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">一月 2023</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">一月 2022</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">六月 2020</a><span class="archive-list-count">15</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Netty/">Netty</a>
+              </p>
+              <p class="item-title">
+                <a href="/2023/01/17/NettySourceCode/" class="title">Netty04-优化与源码</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2023-01-17T02:59:34.000Z" itemprop="datePublished">2023-01-17</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Netty/">Netty</a>
+              </p>
+              <p class="item-title">
+                <a href="/2023/01/17/NettyAdvanced/" class="title">Netty03-进阶</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2023-01-17T02:59:17.000Z" itemprop="datePublished">2023-01-17</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Netty/">Netty</a>
+              </p>
+              <p class="item-title">
+                <a href="/2023/01/17/NettyEntry/" class="title">Netty02-入门</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2023-01-17T02:57:41.000Z" itemprop="datePublished">2023-01-17</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Netty/">Netty</a>
+              </p>
+              <p class="item-title">
+                <a href="/2023/01/17/Netty01-nio/" class="title">Netty01-nio</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2023-01-17T02:53:36.000Z" itemprop="datePublished">2023-01-17</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/SpringCloudAlibaba/">SpringCloudAlibaba</a>
+              </p>
+              <p class="item-title">
+                <a href="/2023/01/12/SentinelSourceCode/" class="title">Sentinal源码分析</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2023-01-12T13:35:16.000Z" itemprop="datePublished">2023-01-12</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+<aside class="sidebar sidebar-toc collapse" id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <nav id="toc" class="article-toc">
+      <h3 class="toc-title">文章目录</h3>
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Ribbon"><span class="toc-number">1.</span> <span class="toc-text">Ribbon</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E5%8E%9F%E7%90%86"><span class="toc-number">1.1.</span> <span class="toc-text">1.负载均衡原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E6%BA%90%E7%A0%81%E8%B7%9F%E8%B8%AA"><span class="toc-number">1.2.</span> <span class="toc-text">2.源码跟踪</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%EF%BC%89LoadBalancerIntercepor"><span class="toc-number">1.2.1.</span> <span class="toc-text">1）LoadBalancerIntercepor</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%EF%BC%89LoadBalancerClient"><span class="toc-number">1.2.2.</span> <span class="toc-text">2）LoadBalancerClient</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3%EF%BC%89%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E7%AD%96%E7%95%A5IRule"><span class="toc-number">1.2.3.</span> <span class="toc-text">3）负载均衡策略IRule</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4%EF%BC%89%E6%80%BB%E7%BB%93"><span class="toc-number">1.2.4.</span> <span class="toc-text">4）总结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E7%AD%96%E7%95%A5"><span class="toc-number">1.3.</span> <span class="toc-text">3.负载均衡策略</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E7%AD%96%E7%95%A5"><span class="toc-number">1.3.1.</span> <span class="toc-text">3.1.负载均衡策略</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E8%87%AA%E5%AE%9A%E4%B9%89%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E7%AD%96%E7%95%A5"><span class="toc-number">1.3.2.</span> <span class="toc-text">3.2.自定义负载均衡策略</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E9%A5%A5%E9%A5%BF%E5%8A%A0%E8%BD%BD"><span class="toc-number">1.4.</span> <span class="toc-text">4.饥饿加载</span></a></li></ol></li></ol>
+    </nav>
+  </div>
+</aside>
+
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-Ribbon" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Ribbon
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2023/01/08/Ribbon/" class="article-date">
+	  <time datetime="2023-01-08T11:54:09.000Z" itemprop="datePublished">2023-01-08</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/SpringCloudAlibaba/">SpringCloudAlibaba</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/Ribbon/" rel="tag">Ribbon</a>
+  </span>
+
+
+        
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2023/01/08/Ribbon/#comments" class="article-comment-link">评论</a></span>
+        
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <h1 id="Ribbon"><a href="#Ribbon" class="headerlink" title="Ribbon"></a>Ribbon</h1><p>上一节中，我们添加了@LoadBalanced注解，即可实现负载均衡功能，这是什么原理呢？</p>
+<h2 id="1-负载均衡原理"><a href="#1-负载均衡原理" class="headerlink" title="1.负载均衡原理"></a>1.负载均衡原理</h2><p>SpringCloud底层其实是利用了一个名为Ribbon的组件，来实现负载均衡功能的。</p>
+<p><img src="/Ribbon/image-20210713224517686.png" alt="image-20210713224517686"></p>
+<p>那么我们发出的请求明明是<a target="_blank" rel="noopener" href="http://userservice/user/1%EF%BC%8C%E6%80%8E%E4%B9%88%E5%8F%98%E6%88%90%E4%BA%86http://localhost:8081%E7%9A%84%E5%91%A2%EF%BC%9F">http://userservice/user/1，怎么变成了http://localhost:8081的呢？</a></p>
+<h2 id="2-源码跟踪"><a href="#2-源码跟踪" class="headerlink" title="2.源码跟踪"></a>2.源码跟踪</h2><p>为什么我们只输入了service名称就可以访问了呢？之前还要获取ip和端口。</p>
+<p>显然有人帮我们根据service名称，获取到了服务实例的ip和端口。它就是<code>LoadBalancerInterceptor</code>，这个类会在对RestTemplate的请求进行拦截，然后从Eureka根据服务id获取服务列表，随后利用负载均衡算法得到真实的服务地址信息，替换服务id。</p>
+<p>我们进行源码跟踪：</p>
+<h3 id="1）LoadBalancerIntercepor"><a href="#1）LoadBalancerIntercepor" class="headerlink" title="1）LoadBalancerIntercepor"></a>1）LoadBalancerIntercepor</h3><p><img src="/Ribbon/1525620483637.png" alt="1525620483637"></p>
+<p>可以看到这里的intercept方法，拦截了用户的HttpRequest请求，然后做了几件事：</p>
+<ul>
+<li><code>request.getURI()</code>：获取请求uri，本例中就是 <a target="_blank" rel="noopener" href="http://user-service/user/8">http://user-service/user/8</a></li>
+<li><code>originalUri.getHost()</code>：获取uri路径的主机名，其实就是服务id，<code>user-service</code></li>
+<li><code>this.loadBalancer.execute()</code>：处理服务id，和用户请求。</li>
+</ul>
+<p>这里的<code>this.loadBalancer</code>是<code>LoadBalancerClient</code>类型，我们继续跟入。</p>
+<h3 id="2）LoadBalancerClient"><a href="#2）LoadBalancerClient" class="headerlink" title="2）LoadBalancerClient"></a>2）LoadBalancerClient</h3><p>继续跟入execute方法：</p>
+<p><img src="/Ribbon/1525620787090.png" alt="1525620787090"></p>
+<p>代码是这样的：</p>
+<ul>
+<li>getLoadBalancer(serviceId)：根据服务id获取ILoadBalancer，而ILoadBalancer会拿着服务id去eureka中获取服务列表并保存起来。</li>
+<li>getServer(loadBalancer)：利用内置的负载均衡算法，从服务列表中选择一个。本例中，可以看到获取了8082端口的服务</li>
+</ul>
+<p>放行后，再次访问并跟踪，发现获取的是8081：</p>
+<p> <img src="/Ribbon/1525620835911.png" alt="1525620835911"></p>
+<p>果然实现了负载均衡。</p>
+<h3 id="3）负载均衡策略IRule"><a href="#3）负载均衡策略IRule" class="headerlink" title="3）负载均衡策略IRule"></a>3）负载均衡策略IRule</h3><p>在刚才的代码中，可以看到获取服务使通过一个<code>getServer</code>方法来做负载均衡:</p>
+<p> <img src="/Ribbon/1525620835911.png" alt="1525620835911"></p>
+<p>我们继续跟入：</p>
+<p><img src="/Ribbon/1544361421671.png" alt="1544361421671"></p>
+<p>继续跟踪源码chooseServer方法，发现这么一段代码：</p>
+<p> <img src="/Ribbon/1525622652849.png" alt="1525622652849"></p>
+<p>我们看看这个rule是谁：</p>
+<p> <img src="/Ribbon/1525622699666.png" alt="1525622699666"></p>
+<p>这里的rule默认值是一个<code>RoundRobinRule</code>，看类的介绍：</p>
+<p> <img src="/Ribbon/1525622754316.png" alt="1525622754316"></p>
+<p>这不就是轮询的意思嘛。</p>
+<p>到这里，整个负载均衡的流程我们就清楚了。</p>
+<h3 id="4）总结"><a href="#4）总结" class="headerlink" title="4）总结"></a>4）总结</h3><p>SpringCloudRibbon的底层采用了一个拦截器，拦截了RestTemplate发出的请求，对地址做了修改。用一幅图来总结一下：</p>
+<p><img src="/Ribbon/image-20210713224724673.png" alt="image-20210713224724673"></p>
+<p>基本流程如下：</p>
+<ul>
+<li>拦截我们的RestTemplate请求<a target="_blank" rel="noopener" href="http://userservice/user/1">http://userservice/user/1</a></li>
+<li>RibbonLoadBalancerClient会从请求url中获取服务名称，也就是user-service</li>
+<li>DynamicServerListLoadBalancer根据user-service到eureka拉取服务列表</li>
+<li>eureka返回列表，localhost:8081、localhost:8082</li>
+<li>IRule利用内置负载均衡规则，从列表中选择一个，例如localhost:8081</li>
+<li>RibbonLoadBalancerClient修改请求地址，用localhost:8081替代userservice，得到<a target="_blank" rel="noopener" href="http://localhost:8081/user/1%EF%BC%8C%E5%8F%91%E8%B5%B7%E7%9C%9F%E5%AE%9E%E8%AF%B7%E6%B1%82">http://localhost:8081/user/1，发起真实请求</a></li>
+</ul>
+<h2 id="3-负载均衡策略"><a href="#3-负载均衡策略" class="headerlink" title="3.负载均衡策略"></a>3.负载均衡策略</h2><h3 id="3-1-负载均衡策略"><a href="#3-1-负载均衡策略" class="headerlink" title="3.1.负载均衡策略"></a>3.1.负载均衡策略</h3><p>负载均衡的规则都定义在IRule接口中，而IRule有很多不同的实现类：</p>
+<p><img src="/Ribbon/image-20210713225653000.png" alt="image-20210713225653000"></p>
+<p>不同规则的含义如下：</p>
+<table>
+<thead>
+<tr>
+<th><strong>内置负载均衡规则类</strong></th>
+<th><strong>规则描述</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>RoundRobinRule</td>
+<td>简单轮询服务列表来选择服务器。它是Ribbon默认的负载均衡规则。</td>
+</tr>
+<tr>
+<td>AvailabilityFilteringRule</td>
+<td>对以下两种服务器进行忽略：   （1）在默认情况下，这台服务器如果3次连接失败，这台服务器就会被设置为“短路”状态。短路状态将持续30秒，如果再次连接失败，短路的持续时间就会几何级地增加。  （2）并发数过高的服务器。如果一个服务器的并发连接数过高，配置了AvailabilityFilteringRule规则的客户端也会将其忽略。并发连接数的上限，可以由客户端的<clientName>.<clientConfigNameSpace>.ActiveConnectionsLimit属性进行配置。</clientConfigNameSpace></clientName></td>
+</tr>
+<tr>
+<td>WeightedResponseTimeRule</td>
+<td>为每一个服务器赋予一个权重值。服务器响应时间越长，这个服务器的权重就越小。这个规则会随机选择服务器，这个权重值会影响服务器的选择。</td>
+</tr>
+<tr>
+<td><strong>ZoneAvoidanceRule</strong></td>
+<td>以区域可用的服务器为基础进行服务器的选择。使用Zone对服务器进行分类，这个Zone可以理解为一个机房、一个机架等。而后再对Zone内的多个服务做轮询。</td>
+</tr>
+<tr>
+<td>BestAvailableRule</td>
+<td>忽略那些短路的服务器，并选择并发数较低的服务器。</td>
+</tr>
+<tr>
+<td>RandomRule</td>
+<td>随机选择一个可用的服务器。</td>
+</tr>
+<tr>
+<td>RetryRule</td>
+<td>重试机制的选择逻辑</td>
+</tr>
+</tbody></table>
+<p>默认的实现就是ZoneAvoidanceRule，是一种轮询方案</p>
+<h3 id="3-2-自定义负载均衡策略"><a href="#3-2-自定义负载均衡策略" class="headerlink" title="3.2.自定义负载均衡策略"></a>3.2.自定义负载均衡策略</h3><p>通过定义IRule实现可以修改负载均衡规则，有两种方式：</p>
+<ol>
+<li>代码方式：在order-service中的OrderApplication类中，定义一个新的IRule：</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="keyword">public</span> IRule <span class="title function_">randomRule</span><span class="params">()</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">RandomRule</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<ol start="2">
+<li>配置文件方式：在order-service的application.yml文件中，添加新的配置也可以修改规则：</li>
+</ol>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">userservice:</span> <span class="comment"># 给某个微服务配置负载均衡规则，这里是userservice服务</span></span><br><span class="line">  <span class="attr">ribbon:</span></span><br><span class="line">    <span class="attr">NFLoadBalancerRuleClassName:</span> <span class="string">com.netflix.loadbalancer.RandomRule</span> <span class="comment"># 负载均衡规则 </span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>注意</strong>，一般用默认的负载均衡规则，不做修改。</p>
+</blockquote>
+<h2 id="4-饥饿加载"><a href="#4-饥饿加载" class="headerlink" title="4.饥饿加载"></a>4.饥饿加载</h2><p>Ribbon默认是采用懒加载，即第一次访问时才会去创建LoadBalanceClient，请求时间会很长。</p>
+<p>而饥饿加载则会在项目启动时创建，降低第一次访问的耗时，通过下面配置开启饥饿加载：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">ribbon:</span></span><br><span class="line">  <span class="attr">eager-load:</span></span><br><span class="line">    <span class="attr">enabled:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">clients:</span> <span class="string">userservice</span></span><br></pre></td></tr></table></figure>
+
+			
+			<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Ribbon"><span class="toc-text">Ribbon</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E5%8E%9F%E7%90%86"><span class="toc-text">1.负载均衡原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E6%BA%90%E7%A0%81%E8%B7%9F%E8%B8%AA"><span class="toc-text">2.源码跟踪</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%EF%BC%89LoadBalancerIntercepor"><span class="toc-text">1）LoadBalancerIntercepor</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%EF%BC%89LoadBalancerClient"><span class="toc-text">2）LoadBalancerClient</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3%EF%BC%89%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E7%AD%96%E7%95%A5IRule"><span class="toc-text">3）负载均衡策略IRule</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4%EF%BC%89%E6%80%BB%E7%BB%93"><span class="toc-text">4）总结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E7%AD%96%E7%95%A5"><span class="toc-text">3.负载均衡策略</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E7%AD%96%E7%95%A5"><span class="toc-text">3.1.负载均衡策略</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E8%87%AA%E5%AE%9A%E4%B9%89%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E7%AD%96%E7%95%A5"><span class="toc-text">3.2.自定义负载均衡策略</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E9%A5%A5%E9%A5%BF%E5%8A%A0%E8%BD%BD"><span class="toc-text">4.饥饿加载</span></a></li></ol></li></ol>
+			</div>
+		
+      
+    </div>
+    <div class="article-footer">
+	<blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="https://1024chengxuyuan.github.io/2023/01/08/Ribbon/" title="Ribbon" target="_blank" rel="external">https://1024chengxuyuan.github.io/2023/01/08/Ribbon/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://1024chengxuyuan.github.io" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/avatar.jpg" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://1024chengxuyuan.github.io" target="_blank"><span class="text-dark">野生程序猿</span><small class="ml-1x">Java Developer</small></a></h3>
+        <div>一枚野生程序猿。</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+      <div id="lv-container" data-id="city" data-uid="MTAyMC81MDU0Ny8yNzAzMA==">
+        <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+      </div>    
+    
+  </section>
+
+
+   
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    <li class="prev">
+      <a href="/2023/01/08/nacos/" title="Nacos"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
+    </li>
+    
+    
+    <li class="next">
+      <a href="/2023/01/08/eureka/" title="Eureka"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+    <li class="toggle-toc">
+      <a class="toggle-btn collapsed" data-toggle="collapse" href="#collapseToc" aria-expanded="false" title="文章目录" role="button">
+        <span>[&nbsp;</span><span>文章目录</span>
+        <i class="text-collapsed icon icon-anchor"></i>
+        <i class="text-in icon icon-close"></i>
+        <span>]</span>
+      </a>
+    </li>
+    
+  </ul>
+  
+  
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-fancy btn-donate pop-onhover bg-gradient-warning" data-toggle="modal" data-target="#donateModal"><span>赏</span></button>
+  <!-- <div class="wave-icon wave-icon-danger btn-donate" data-toggle="modal" data-target="#donateModal">
+    <div class="wave-circle"><span class="icon"><i class="icon icon-bill"></i></span></div>
+  </div> -->
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter" data-mobile-sites="weibo,qq,qzone"></div>
+    
+  </div>
+  </div>
+</nav>
+  
+<!-- Modal -->
+<div class="modal modal-center modal-small modal-xs-full fade" id="donateModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content donate">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <div class="modal-body">
+        <div class="donate-box">
+          <div class="donate-head">
+            <p>感谢您的支持，我会继续努力的!</p>
+          </div>
+          <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade active in" id="alipay">
+              <div class="donate-payimg">
+                <img src="/images/donate/alipayimg.png" alt="扫码支持" title="扫一扫" />
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开支付宝扫一扫，即可进行扫码打赏哦</p>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="wechatpay">
+              <div class="donate-payimg">
+                <img src="/images/donate/wechatpayimg.png" alt="扫码支持" title="扫一扫" />
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开微信扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+          <div class="donate-footer">
+            <ul class="nav nav-tabs nav-justified" role="tablist">
+              <li role="presentation" class="active">
+                <a href="#alipay" id="alipay-tab" role="tab" data-toggle="tab" aria-controls="alipay" aria-expanded="true"><i class="icon icon-alipay"></i> 支付宝</a>
+              </li>
+              <li role="presentation" class="">
+                <a href="#wechatpay" role="tab" id="wechatpay-tab" data-toggle="tab" aria-controls="wechatpay" aria-expanded="false"><i class="icon icon-wepay"></i> 微信支付</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/1024chengxuyuan" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/cofess" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/iwebued" target="_blank" title="Twitter" data-toggle=tooltip data-placement=top><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="https://www.behance.net/cofess" target="_blank" title="Behance" data-toggle=tooltip data-placement=top><i class="icon icon-behance"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        &copy; 2023 野生程序猿
+        
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+	<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span>本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+
+
+
+
+   
+
+
+
+
+   
+    
+<script defer type="text/javascript">
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+
+    if (typeof LivereTower === 'function') { return; }
+
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+</script>
+
+
+
+
+
+
+
+
+</body>
+</html>

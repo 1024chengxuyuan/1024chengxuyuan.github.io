@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>双亲委派机制与类加载器 | Hexo</title>
+  <meta name="description" content="转载：https:&#x2F;&#x2F;juejin.im&#x2F;post&#x2F;5e479c2cf265da575f4e65e4#heading-7 导读： 类加载器是怎么被创建出来的？ 什么是双亲委派机制？为什么要有这种机制？ Class实例和类加载器究竟是在Java Heap中，还是在方法区中？  类加载器： 可以实现通过一个类的全限定名称来获取描述此类的二进制字节流。实现这个动作的代码模块成为”类加载器“。 通过自定义">
+<meta property="og:type" content="article">
+<meta property="og:title" content="双亲委派机制与类加载器">
+<meta property="og:url" content="https://1024chengxuyuan.github.io/2020/06/30/1/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="转载：https:&#x2F;&#x2F;juejin.im&#x2F;post&#x2F;5e479c2cf265da575f4e65e4#heading-7 导读： 类加载器是怎么被创建出来的？ 什么是双亲委派机制？为什么要有这种机制？ Class实例和类加载器究竟是在Java Heap中，还是在方法区中？  类加载器： 可以实现通过一个类的全限定名称来获取描述此类的二进制字节流。实现这个动作的代码模块成为”类加载器“。 通过自定义">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/06/30/1/1.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/06/30/1/2.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/06/30/1/3.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/06/30/1/4.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/06/30/1/5.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/06/30/1/6.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/06/30/1/7.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/06/30/1/8.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/06/30/1/9.png">
+<meta property="article:published_time" content="2020-06-30T06:55:40.000Z">
+<meta property="article:modified_time" content="2022-01-07T07:48:38.000Z">
+<meta property="article:author" content="野生程序猿">
+<meta property="article:tag" content="Java虚拟机">
+<meta property="article:tag" content="Jvm模型">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://1024chengxuyuan.github.io/2020/06/30/1/1.png">
+  <!-- Canonical links -->
+  <link rel="canonical" href="https://1024chengxuyuan.github.io/2020/06/30/1/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+  
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body class="main-center" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://1024chengxuyuan.github.io" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">野生程序猿</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md">Java Developer</h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> Shanghai, China</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav ">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">分类</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags">
+            
+            <i class="icon icon-tags"></i>
+            
+            <span class="menu-title">标签</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-repository">
+          <a href="/repository">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">项目</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-books">
+          <a href="/books">
+            
+            <i class="icon icon-book-fill"></i>
+            
+            <span class="menu-title">书单</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links">
+            
+            <i class="icon icon-friendship"></i>
+            
+            <span class="menu-title">友链</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">关于</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/1024chengxuyuan" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/cofess" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/iwebued" target="_blank" title="Twitter" data-toggle=tooltip data-placement=top><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="https://www.behance.net/cofess" target="_blank" title="Behance" data-toggle=tooltip data-placement=top><i class="icon icon-behance"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">公告</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <p>欢迎交流与分享经验!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%85%A7%E5%AD%98%E6%A8%A1%E5%9E%8B/">Java內存模型</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">Java并发编程</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Jvm/">Jvm</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/MicroService/">MicroService</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Netty/">Netty</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/RabbitMQ/">RabbitMQ</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot/">SpringBoot</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringCloudAlibaba/">SpringCloudAlibaba</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/elasticsearch/">elasticsearch</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/redis/">redis</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/">消息队列</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E7%A8%8B%E6%8A%80%E5%B7%A7/">编程技巧</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/">项目管理工具</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget-body">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Eureka/" rel="tag">Eureka</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Feign/" rel="tag">Feign</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gateway/" rel="tag">Gateway</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JMM%E5%85%A7%E5%AD%98%E6%A8%A1%E5%9E%8B/" rel="tag">JMM內存模型</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E5%9F%BA%E7%A1%80/" rel="tag">Java基础</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/" rel="tag">Java并发编程</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" rel="tag">Java性能优化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E6%A1%86%E6%9E%B6/" rel="tag">Java框架</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E8%99%9A%E6%8B%9F%E6%9C%BA/" rel="tag">Java虚拟机</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jvm%E6%A8%A1%E5%9E%8B/" rel="tag">Jvm模型</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kafka/" rel="tag">Kafka</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MicroService/" rel="tag">MicroService</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nacos/" rel="tag">Nacos</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/" rel="tag">Netty</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RabbitMQ/" rel="tag">RabbitMQ</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ribbon/" rel="tag">Ribbon</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RocketMQ/" rel="tag">RocketMQ</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Seata/" rel="tag">Seata</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sentinel/" rel="tag">Sentinel</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elasticsearch/" rel="tag">elasticsearch</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/" rel="tag">排序算法</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" rel="tag">消息队列</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%93%E5%AD%98/" rel="tag">缓存</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/" rel="tag">项目管理工具</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget-body tagcloud">
+      <a href="/tags/Docker/" style="font-size: 13px;">Docker</a> <a href="/tags/Eureka/" style="font-size: 13px;">Eureka</a> <a href="/tags/Feign/" style="font-size: 13px;">Feign</a> <a href="/tags/Gateway/" style="font-size: 13px;">Gateway</a> <a href="/tags/JMM%E5%85%A7%E5%AD%98%E6%A8%A1%E5%9E%8B/" style="font-size: 13.86px;">JMM內存模型</a> <a href="/tags/Java%E5%9F%BA%E7%A1%80/" style="font-size: 13.29px;">Java基础</a> <a href="/tags/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/" style="font-size: 13.71px;">Java并发编程</a> <a href="/tags/Java%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" style="font-size: 13px;">Java性能优化</a> <a href="/tags/Java%E6%A1%86%E6%9E%B6/" style="font-size: 13px;">Java框架</a> <a href="/tags/Java%E8%99%9A%E6%8B%9F%E6%9C%BA/" style="font-size: 13.14px;">Java虚拟机</a> <a href="/tags/Jvm%E6%A8%A1%E5%9E%8B/" style="font-size: 13.14px;">Jvm模型</a> <a href="/tags/Kafka/" style="font-size: 13.57px;">Kafka</a> <a href="/tags/MicroService/" style="font-size: 13px;">MicroService</a> <a href="/tags/Nacos/" style="font-size: 13.14px;">Nacos</a> <a href="/tags/Netty/" style="font-size: 13.43px;">Netty</a> <a href="/tags/RabbitMQ/" style="font-size: 14px;">RabbitMQ</a> <a href="/tags/Redis/" style="font-size: 13px;">Redis</a> <a href="/tags/Ribbon/" style="font-size: 13px;">Ribbon</a> <a href="/tags/RocketMQ/" style="font-size: 13.57px;">RocketMQ</a> <a href="/tags/Seata/" style="font-size: 13px;">Seata</a> <a href="/tags/Sentinel/" style="font-size: 13.14px;">Sentinel</a> <a href="/tags/SpringBoot/" style="font-size: 13px;">SpringBoot</a> <a href="/tags/elasticsearch/" style="font-size: 13.43px;">elasticsearch</a> <a href="/tags/redis/" style="font-size: 13.14px;">redis</a> <a href="/tags/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/" style="font-size: 13px;">排序算法</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 13.43px;">数据结构</a> <a href="/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" style="font-size: 13.57px;">消息队列</a> <a href="/tags/%E7%BC%93%E5%AD%98/" style="font-size: 13px;">缓存</a> <a href="/tags/%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/" style="font-size: 13px;">项目管理工具</a>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">一月 2023</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">一月 2022</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">六月 2020</a><span class="archive-list-count">15</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Netty/">Netty</a>
+              </p>
+              <p class="item-title">
+                <a href="/2023/01/17/NettySourceCode/" class="title">Netty04-优化与源码</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2023-01-17T02:59:34.000Z" itemprop="datePublished">2023-01-17</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Netty/">Netty</a>
+              </p>
+              <p class="item-title">
+                <a href="/2023/01/17/NettyAdvanced/" class="title">Netty03-进阶</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2023-01-17T02:59:17.000Z" itemprop="datePublished">2023-01-17</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Netty/">Netty</a>
+              </p>
+              <p class="item-title">
+                <a href="/2023/01/17/NettyEntry/" class="title">Netty02-入门</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2023-01-17T02:57:41.000Z" itemprop="datePublished">2023-01-17</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Netty/">Netty</a>
+              </p>
+              <p class="item-title">
+                <a href="/2023/01/17/Netty01-nio/" class="title">Netty01-nio</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2023-01-17T02:53:36.000Z" itemprop="datePublished">2023-01-17</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/SpringCloudAlibaba/">SpringCloudAlibaba</a>
+              </p>
+              <p class="item-title">
+                <a href="/2023/01/12/SentinelSourceCode/" class="title">Sentinal源码分析</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2023-01-12T13:35:16.000Z" itemprop="datePublished">2023-01-12</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-双亲委派机制与类加载器" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      双亲委派机制与类加载器
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2020/06/30/1/" class="article-date">
+	  <time datetime="2020-06-30T06:55:40.000Z" itemprop="datePublished">2020-06-30</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/Jvm/">Jvm</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/Java%E8%99%9A%E6%8B%9F%E6%9C%BA/" rel="tag">Java虚拟机</a>, <a class="article-tag-link-link" href="/tags/Jvm%E6%A8%A1%E5%9E%8B/" rel="tag">Jvm模型</a>
+  </span>
+
+
+        
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2020/06/30/1/#comments" class="article-comment-link">评论</a></span>
+        
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <p><strong>转载：<a target="_blank" rel="noopener" href="https://juejin.im/post/5e479c2cf265da575f4e65e4#heading-7">https://juejin.im/post/5e479c2cf265da575f4e65e4#heading-7</a></strong></p>
+<h3 id="导读："><a href="#导读：" class="headerlink" title="导读："></a>导读：</h3><ol>
+<li>类加载器是怎么被创建出来的？</li>
+<li>什么是双亲委派机制？为什么要有这种机制？</li>
+<li>Class实例和类加载器究竟是在Java Heap中，还是在方法区中？</li>
+</ol>
+<p><strong>类加载器：</strong> 可以实现通过一个类的全限定名称来获取描述此类的二进制字节流。实现这个动作的代码模块成为”类加载器“。</p>
+<p>通过自定义类加载器可以实现各种有趣而强大的功能更：OSGi，热部署，代码加密等。</p>
+<h3 id="1、类加载器的加载流程"><a href="#1、类加载器的加载流程" class="headerlink" title="1、类加载器的加载流程"></a>1、类加载器的加载流程</h3><p><img src="/2020/06/30/1/1.png" alt="1"></p>
+<p>如上图为类加载器的加载流程。</p>
+<p>这里简单描述下：</p>
+<h4 id="1-1、启动类加载器"><a href="#1-1、启动类加载器" class="headerlink" title="1.1、启动类加载器"></a>1.1、启动类加载器</h4><p><strong>启动类加载器：</strong>系统启动的时候，首先会通过由C++实现的启动类加载器，加载<JAVA_HOME>&#x2F;lib目录下面的jar包，或者被-Xbootclasspath参数指定的路径并且被虚拟机识别的文件名的jar包。把相关Class加载到方法区中。</JAVA_HOME></p>
+<p>这一步会加载关键的一个类：<code>sun.misc.Launcher</code>。这个类包含了两个静态内部类：</p>
+<ul>
+<li>ExtClassLoader：扩展类加载器内部类，下面会讲；</li>
+<li>AppClassLoader：应用程序类加载器内部类，下面会讲</li>
+</ul>
+<blockquote>
+<p>可以反编译rt.jar文件查看详细代码：</p>
+<p><img src="/2020/06/30/1/2.png" alt="1"></p>
+<p><img src="/2020/06/30/1/3.png" alt="1"></p>
+</blockquote>
+<p>在加载到Launcher类完成后，会对该类进行初始化，初始化的过程中，会创建 ExtClassLoader 和 AppClassLoader，源码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">public Launcher() &#123;</span><br><span class="line">    ExtClassLoader extClassLoader;</span><br><span class="line">    try &#123;</span><br><span class="line">      extClassLoader = ExtClassLoader.getExtClassLoader();</span><br><span class="line">    &#125; catch (IOException iOException) &#123;</span><br><span class="line">      throw new InternalError(&quot;Could not create extension class loader&quot;, iOException);</span><br><span class="line">    &#125;</span><br><span class="line">    try &#123;</span><br><span class="line">      this.loader = AppClassLoader.getAppClassLoader(extClassLoader);</span><br><span class="line">    &#125; catch (IOException iOException) &#123;</span><br><span class="line">      throw new InternalError(&quot;Could not create application class loader&quot;, iOException);</span><br><span class="line">    &#125;</span><br><span class="line">    Thread.currentThread().setContextClassLoader(this.loader);</span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
+
+<p>由于启动类加载器是由C++实现的，所以<strong>在Java代码里面是访问不到启动类加载器的</strong>，如果尝试通过<code>String.class.getClassLoader()</code>获取启动类的引用，会返回<code>null</code>；</p>
+<p>问题：</p>
+<ol>
+<li>启动类加载器，扩展类加载器和应用类加载器都是又谁加载的？<ol>
+<li>启动类加载器是JVM的内部实现，在JVM申请好内存之后，由JVM创建这个启动类加载器</li>
+<li>扩展类加载器和应用程序类加载器是由启动类加载器加载进来的；</li>
+</ol>
+</li>
+<li>说说以下代码输出什么：</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public static void main(String[] args) &#123;</span><br><span class="line">    System.out.println(&quot;加载当前类的加载器:&quot; + TestClassLoader.class.getClassLoader());</span><br><span class="line">       System.out.println(&quot;加载应用程序类加载器的加载器&quot;</span><br><span class="line">                        + TestClassLoader.class.getClassLoader().getClass().getClassLoader());</span><br><span class="line">       System.out.println(&quot;String类的启动类加载器&quot; + String.class.getClassLoader());</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-2、扩展类加载器"><a href="#1-2、扩展类加载器" class="headerlink" title="1.2、扩展类加载器"></a>1.2、扩展类加载器</h4><p>如上图，扩展类加载器负责加载<JAVA_HOME>&#x2F;lib&#x2F;ext目录下或者被java.ext.dirs系统变量指定的路径中的类。</JAVA_HOME></p>
+<h4 id="1-3、应用程序类加载器"><a href="#1-3、应用程序类加载器" class="headerlink" title="1.3、应用程序类加载器"></a>1.3、应用程序类加载器</h4><p>引用程序类加载器加载用户类路径下制定的类库，如果应用程序没有自定义过自己的类加载器，此类加载器就是默认的类加载器。</p>
+<p>引用程序类加载器也叫系统类加载器，可以通过<code>getSystemClassLoader</code>方法得到应用程序类加载器。</p>
+<p>注意，如上图通过以上三个类加载器加载类到方法区之后，方法区中分别对应有各自的类信息存储区。不同类加载器加载的同一个类文件不相等。</p>
+<h3 id="2、类加载器的双亲委派机制"><a href="#2、类加载器的双亲委派机制" class="headerlink" title="2、类加载器的双亲委派机制"></a>2、类加载器的双亲委派机制</h3><h4 id="2-1、双亲委派机制原理"><a href="#2-1、双亲委派机制原理" class="headerlink" title="2.1、双亲委派机制原理"></a>2.1、双亲委派机制原理</h4><p><em>双亲委派模型在JDK1.2之后被引入，并广泛使用，这不是一个强制性的约束模型，二货思Java设计者推荐给开发者的一种类加载器实现方式。我们也可以覆盖对应的方式，实现自己的加载模型。</em></p>
+<p>类加载器的双亲委派机制如下：</p>
+<p><img src="/2020/06/30/1/4.png" alt="1"><br>也就是说：</p>
+<ul>
+<li>一个类加载器收到了类加载请求，不会自己立刻尝试加载类，而是把请求委托给父加载器去完成，每一层都是如此，所有的家在请求最终都传递到最顶层的类加载器进行处理；</li>
+<li>如果父加载器不存在了，那么尝试判断有没有被启动类加载器加载；</li>
+<li>如果的确没有被夹在，则再自己尝试加载。</li>
+</ul>
+<blockquote>
+<p>问题：</p>
+<ol>
+<li>为什么要有这么复杂的双亲委派机制？<ol>
+<li>如果没有这种机制，我们就可以篡改启动类加载器中需要的类了，如，修自己编写一个<code>java.lang.Object</code>用自己的类加载器进行加载，系统中就会存在多个Object类，这样Java类型体系最基本的行为也就无法保证了。</li>
+</ol>
+</li>
+</ol>
+</blockquote>
+<h4 id="2-2、双亲委派机制处理流程"><a href="#2-2、双亲委派机制处理流程" class="headerlink" title="2.2、双亲委派机制处理流程"></a>2.2、双亲委派机制处理流程</h4><p>JDK中默认的双亲委派处理流程是怎么的呢？接下来我们看看代码，以下是<code>java.lang.ClassLoader.loadClass()</code>方法的实现：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> Class&lt;?&gt; loadClass(String name, <span class="type">boolean</span> resolve)</span><br><span class="line">        <span class="keyword">throws</span> ClassNotFoundException</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (getClassLoadingLock(name)) &#123;</span><br><span class="line">            <span class="comment">// First, check if the class has already been loaded</span></span><br><span class="line">            Class&lt;?&gt; c = findLoadedClass(name);</span><br><span class="line">            <span class="keyword">if</span> (c == <span class="literal">null</span>) &#123;</span><br><span class="line">                <span class="type">long</span> <span class="variable">t0</span> <span class="operator">=</span> System.nanoTime();</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    <span class="keyword">if</span> (parent != <span class="literal">null</span>) &#123;</span><br><span class="line">                        c = parent.loadClass(name, <span class="literal">false</span>);</span><br><span class="line">                    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                        c = findBootstrapClassOrNull(name);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125; <span class="keyword">catch</span> (ClassNotFoundException e) &#123;</span><br><span class="line">                    <span class="comment">// ClassNotFoundException thrown if class not found</span></span><br><span class="line">                    <span class="comment">// from the non-null parent class loader</span></span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (c == <span class="literal">null</span>) &#123;</span><br><span class="line">                    <span class="comment">// If still not found, then invoke findClass in order</span></span><br><span class="line">                    <span class="comment">// to find the class.</span></span><br><span class="line">                    <span class="type">long</span> <span class="variable">t1</span> <span class="operator">=</span> System.nanoTime();</span><br><span class="line">                    c = findClass(name);</span><br><span class="line"></span><br><span class="line">                    <span class="comment">// this is the defining class loader; record the stats</span></span><br><span class="line">                    sun.misc.PerfCounter.getParentDelegationTime().addTime(t1 - t0);</span><br><span class="line">                    sun.misc.PerfCounter.getFindClassTime().addElapsedTimeFrom(t1);</span><br><span class="line">                    sun.misc.PerfCounter.getFindClasses().increment();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (resolve) &#123;</span><br><span class="line">                resolveClass(c);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> c;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>转成流程图，即是：</p>
+<p><img src="/2020/06/30/1/5.png" alt="1"></p>
+<p>如山图所以，总是先回尝试让父类加载器先加载，其次判断启动类加载器是否已经加载了，最后才尝试从当前类加载器加载。转换为更清晰的模型如下：</p>
+<p><img src="/2020/06/30/1/6.png" alt="1"></p>
+<p>双亲委派模型具有以下特点：</p>
+<ul>
+<li>可见性原则：<ul>
+<li>应用类加载器是可以读取到由扩展类加载器和启动类加载器加载进来的Class的；</li>
+<li>扩展类加载器是可以读取到由启动类加载器加载进来的Class的；</li>
+</ul>
+</li>
+<li>唯一性：<ul>
+<li>类是唯一的，没有重复的类；</li>
+</ul>
+</li>
+</ul>
+<h4 id="2-3、类加载器和Class实例的题外话"><a href="#2-3、类加载器和Class实例的题外话" class="headerlink" title="2.3、类加载器和Class实例的题外话"></a>2.3、类加载器和Class实例的题外话</h4><p>启动类加载器，扩展类加载器，应用程序类加载器，他们分别管理者各自方法区里的一个区块。</p>
+<p>根据上一篇文章我们知道，方法区里面主要存储的是类的运行时数据结构，这个类的在方法区中的各种数据结构信息通过类的Class实例进行访问。</p>
+<p>如下图：</p>
+<p><img src="/2020/06/30/1/7.png" alt="1"></p>
+<p>方法区里面存储着加载进来的类信息，方法区同时雇佣了两类工种帮忙干活：</p>
+<ul>
+<li><strong>类加载器：</strong>负责管理各个存储区的类信息，如加载和卸载类信息；</li>
+<li><strong>Class实例：</strong>负责对接外部需求，如果外部有人想查看里面的类信息，则需要通过Class实例来获取；</li>
+</ul>
+<p>另外，方法区里面，启动类加载器类信息对扩展两类加载器类信息可见，而前面两者的类信息又对应用程序类加载器类信息可见。</p>
+<h4 id="2-4、双亲委派机制的优点"><a href="#2-4、双亲委派机制的优点" class="headerlink" title="2.4、双亲委派机制的优点"></a>2.4、双亲委派机制的优点</h4><ul>
+<li><p><strong>沙箱安全机制</strong>：自己写的java.lang.String.class类不会被加载，这样便可以防止 核心API库被随意篡改 </p>
+</li>
+<li><p><strong>避免类的重复加载</strong>：当父亲已经加载了该类时，就没有必要子ClassLoader再加 载一次，保证被加载类的唯一性</p>
+</li>
+</ul>
+<h3 id="3、其他非双亲委派模型的案例"><a href="#3、其他非双亲委派模型的案例" class="headerlink" title="3、其他非双亲委派模型的案例"></a>3、其他非双亲委派模型的案例</h3><h4 id="3-1、JDK-1-0遗留问题"><a href="#3-1、JDK-1-0遗留问题" class="headerlink" title="3.1、JDK 1.0遗留问题"></a>3.1、JDK 1.0遗留问题</h4><p>在JDK1.0已经存在了ClassLoader类，但是当时还没有双亲委派机制，用户为了自定义类加载器，需要重新<code>loadClass()</code>方法，而我们知道，在JDK1.2以后，loadClass里面就是双亲委派机制的实现代码，此时，要实现自定义类加载器，需要重新findClass()类即可。</p>
+<p>如果重新了loadClass()方法，也就意味着不再遵循双亲委派模型了。</p>
+<h4 id="3-2、线程上下文类加载器"><a href="#3-2、线程上下文类加载器" class="headerlink" title="3.2、线程上下文类加载器"></a>3.2、线程上下文类加载器</h4><p>为什么需要这个东西呢，我们还是从一个案例来说起。</p>
+<p><strong>Tomcat中的类加载器</strong></p>
+<p>我们知道Tomcat目录结构中有以下目录：</p>
+<ul>
+<li><strong>&#x2F;common&#x2F;：</strong> 该目录下的类库可被Tomcat和所有的WebApp共同使用；</li>
+<li><strong>&#x2F;server&#x2F;：</strong> 该目录下的类库可被Tomcat使用，但对所有的WebApp不可见；</li>
+<li><strong>&#x2F;shared&#x2F;：</strong> 该目录下的类库可被所有的WebApp共同使用，但对Tomcat自己不可见；</li>
+</ul>
+<p>另外Web应用程序还有自身的类库，放在<code>/WebApp/WEB-INF</code>目录中：这里面的类库仅仅可以被此Web应用程序使用，对Tomcat和其他Web应用程序都不可见。 为了实现以上各个目录的类库可见性效果，Tomat提供了如下的自定义类加载器：</p>
+<p><img src="/2020/06/30/1/8.png" alt="1"></p>
+<p>现在如下场景：</p>
+<p>我们发现Tomcat下面有若干个webapp，每个webapp都用到了spring，于是我们把spring的jar包放到了<code>shared</code>目录中。</p>
+<p>于是问题出现了：由于spring的jar包是由Shared类加载器加载的，假设我们要使用SpringContext的getBean方法，获取webapp中的Bean，如果是按照双亲委派模型，就会有问题了，因为webapp中的Java类是对SharedClassLoader不可见的：</p>
+<p><img src="/2020/06/30/1/9.png" alt="1"></p>
+<p><strong>Spring中的线程上下文类加载器</strong></p>
+<p>为了解决这个问题，Spring使用了线程上下文类加载器，即从ThreadLocal中获取到当前线程的上下文类加载器，来加载所有的类库和类。</p>
+<p>关于Spring初始化源码相关解读，参考这篇文章：<a target="_blank" rel="noopener" href="https://www.itzhai.com/spring/spring-ioc-theory-analyse.html">Spring IoC原理剖析</a>。</p>
+<p><strong>Spring中的bean类加载器</strong></p>
+<p>ApplicationContext中有一个<code>beanClassLoader</code>字段，这个是bean的类加载器，在prepareBeanFactory()方法中做了初始化：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">beanFactory.setBeanClassLoader(getClassLoader());</span><br></pre></td></tr></table></figure>
+
+<p>getClassLoader方法如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">    @Nullable</span><br><span class="line">    public ClassLoader getClassLoader() &#123;</span><br><span class="line">        return (this.classLoader != null ? this.classLoader : ClassUtils.getDefaultClassLoader());</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>ClassUtils.getDefaultClassLoader()方法：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">@Nullable</span><br><span class="line">    public static ClassLoader getDefaultClassLoader() &#123;</span><br><span class="line">        ClassLoader cl = null;</span><br><span class="line">        try &#123;</span><br><span class="line">            cl = Thread.currentThread().getContextClassLoader();</span><br><span class="line">        &#125;</span><br><span class="line">        catch (Throwable ex) &#123;</span><br><span class="line">            // Cannot access thread context ClassLoader - falling back...</span><br><span class="line">        &#125;</span><br><span class="line">        if (cl == null) &#123;</span><br><span class="line">            // No thread context class loader -&gt; use class loader of this class.</span><br><span class="line">            cl = ClassUtils.class.getClassLoader();</span><br><span class="line">            if (cl == null) &#123;</span><br><span class="line">                // getClassLoader() returning null indicates the bootstrap ClassLoader</span><br><span class="line">                try &#123;</span><br><span class="line">                    cl = ClassLoader.getSystemClassLoader();</span><br><span class="line">                &#125;</span><br><span class="line">                catch (Throwable ex) &#123;</span><br><span class="line">                    // Cannot access system ClassLoader - oh well, maybe the caller can live with null...</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return cl;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以发现，这里最终取了当前线程上下文中的ClassLoader。</p>
+<p><strong>加载Bean</strong></p>
+<p>我们来看看Spring加载Class的代码。这里我们直接找到实例化Singletons的方法跟进去找需要关注的代码：</p>
+<p>我们发现在加载Bean Class的时候调用了这个方法：</p>
+<p>AbstractBeanFactory：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ClassLoader beanClassLoader = getBeanClassLoader();</span><br></pre></td></tr></table></figure>
+
+<p>也就是用到了ApplicationContext中的<code>beanClassLoader</code>，线程上下文类加载器来加载Bean Class实例。</p>
+<p><strong>总结</strong></p>
+<p>Spring作为一个第三方类库，可能被任何的ClassLoader加载，所以最灵活的方式是直接使用上下文类加载器。</p>
+<h4 id="3-3、模块热部署"><a href="#3-3、模块热部署" class="headerlink" title="3.3、模块热部署"></a>3.3、模块热部署</h4><p>主要是类似OSGi这类的模块化热部署技术。在OSGi中不再是双亲委派模型中的树状结构，而是更复杂的网状结构。</p>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><p><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/8387989/where-are-static-methods-and-static-variables-stored-in-java">Where are static methods and static variables stored in Java?</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.geeksforgeeks.org/classloader-in-java/">ClassLoader in Java</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/yangcheng33/article/details/52631940">真正理解线程上下文类加载器（多案例分析）</a></p>
+<p>《深入理解Java虚拟机-JVM高级特性与最佳实践》</p>
+<p><a target="_blank" rel="noopener" href="https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-5.html">Chapter 5. Loading, Linking, and Initializing</a></p>
+
+			
+      
+    </div>
+    <div class="article-footer">
+	<blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="https://1024chengxuyuan.github.io/2020/06/30/1/" title="双亲委派机制与类加载器" target="_blank" rel="external">https://1024chengxuyuan.github.io/2020/06/30/1/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://1024chengxuyuan.github.io" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/avatar.jpg" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://1024chengxuyuan.github.io" target="_blank"><span class="text-dark">野生程序猿</span><small class="ml-1x">Java Developer</small></a></h3>
+        <div>一枚野生程序猿。</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+      <div id="lv-container" data-id="city" data-uid="MTAyMC81MDU0Ny8yNzAzMA==">
+        <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+      </div>    
+    
+  </section>
+
+
+   
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    <li class="prev">
+      <a href="/2020/07/03/sorting/" title="排序算法"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
+    </li>
+    
+    
+    <li class="next">
+      <a href="/2020/06/28/1/" title="如何实现延时任务"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+  </ul>
+  
+  
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-fancy btn-donate pop-onhover bg-gradient-warning" data-toggle="modal" data-target="#donateModal"><span>赏</span></button>
+  <!-- <div class="wave-icon wave-icon-danger btn-donate" data-toggle="modal" data-target="#donateModal">
+    <div class="wave-circle"><span class="icon"><i class="icon icon-bill"></i></span></div>
+  </div> -->
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter" data-mobile-sites="weibo,qq,qzone"></div>
+    
+  </div>
+  </div>
+</nav>
+  
+<!-- Modal -->
+<div class="modal modal-center modal-small modal-xs-full fade" id="donateModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content donate">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <div class="modal-body">
+        <div class="donate-box">
+          <div class="donate-head">
+            <p>感谢您的支持，我会继续努力的!</p>
+          </div>
+          <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade active in" id="alipay">
+              <div class="donate-payimg">
+                <img src="/images/donate/alipayimg.png" alt="扫码支持" title="扫一扫" />
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开支付宝扫一扫，即可进行扫码打赏哦</p>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="wechatpay">
+              <div class="donate-payimg">
+                <img src="/images/donate/wechatpayimg.png" alt="扫码支持" title="扫一扫" />
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开微信扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+          <div class="donate-footer">
+            <ul class="nav nav-tabs nav-justified" role="tablist">
+              <li role="presentation" class="active">
+                <a href="#alipay" id="alipay-tab" role="tab" data-toggle="tab" aria-controls="alipay" aria-expanded="true"><i class="icon icon-alipay"></i> 支付宝</a>
+              </li>
+              <li role="presentation" class="">
+                <a href="#wechatpay" role="tab" id="wechatpay-tab" data-toggle="tab" aria-controls="wechatpay" aria-expanded="false"><i class="icon icon-wepay"></i> 微信支付</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/1024chengxuyuan" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/cofess" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/iwebued" target="_blank" title="Twitter" data-toggle=tooltip data-placement=top><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="https://www.behance.net/cofess" target="_blank" title="Behance" data-toggle=tooltip data-placement=top><i class="icon icon-behance"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        &copy; 2023 野生程序猿
+        
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+	<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span>本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+
+
+
+
+   
+
+
+
+
+   
+    
+<script defer type="text/javascript">
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+
+    if (typeof LivereTower === 'function') { return; }
+
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+</script>
+
+
+
+
+
+
+
+
+</body>
+</html>

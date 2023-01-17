@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>AQS的实现原理以及源码详解 | Hexo</title>
+  <meta name="description" content="AQS简介队列同步器AbstractQueuedSynchronizer（以下简称同步器），位于java.util.concurrent.locks包下。是用来构建锁或者其他同步组件的基础框架，它使用了一个int成员变量表示同步状态，通过内置的FIFO队列来完成资源获取线程的排队工作。 AQS的核心思想如果被请求的共享资源空闲，则将当前请求资源的线程设置为有效的工作线程，并将共享资源设置为锁定状态">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AQS的实现原理以及源码详解">
+<meta property="og:url" content="https://1024chengxuyuan.github.io/2020/06/23/AQSImplementationPrincipleAndSourceDetails/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="AQS简介队列同步器AbstractQueuedSynchronizer（以下简称同步器），位于java.util.concurrent.locks包下。是用来构建锁或者其他同步组件的基础框架，它使用了一个int成员变量表示同步状态，通过内置的FIFO队列来完成资源获取线程的排队工作。 AQS的核心思想如果被请求的共享资源空闲，则将当前请求资源的线程设置为有效的工作线程，并将共享资源设置为锁定状态">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/06/23/AQSImplementationPrincipleAndSourceDetails/1.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/06/23/AQSImplementationPrincipleAndSourceDetails/2.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/06/23/AQSImplementationPrincipleAndSourceDetails/3.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/06/23/AQSImplementationPrincipleAndSourceDetails/5.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/06/23/AQSImplementationPrincipleAndSourceDetails/6.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/06/23/AQSImplementationPrincipleAndSourceDetails/7.png">
+<meta property="article:published_time" content="2020-06-23T09:55:48.000Z">
+<meta property="article:modified_time" content="2022-01-07T07:25:30.000Z">
+<meta property="article:author" content="野生程序猿">
+<meta property="article:tag" content="JMM內存模型">
+<meta property="article:tag" content="Java并发编程">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://1024chengxuyuan.github.io/2020/06/23/AQSImplementationPrincipleAndSourceDetails/1.png">
+  <!-- Canonical links -->
+  <link rel="canonical" href="https://1024chengxuyuan.github.io/2020/06/23/AQSImplementationPrincipleAndSourceDetails/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+  
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body class="main-center" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://1024chengxuyuan.github.io" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">野生程序猿</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md">Java Developer</h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> Shanghai, China</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav ">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">分类</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags">
+            
+            <i class="icon icon-tags"></i>
+            
+            <span class="menu-title">标签</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-repository">
+          <a href="/repository">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">项目</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-books">
+          <a href="/books">
+            
+            <i class="icon icon-book-fill"></i>
+            
+            <span class="menu-title">书单</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links">
+            
+            <i class="icon icon-friendship"></i>
+            
+            <span class="menu-title">友链</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">关于</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/1024chengxuyuan" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/cofess" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/iwebued" target="_blank" title="Twitter" data-toggle=tooltip data-placement=top><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="https://www.behance.net/cofess" target="_blank" title="Behance" data-toggle=tooltip data-placement=top><i class="icon icon-behance"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">公告</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <p>欢迎交流与分享经验!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%85%A7%E5%AD%98%E6%A8%A1%E5%9E%8B/">Java內存模型</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">Java并发编程</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Jvm/">Jvm</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/MicroService/">MicroService</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Netty/">Netty</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/RabbitMQ/">RabbitMQ</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot/">SpringBoot</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringCloudAlibaba/">SpringCloudAlibaba</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/elasticsearch/">elasticsearch</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/redis/">redis</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/">消息队列</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E7%A8%8B%E6%8A%80%E5%B7%A7/">编程技巧</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/">项目管理工具</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget-body">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Eureka/" rel="tag">Eureka</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Feign/" rel="tag">Feign</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gateway/" rel="tag">Gateway</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JMM%E5%85%A7%E5%AD%98%E6%A8%A1%E5%9E%8B/" rel="tag">JMM內存模型</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E5%9F%BA%E7%A1%80/" rel="tag">Java基础</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/" rel="tag">Java并发编程</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" rel="tag">Java性能优化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E6%A1%86%E6%9E%B6/" rel="tag">Java框架</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E8%99%9A%E6%8B%9F%E6%9C%BA/" rel="tag">Java虚拟机</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jvm%E6%A8%A1%E5%9E%8B/" rel="tag">Jvm模型</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kafka/" rel="tag">Kafka</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MicroService/" rel="tag">MicroService</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nacos/" rel="tag">Nacos</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/" rel="tag">Netty</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RabbitMQ/" rel="tag">RabbitMQ</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ribbon/" rel="tag">Ribbon</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RocketMQ/" rel="tag">RocketMQ</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Seata/" rel="tag">Seata</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sentinel/" rel="tag">Sentinel</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elasticsearch/" rel="tag">elasticsearch</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/" rel="tag">排序算法</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" rel="tag">消息队列</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%93%E5%AD%98/" rel="tag">缓存</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/" rel="tag">项目管理工具</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget-body tagcloud">
+      <a href="/tags/Docker/" style="font-size: 13px;">Docker</a> <a href="/tags/Eureka/" style="font-size: 13px;">Eureka</a> <a href="/tags/Feign/" style="font-size: 13px;">Feign</a> <a href="/tags/Gateway/" style="font-size: 13px;">Gateway</a> <a href="/tags/JMM%E5%85%A7%E5%AD%98%E6%A8%A1%E5%9E%8B/" style="font-size: 13.86px;">JMM內存模型</a> <a href="/tags/Java%E5%9F%BA%E7%A1%80/" style="font-size: 13.29px;">Java基础</a> <a href="/tags/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/" style="font-size: 13.71px;">Java并发编程</a> <a href="/tags/Java%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" style="font-size: 13px;">Java性能优化</a> <a href="/tags/Java%E6%A1%86%E6%9E%B6/" style="font-size: 13px;">Java框架</a> <a href="/tags/Java%E8%99%9A%E6%8B%9F%E6%9C%BA/" style="font-size: 13.14px;">Java虚拟机</a> <a href="/tags/Jvm%E6%A8%A1%E5%9E%8B/" style="font-size: 13.14px;">Jvm模型</a> <a href="/tags/Kafka/" style="font-size: 13.57px;">Kafka</a> <a href="/tags/MicroService/" style="font-size: 13px;">MicroService</a> <a href="/tags/Nacos/" style="font-size: 13.14px;">Nacos</a> <a href="/tags/Netty/" style="font-size: 13.43px;">Netty</a> <a href="/tags/RabbitMQ/" style="font-size: 14px;">RabbitMQ</a> <a href="/tags/Redis/" style="font-size: 13px;">Redis</a> <a href="/tags/Ribbon/" style="font-size: 13px;">Ribbon</a> <a href="/tags/RocketMQ/" style="font-size: 13.57px;">RocketMQ</a> <a href="/tags/Seata/" style="font-size: 13px;">Seata</a> <a href="/tags/Sentinel/" style="font-size: 13.14px;">Sentinel</a> <a href="/tags/SpringBoot/" style="font-size: 13px;">SpringBoot</a> <a href="/tags/elasticsearch/" style="font-size: 13.43px;">elasticsearch</a> <a href="/tags/redis/" style="font-size: 13.14px;">redis</a> <a href="/tags/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/" style="font-size: 13px;">排序算法</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 13.43px;">数据结构</a> <a href="/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" style="font-size: 13.57px;">消息队列</a> <a href="/tags/%E7%BC%93%E5%AD%98/" style="font-size: 13px;">缓存</a> <a href="/tags/%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/" style="font-size: 13px;">项目管理工具</a>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">一月 2023</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">一月 2022</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">六月 2020</a><span class="archive-list-count">15</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Netty/">Netty</a>
+              </p>
+              <p class="item-title">
+                <a href="/2023/01/17/NettySourceCode/" class="title">Netty04-优化与源码</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2023-01-17T02:59:34.000Z" itemprop="datePublished">2023-01-17</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Netty/">Netty</a>
+              </p>
+              <p class="item-title">
+                <a href="/2023/01/17/NettyAdvanced/" class="title">Netty03-进阶</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2023-01-17T02:59:17.000Z" itemprop="datePublished">2023-01-17</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Netty/">Netty</a>
+              </p>
+              <p class="item-title">
+                <a href="/2023/01/17/NettyEntry/" class="title">Netty02-入门</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2023-01-17T02:57:41.000Z" itemprop="datePublished">2023-01-17</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Netty/">Netty</a>
+              </p>
+              <p class="item-title">
+                <a href="/2023/01/17/Netty01-nio/" class="title">Netty01-nio</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2023-01-17T02:53:36.000Z" itemprop="datePublished">2023-01-17</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/SpringCloudAlibaba/">SpringCloudAlibaba</a>
+              </p>
+              <p class="item-title">
+                <a href="/2023/01/12/SentinelSourceCode/" class="title">Sentinal源码分析</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2023-01-12T13:35:16.000Z" itemprop="datePublished">2023-01-12</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-AQS的实现原理以及源码详解" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      AQS的实现原理以及源码详解
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2020/06/23/AQSImplementationPrincipleAndSourceDetails/" class="article-date">
+	  <time datetime="2020-06-23T09:55:48.000Z" itemprop="datePublished">2020-06-23</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">Java并发编程</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/JMM%E5%85%A7%E5%AD%98%E6%A8%A1%E5%9E%8B/" rel="tag">JMM內存模型</a>, <a class="article-tag-link-link" href="/tags/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/" rel="tag">Java并发编程</a>
+  </span>
+
+
+        
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2020/06/23/AQSImplementationPrincipleAndSourceDetails/#comments" class="article-comment-link">评论</a></span>
+        
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <h1 id="AQS简介"><a href="#AQS简介" class="headerlink" title="AQS简介"></a>AQS简介</h1><p>队列同步器AbstractQueuedSynchronizer（以下简称同步器），位于java.util.concurrent.locks包下。是用来构建锁或者其他同步组件的基础框架，它使用了一个int成员变量表示同步状态，通过内置的FIFO队列来完成资源获取线程的排队工作。</p>
+<h1 id="AQS的核心思想"><a href="#AQS的核心思想" class="headerlink" title="AQS的核心思想"></a>AQS的核心思想</h1><p>如果被请求的共享资源空闲，则将当前请求资源的线程设置为有效的工作线程，并将共享资源设置为锁定状态，如果被请求的共享资源被占用，那么就需要一套线程阻塞等待以及被唤醒时锁分配的机制，这个机制AQS是用CLH队列锁实现的，即将暂时获取不到锁的线程加入到队列中。<br>CLH（Craig，Landin，and Hagersten）队列是一个虚拟的双向队列，虚拟的双向队列即不存在队列实例，仅存在节点之间的关联关系。<br><strong>AQS是将每一条请求共享资源的线程封装成一个CLH锁队列的一个结点（Node），来实现锁的分配。</strong></p>
+<p>用大白话来说，AQS就是基于CLH队列，用volatile修饰共享变量state，线程通过CAS去改变状态符，成功则获取锁成功，失败则进入等待队列，等待被唤醒。</p>
+<p><strong>注意：AQS是自旋锁：</strong>在等待唤醒的时候，经常会使用自旋（while(!cas())）的方式，不停地尝试获取锁，直到被其他线程获取成功</p>
+<p><strong>实现了AQS的锁有：自旋锁、互斥锁、读锁写锁、条件产量、信号量、栅栏都是AQS的衍生物</strong></p>
+<h1 id="AQS的实现原理"><a href="#AQS的实现原理" class="headerlink" title="AQS的实现原理"></a>AQS的实现原理</h1><p><img src="/2020/06/23/AQSImplementationPrincipleAndSourceDetails/1.png" alt="同步队列的基本结构"></p>
+<center>同步队列的基本结构</center>
+
+<p>如图示，AQS维护了一个volatile int state和一个FIFO线程等待队列，多线程争用资源被阻塞的时候就会进入这个队列。state就是共享资源，其访问方式有如下三种：<br>getState();setState();compareAndSetState();</p>
+<p>AQS 定义了两种资源共享方式：<br>1.<strong>Exclusive</strong>：独占，只有一个线程能执行，如ReentrantLock<br>2.<strong>Share</strong>：共享，多个线程可以同时执行，如Semaphore、CountDownLatch、ReadWriteLock，CyclicBarrier</p>
+<p>下面我们就从ReentrantLock的源码来分析独占式同步状态的获取与释放方程</p>
+<h2 id="独占式获取同步状态"><a href="#独占式获取同步状态" class="headerlink" title="独占式获取同步状态"></a>独占式获取同步状态</h2><p>调用lock()方法是获取独占锁，获取锁失败后调用AQS提供的<code>acquire（int arg）</code>模板方法将当前线程加入同步队列，成功则线程执行</p>
+<p><img src="/2020/06/23/AQSImplementationPrincipleAndSourceDetails/2.png" alt="image-20200624140806948"></p>
+<p><strong>lock方法使用CAS来尝试将同步状态改为1，如果成功则将同步状态持有线程置为当前线程。否则将调用AQS提供的 acquire()方法。</strong></p>
+<p>下面来补充一下同步队列的节点状态：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** waitStatus value to indicate thread has cancelled */</span></span><br><span class="line"><span class="comment">//waitStatus值表示线程已被取消</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">CANCELLED</span> <span class="operator">=</span>  <span class="number">1</span>;</span><br><span class="line"><span class="comment">/** waitStatus value to indicate successor&#x27;s thread needs unparking */</span></span><br><span class="line"><span class="comment">//waitStatus值，表示后续线程需要解除阻塞状态</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">SIGNAL</span>    <span class="operator">=</span> -<span class="number">1</span>;</span><br><span class="line"><span class="comment">/** waitStatus value to indicate thread is waiting on condition */</span></span><br><span class="line"><span class="comment">//waitStatus值表示线程正在等待状态</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">CONDITION</span> <span class="operator">=</span> -<span class="number">2</span>;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * waitStatus value to indicate the next acquireShared should</span></span><br><span class="line"><span class="comment"> * unconditionally propagate</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="comment">//表示下一个被默认的应该无条件传播的等待状态值</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">PROPAGATE</span> <span class="operator">=</span> -<span class="number">3</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Status field, taking on only the values:</span></span><br><span class="line"><span class="comment"> *   SIGNAL:     The successor of this node is (or will soon be)</span></span><br><span class="line"><span class="comment"> *               blocked (via park), so the current node must</span></span><br><span class="line"><span class="comment"> *               unpark its successor when it releases or</span></span><br><span class="line"><span class="comment"> *               cancels. To avoid races, acquire methods must</span></span><br><span class="line"><span class="comment"> *               first indicate they need a signal,</span></span><br><span class="line"><span class="comment"> *               then retry the atomic acquire, and then,</span></span><br><span class="line"><span class="comment"> *               on failure, block.</span></span><br><span class="line"><span class="comment"> *   CANCELLED:  This node is cancelled due to timeout or interrupt.</span></span><br><span class="line"><span class="comment"> *               Nodes never leave this state. In particular,</span></span><br><span class="line"><span class="comment"> *               a thread with cancelled node never again blocks.</span></span><br><span class="line"><span class="comment"> *   CONDITION:  This node is currently on a condition queue.</span></span><br><span class="line"><span class="comment"> *               It will not be used as a sync queue node</span></span><br><span class="line"><span class="comment"> *               until transferred, at which time the status</span></span><br><span class="line"><span class="comment"> *               will be set to 0. (Use of this value here has</span></span><br><span class="line"><span class="comment"> *               nothing to do with the other uses of the</span></span><br><span class="line"><span class="comment"> *               field, but simplifies mechanics.)</span></span><br><span class="line"><span class="comment"> *   PROPAGATE:  A releaseShared should be propagated to other</span></span><br><span class="line"><span class="comment"> *               nodes. This is set (for head node only) in</span></span><br><span class="line"><span class="comment"> *               doReleaseShared to ensure propagation</span></span><br><span class="line"><span class="comment"> *               continues, even if other operations have</span></span><br><span class="line"><span class="comment"> *               since intervened.</span></span><br><span class="line"><span class="comment"> *   0:          None of the above</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * The values are arranged numerically to simplify use.</span></span><br><span class="line"><span class="comment"> * Non-negative values mean that a node doesn&#x27;t need to</span></span><br><span class="line"><span class="comment"> * signal. So, most code doesn&#x27;t need to check for particular</span></span><br><span class="line"><span class="comment"> * values, just for sign.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * The field is initialized to 0 for normal sync nodes, and</span></span><br><span class="line"><span class="comment"> * CONDITION for condition nodes.  It is modified using CAS</span></span><br><span class="line"><span class="comment"> * (or when possible, unconditional volatile writes).</span></span><br><span class="line"><span class="comment"> */</span></span><br></pre></td></tr></table></figure>
+
+<p>翻译下来就是:</p>
+<ul>
+<li><strong>0:   &#x2F;&#x2F; 初始状态，使用CAS修改的(或在可能的情况下，无条件volatile写操作)。</strong></li>
+<li><strong>1:    &#x2F;&#x2F; 当前节点从同步队列中取消</strong></li>
+<li><strong>-1:  &#x2F;&#x2F; 后继节点的线程处于等待状态，如果当前节点释放同步状态会通知后继节点，使得后继节点的线程继续运行。</strong></li>
+<li><strong>-2:  &#x2F;&#x2F; 节点在等待队列中，节点线程等待在Condition上，当其他线程对Condition调用了 signal()方法后，该节点将会从等待队列中转移到同步队列中，加入到对同步状态的获取中。</strong></li>
+<li><strong>-3:   &#x2F;&#x2F; 表示下一次共享式同步状态获取将会无条件地被传播下去。</strong></li>
+</ul>
+<p><img src="/2020/06/23/AQSImplementationPrincipleAndSourceDetails/3.png" alt="3"></p>
+<p><strong><code>tryAcquire(arg)</code>：再次尝试获取同步状态，成功直接方法退出，失败调用addWaiter();<br><code>addWaiter(Node.EXCLUSIVE), arg)</code>：将当前线程以指定模式(独占式、共享式)封装为Node节点后置入同步队列</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> Node <span class="title function_">addWaiter</span><span class="params">(Node mode)</span> &#123;</span><br><span class="line">    <span class="comment">//将线程以指定模式封装为Node节点</span></span><br><span class="line">    <span class="type">Node</span> <span class="variable">node</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Node</span>(Thread.currentThread(), mode);</span><br><span class="line">    <span class="comment">// Try the fast path of enq; backup to full enq on failure</span></span><br><span class="line">    <span class="comment">//获取当前队列的尾节点</span></span><br><span class="line">    <span class="type">Node</span> <span class="variable">pred</span> <span class="operator">=</span> tail;</span><br><span class="line">    <span class="comment">//若尾节点不为空</span></span><br><span class="line">    <span class="keyword">if</span> (pred != <span class="literal">null</span>) &#123;</span><br><span class="line">        node.prev = pred;</span><br><span class="line">        <span class="comment">//使用CAS将当前节点插入到同步队列尾部中</span></span><br><span class="line">        <span class="keyword">if</span> (compareAndSetTail(pred, node)) &#123;</span><br><span class="line">            pred.next = node;</span><br><span class="line">            <span class="comment">//CAS尾插成功，返回当前Node节点</span></span><br><span class="line">            <span class="keyword">return</span> node;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 尾节点为空 || CAS尾插失败</span></span><br><span class="line">    enq(node);</span><br><span class="line">    <span class="keyword">return</span> node;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>序的逻辑主要分为两个部分：</p>
+<ol>
+<li>当前同步队列的尾节点为null，调用方法enq()插入；</li>
+<li>当前队列的尾节点不为null，则采用尾插入（compareAndSetTail()方法）的方式入队。另外还会有另外一个问题： 如果 if (compareAndSetTail(pred, node))为false怎么办？会继续执行到enq()方法，同时很明显compareAndSetTail() 是一个CAS操作，通常来说如果CAS操作失败会继续自旋（死循环）进行重试。</li>
+</ol>
+<p>因此，经过我们这样的分析，<code>enq()</code>方法可能承担两个任务：</p>
+<ol>
+<li>处理当前同步队列尾节点为null时进行入队操作；</li>
+<li>如果CAS尾插入节点失败后负责自旋进行尝试</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> Node <span class="title function_">enq</span><span class="params">(<span class="keyword">final</span> Node node)</span> &#123;</span><br><span class="line">    	<span class="comment">// 直到将当前节点插入同步队列成功为止</span></span><br><span class="line">        <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">            <span class="type">Node</span> <span class="variable">t</span> <span class="operator">=</span> tail;</span><br><span class="line">            <span class="comment">// 初始化同步队列</span></span><br><span class="line">            <span class="keyword">if</span> (t == <span class="literal">null</span>) &#123; <span class="comment">// Must initialize</span></span><br><span class="line">                <span class="keyword">if</span> (compareAndSetHead(<span class="keyword">new</span> <span class="title class_">Node</span>()))</span><br><span class="line">                    tail = head;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            	<span class="comment">// 不断CAS将当前节点尾插入同步队列中</span></span><br><span class="line">                node.prev = t;</span><br><span class="line">                <span class="keyword">if</span> (compareAndSetTail(t, node)) &#123;</span><br><span class="line">                    t.next = node;</span><br><span class="line">                    <span class="keyword">return</span> t;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">       &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在上面的分析中我们可以看出在第1步中会先创建头结点，说明同步队列是带头结点的链式存储结构。带头结点与不带头结点相比，会在入队和出队的操作中获得更大的便捷性，因此同步队列选择了带头结点的链式存储结构。那么带头节点的队列初始化时机是什么？自然而然是在tail&#x3D;&#x3D;null时，即当前线程是第一次插入同步队列。 compareAndSetTail(t, node)方法会利用CAS操作设置尾节点，如果CAS操作失败会在for (;;)死循环中不断尝试，直至成功return返回为止。</p>
+<p>因此，对enq()方法可以做这样的总结：</p>
+<ol>
+<li>在当前线程是第一个加入同步队列时，调用compareAndSetHead(new Node())方法，完成链式队列头结点的初始化；</li>
+<li>自旋不断尝试CAS尾插入节点直至成功为止。</li>
+</ol>
+<p><strong>现在我们已经很清楚获取独占式锁失败的线程包装成Node然后插入同步队列的过程了</strong>。那么紧接着会有下一个问题：在同步队列中的节点（线程）会做什么事情来保证自己能够有机会获得独占式锁？</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">final boolean acquireQueued(final Node node, int arg) &#123;</span><br><span class="line">        boolean failed = true;</span><br><span class="line">        try &#123;</span><br><span class="line">            boolean interrupted = false;</span><br><span class="line">            // 自旋</span><br><span class="line">            for (;;) &#123;</span><br><span class="line">            	// 获取当前节点的前驱节点</span><br><span class="line">                final Node p = node.predecessor();</span><br><span class="line">                // 获取同步状态成功条件</span><br><span class="line">                // 前驱节点为头结点并且获取同步状态成功</span><br><span class="line">                if (p == head &amp;&amp; tryAcquire(arg)) &#123;</span><br><span class="line">                	// 将当前节点设置为头结点</span><br><span class="line">                    setHead(node);</span><br><span class="line">                    // 删除原来的头结点</span><br><span class="line">                    p.next = null; // help GC</span><br><span class="line">                    failed = false;</span><br><span class="line">                    return interrupted;</span><br><span class="line">                &#125;</span><br><span class="line">                if (shouldParkAfterFailedAcquire(p, node) &amp;&amp;</span><br><span class="line">                    parkAndCheckInterrupt())</span><br><span class="line">                    interrupted = true;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; finally &#123;</span><br><span class="line">        	// 获取失败将当前节点取消</span><br><span class="line">            if (failed)</span><br><span class="line">                cancelAcquire(node);</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>整体来看这是一个这又是一个自旋的过程（for(;;)），代码首先获取当前节点的先驱节点，如果先驱节点是头结点的并且成功获得同步状态的时候（if (p &#x3D;&#x3D; head &amp;&amp; tryAcquire(arg))），表示当前节点所指向的线程能够获取锁，方法执行结束。反之，获取锁失败进入等待状态，先不断自旋将前驱节点状态置为SIGINAL，<br>而后调用LockSupport.park()方法将当前线程阻塞。整体示意图为下图：<br><img src="/2020/06/23/AQSImplementationPrincipleAndSourceDetails/5.png" alt="5"></p>
+<p><strong>获取锁成功并且节点出队的逻辑</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 当前节点前驱为头结点并且再次获取同步状态成功</span></span><br><span class="line"><span class="keyword">if</span> (p == head &amp;&amp; tryAcquire(arg)) &#123;</span><br><span class="line">	<span class="comment">//队列头结点引用指向当前节点 </span></span><br><span class="line">	setHead(node); </span><br><span class="line">	<span class="comment">//释放前驱节点 </span></span><br><span class="line">	p.next = <span class="literal">null</span>; <span class="comment">// help GC</span></span><br><span class="line">	failed = <span class="literal">false</span>;</span><br><span class="line">	<span class="keyword">return</span> interrupted;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">setHead</span><span class="params">(Node node)</span> &#123;</span><br><span class="line">	head = node;</span><br><span class="line">	node.thread = <span class="literal">null</span>;   <span class="comment">//便于垃圾回收</span></span><br><span class="line">	node.prev = <span class="literal">null</span>;     <span class="comment">//便于垃圾回收</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>将当前节点通过<code>setHead()</code>方法设置为队列的头结点，然后将之前的头结点的next域设置为null并且pre域也为null，即与队列断开，无任何引用方便GC时能够将内存进行回收。</p>
+<p><img src="/2020/06/23/AQSImplementationPrincipleAndSourceDetails/6.png" alt="5"></p>
+<p>那么当节点在同步队列中获取锁失败的时候会调用shouldParkAfterFailedAcquire()方法。此方法主要逻辑<br>是使用CAS将前驱节点状态由INITIAL置为SIGNAL，表示需要将当前节点阻塞。如果CAS失败，说明 shouldParkAfterFailedAcquire()方法返回false，然后会在acquireQueued()方法中的for (;;)死循环中不断自旋直到前驱节点状态置为SIGANL为止，返回true时才会执行方法 parkAndCheckInterrupt()方法。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">private static boolean shouldParkAfterFailedAcquire(Node pred, Node node) &#123;</span><br><span class="line">        // 获取前驱节点的节点状态</span><br><span class="line">        int ws = pred.waitStatus;</span><br><span class="line">        if (ws == Node.SIGNAL)</span><br><span class="line">            /*</span><br><span class="line">             * This node has already set status asking a release</span><br><span class="line">             * to signal it, so it can safely park.</span><br><span class="line">             */</span><br><span class="line">            return true;</span><br><span class="line">            // 前驱节点已被取消</span><br><span class="line">        if (ws &gt; 0) &#123;</span><br><span class="line">            /*</span><br><span class="line">             * Predecessor was cancelled. Skip over predecessors and</span><br><span class="line">             * indicate retry.</span><br><span class="line">             */</span><br><span class="line">            // 不断重试直到找到一个前驱节点状态不为取消状态</span><br><span class="line">            do &#123;</span><br><span class="line">                node.prev = pred = pred.prev;</span><br><span class="line">            &#125; while (pred.waitStatus &gt; 0);</span><br><span class="line">            pred.next = node;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            /*</span><br><span class="line">             * waitStatus must be 0 or PROPAGATE.  Indicate that we</span><br><span class="line">             * need a signal, but don&#x27;t park yet.  Caller will need to</span><br><span class="line">             * retry to make sure it cannot acquire before parking.</span><br><span class="line">             */</span><br><span class="line">            // 前驱节点状态不是取消状态时，将前驱节点状态置为-1,</span><br><span class="line">            // 表示后继节点应该处于等待状态</span><br><span class="line">            compareAndSetWaitStatus(pred, ws, Node.SIGNAL);</span><br><span class="line">        &#125;</span><br><span class="line">        return false;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>parkAndCheckInterrupt()</code>方法的源码为</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> <span class="type">boolean</span> <span class="title function_">parkAndCheckInterrupt</span><span class="params">()</span> &#123;        </span><br><span class="line">    LockSupport.park(<span class="built_in">this</span>);        </span><br><span class="line">    <span class="keyword">return</span> Thread.interrupted();    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>该方法的关键是会调用LookSupport.park()方法，该方法是用来阻塞当前线程的。</p>
+<p>整体上看，acquireQueued()在自旋过程中主要完成了两件事情：</p>
+<p>如果当前节点的前驱节点是头节点，并且能够获得同步状态的话，当前线程能够获得锁该方法执行结束退出。<br>获取锁失败的话，先将节点状态设置成SIGNAL，然后调用LookSupport.park方法使得当前线程阻塞。</p>
+<p><img src="/2020/06/23/AQSImplementationPrincipleAndSourceDetails/7.png" alt="7"></p>
+<h2 id="独占式释放同步状态"><a href="#独占式释放同步状态" class="headerlink" title="独占式释放同步状态"></a>独占式释放同步状态</h2><p>独占锁的释放调用unlock方法，而该方法实际调用了AQS的release方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">unlock</span><span class="params">()</span> &#123;    </span><br><span class="line">	sync.release(<span class="number">1</span>); </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="type">boolean</span> <span class="title function_">release</span><span class="params">(<span class="type">int</span> arg)</span> &#123;    </span><br><span class="line">	<span class="keyword">if</span> (tryRelease(arg)) &#123;        </span><br><span class="line">		<span class="type">Node</span> <span class="variable">h</span> <span class="operator">=</span> head;        </span><br><span class="line">		<span class="keyword">if</span> (h != <span class="literal">null</span> &amp;&amp; h.waitStatus != <span class="number">0</span>)            </span><br><span class="line">			unparkSuccessor(h);        </span><br><span class="line">			<span class="keyword">return</span> <span class="literal">true</span>;    </span><br><span class="line">		&#125;    </span><br><span class="line">		<span class="keyword">return</span> <span class="literal">false</span>; </span><br><span class="line">	&#125;</span><br><span class="line">&#125;	</span><br></pre></td></tr></table></figure>
+
+<p>这段代码逻辑就比较容易理解了，如果同步状态释放成功（tryRelease返回true）则会执行if块中的代码，当head指向的头结点不为null，并且该节点的状态值不为0的话才会执行<code>unparkSuccessor()</code>方法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">unparkSuccessor</span><span class="params">(Node node)</span> &#123;</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">    * If status is negative (i.e., possibly needing signal) try</span></span><br><span class="line"><span class="comment">    * to clear in anticipation of signalling.  It is OK if this</span></span><br><span class="line"><span class="comment">    * fails or if status is changed by waiting thread.</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">    <span class="type">int</span> <span class="variable">ws</span> <span class="operator">=</span> node.waitStatus;</span><br><span class="line">    <span class="keyword">if</span> (ws &lt; <span class="number">0</span>)</span><br><span class="line">        compareAndSetWaitStatus(node, ws, <span class="number">0</span>);</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * Thread to unpark is held in successor, which is normally</span></span><br><span class="line"><span class="comment">     * just the next node.  But if cancelled or apparently null,</span></span><br><span class="line"><span class="comment">     * traverse backwards from tail to find the actual</span></span><br><span class="line"><span class="comment">     * non-cancelled successor.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">     <span class="comment">// 头结点的后继节点 </span></span><br><span class="line">    <span class="type">Node</span> <span class="variable">s</span> <span class="operator">=</span> node.next;</span><br><span class="line">    <span class="keyword">if</span> (s == <span class="literal">null</span> || s.waitStatus &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        s = <span class="literal">null</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">Node</span> <span class="variable">t</span> <span class="operator">=</span> tail; t != <span class="literal">null</span> &amp;&amp; t != node; t = t.prev)</span><br><span class="line">            <span class="keyword">if</span> (t.waitStatus &lt;= <span class="number">0</span>)</span><br><span class="line">                s = t;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (s != <span class="literal">null</span>)</span><br><span class="line">    	 <span class="comment">// 后继节点不为null时唤醒 </span></span><br><span class="line">        LockSupport.unpark(s.thread);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>首先获取头节点的后继节点，当后继节点不为空的时候会调用<code>LookSupport.unpark()</code>方法，该方法会唤醒该节点的后继节点所包装的线程。因此，<strong>每一次锁释放后就会唤醒队列中该节点的后继节点所引用的线程，从而进一步可以佐证获得锁的过程是一个FIFO（先进先出）的过程</strong>。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><ul>
+<li><strong>lock的存储结构：一个int类型状态值（用于锁的状态变更），一个双向链表（用于存储等待中的线程）</strong></li>
+<li><strong>lock获取锁的过程：本质上是通过CAS来获取状态值修改，如果当场没获取到，会将该线程放在线程等待链表中。线程获取锁失败，将线程调用addWaiter()封装成Node进行入队操作。addWaiter()中enq()方法完成对同步队列的头节点初始化以及CAS尾插失败后的重试处理。入队之后排队获取锁的核心方法acquireQueued()，节点排队获取锁是一个自旋过程。当且仅当当前节点的前驱节点为头节点并且获取同步状态时，节点出队并且该节点引用的线程获取到锁。否则不满足条件时会不断自旋将前驱节点的状态置为SIGNAL后调用LockSupport.part()将当前线程阻塞。</strong></li>
+<li><strong>lock释放锁的过程：修改状态值，调整等待链表。释放锁时会唤醒后继结点（后继结点不为null）。</strong></li>
+<li><strong>可以看到在整个实现过程中，lock大量使用CAS+自旋。因此根据CAS特性，lock建议使用在低锁冲突的情况下。目前java1.6以后，官方对synchronized做了大量的锁优化（偏向锁、自旋、轻量级锁）。因此在非必要的情况下，建议使用synchronized做同步操作。</strong></li>
+</ul>
+
+			
+      
+    </div>
+    <div class="article-footer">
+	<blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="https://1024chengxuyuan.github.io/2020/06/23/AQSImplementationPrincipleAndSourceDetails/" title="AQS的实现原理以及源码详解" target="_blank" rel="external">https://1024chengxuyuan.github.io/2020/06/23/AQSImplementationPrincipleAndSourceDetails/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://1024chengxuyuan.github.io" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/avatar.jpg" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://1024chengxuyuan.github.io" target="_blank"><span class="text-dark">野生程序猿</span><small class="ml-1x">Java Developer</small></a></h3>
+        <div>一枚野生程序猿。</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+      <div id="lv-container" data-id="city" data-uid="MTAyMC81MDU0Ny8yNzAzMA==">
+        <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+      </div>    
+    
+  </section>
+
+
+   
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    <li class="prev">
+      <a href="/2020/06/24/SynchronizedPrinciple/" title="Synchronized的用法以及实现原理"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
+    </li>
+    
+    
+    <li class="next">
+      <a href="/2020/06/21/TimerAndTimerTask/" title="Timer和TimerTask"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+  </ul>
+  
+  
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-fancy btn-donate pop-onhover bg-gradient-warning" data-toggle="modal" data-target="#donateModal"><span>赏</span></button>
+  <!-- <div class="wave-icon wave-icon-danger btn-donate" data-toggle="modal" data-target="#donateModal">
+    <div class="wave-circle"><span class="icon"><i class="icon icon-bill"></i></span></div>
+  </div> -->
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter" data-mobile-sites="weibo,qq,qzone"></div>
+    
+  </div>
+  </div>
+</nav>
+  
+<!-- Modal -->
+<div class="modal modal-center modal-small modal-xs-full fade" id="donateModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content donate">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <div class="modal-body">
+        <div class="donate-box">
+          <div class="donate-head">
+            <p>感谢您的支持，我会继续努力的!</p>
+          </div>
+          <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade active in" id="alipay">
+              <div class="donate-payimg">
+                <img src="/images/donate/alipayimg.png" alt="扫码支持" title="扫一扫" />
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开支付宝扫一扫，即可进行扫码打赏哦</p>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="wechatpay">
+              <div class="donate-payimg">
+                <img src="/images/donate/wechatpayimg.png" alt="扫码支持" title="扫一扫" />
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开微信扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+          <div class="donate-footer">
+            <ul class="nav nav-tabs nav-justified" role="tablist">
+              <li role="presentation" class="active">
+                <a href="#alipay" id="alipay-tab" role="tab" data-toggle="tab" aria-controls="alipay" aria-expanded="true"><i class="icon icon-alipay"></i> 支付宝</a>
+              </li>
+              <li role="presentation" class="">
+                <a href="#wechatpay" role="tab" id="wechatpay-tab" data-toggle="tab" aria-controls="wechatpay" aria-expanded="false"><i class="icon icon-wepay"></i> 微信支付</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/1024chengxuyuan" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/cofess" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/iwebued" target="_blank" title="Twitter" data-toggle=tooltip data-placement=top><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="https://www.behance.net/cofess" target="_blank" title="Behance" data-toggle=tooltip data-placement=top><i class="icon icon-behance"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        &copy; 2023 野生程序猿
+        
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+	<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span>本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+
+
+
+
+   
+
+
+
+
+   
+    
+<script defer type="text/javascript">
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+
+    if (typeof LivereTower === 'function') { return; }
+
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+</script>
+
+
+
+
+
+
+
+
+</body>
+</html>
