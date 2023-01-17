@@ -25,48 +25,48 @@
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="分布式搜索引擎_数据存储0.学习目标1.初识elasticsearch1.1.了解ES1.1.1.elasticsearch的作用elasticsearch是一款非常强大的开源搜索引擎，具备非常多强大功能，可以帮助我们从海量数据中快速找到需要的内容 例如：  在GitHub搜索代码   在电商网站搜索商品   在百度搜索答案   在打车软件搜索附近的车    1.1.2.ELK技术栈elastic">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720193623245.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720193633483.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720193641907.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720193648044.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720194008781.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720194230265.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720194547780.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720195001221.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720195142535.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720195306484.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720195531539.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720200457207.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720201115192.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720202707797.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720203022172.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720203534945.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720203805350.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720203805350.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720211019329.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720212357390.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720212123420.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720212933362.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720213345003.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720213634918.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720214555863.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720220400297.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720220503411.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720220647541.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720222110126.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720222221516.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720223049408.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720230027240.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720230811674.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720231040875.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720232105943.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720232431383.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/01/image-20210720193623245.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/01/image-20210720193633483.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/01/image-20210720193641907.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/01/image-20210720193648044.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/01/image-20210720194008781.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/01/image-20210720194230265.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/01/image-20210720194547780.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/01/image-20210720195001221.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/01/image-20210720195142535.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/01/image-20210720195306484.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/01/image-20210720195531539.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/01/image-20210720200457207.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/01/image-20210720201115192.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/01/image-20210720202707797.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/01/image-20210720203022172.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/01/image-20210720203534945.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/01/image-20210720203805350.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/01/image-20210720203805350.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/01/image-20210720211019329.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/01/image-20210720212357390.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/01/image-20210720212123420.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/01/image-20210720212933362.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/01/image-20210720213345003.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/01/image-20210720213634918.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/01/image-20210720214555863.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/01/image-20210720220400297.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/01/image-20210720220503411.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/01/image-20210720220647541.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/01/image-20210720222110126.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/01/image-20210720222221516.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/01/image-20210720223049408.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/01/image-20210720230027240.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/01/image-20210720230811674.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/01/image-20210720231040875.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/01/image-20210720232105943.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/01/image-20210720232431383.png">
 <meta property="article:published_time" content="2023-01-08T07:16:12.000Z">
 <meta property="article:modified_time" content="2023-01-08T07:43:49.464Z">
 <meta property="article:author" content="野生程序猿">
 <meta property="article:tag" content="elasticsearch">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720193623245.png">
+<meta name="twitter:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/01/image-20210720193623245.png">
   <!-- Canonical links -->
   <link rel="canonical" href="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/01/index.html">
   
@@ -438,35 +438,35 @@
 <p>例如：</p>
 <ul>
 <li><p>在GitHub搜索代码</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720193623245.png" alt="image-20210720193623245"></p>
+<p><img src="/2023/01/08/elasticsearch/01/image-20210720193623245.png" alt="image-20210720193623245"></p>
 </li>
 <li><p>在电商网站搜索商品</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720193633483.png" alt="image-20210720193633483"></p>
+<p><img src="/2023/01/08/elasticsearch/01/image-20210720193633483.png" alt="image-20210720193633483"></p>
 </li>
 <li><p>在百度搜索答案</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720193641907.png" alt="image-20210720193641907"></p>
+<p><img src="/2023/01/08/elasticsearch/01/image-20210720193641907.png" alt="image-20210720193641907"></p>
 </li>
 <li><p>在打车软件搜索附近的车</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720193648044.png" alt="image-20210720193648044"></p>
+<p><img src="/2023/01/08/elasticsearch/01/image-20210720193648044.png" alt="image-20210720193648044"></p>
 </li>
 </ul>
 <h3 id="1-1-2-ELK技术栈"><a href="#1-1-2-ELK技术栈" class="headerlink" title="1.1.2.ELK技术栈"></a>1.1.2.ELK技术栈</h3><p>elasticsearch结合kibana、Logstash、Beats，也就是elastic stack（ELK）。被广泛应用在日志数据分析、实时监控等领域：</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720194008781.png" alt="image-20210720194008781"></p>
+<p><img src="/2023/01/08/elasticsearch/01/image-20210720194008781.png" alt="image-20210720194008781"></p>
 <p>而elasticsearch是elastic stack的核心，负责存储、搜索、分析数据。</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720194230265.png" alt="image-20210720194230265"></p>
+<p><img src="/2023/01/08/elasticsearch/01/image-20210720194230265.png" alt="image-20210720194230265"></p>
 <h3 id="1-1-3-elasticsearch和lucene"><a href="#1-1-3-elasticsearch和lucene" class="headerlink" title="1.1.3.elasticsearch和lucene"></a>1.1.3.elasticsearch和lucene</h3><p>elasticsearch底层是基于<strong>lucene</strong>来实现的。</p>
 <p><strong>Lucene</strong>是一个Java语言的搜索引擎类库，是Apache公司的顶级项目，由DougCutting于1999年研发。官网地址：<a target="_blank" rel="noopener" href="https://lucene.apache.org/">https://lucene.apache.org/</a> 。</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720194547780.png" alt="image-20210720194547780"></p>
+<p><img src="/2023/01/08/elasticsearch/01/image-20210720194547780.png" alt="image-20210720194547780"></p>
 <p><strong>elasticsearch</strong>的发展历史：</p>
 <ul>
 <li>2004年Shay Banon基于Lucene开发了Compass</li>
 <li>2010年Shay Banon 重写了Compass，取名为Elasticsearch。</li>
 </ul>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720195001221.png" alt="image-20210720195001221"></p>
+<p><img src="/2023/01/08/elasticsearch/01/image-20210720195001221.png" alt="image-20210720195001221"></p>
 <h3 id="1-1-4-为什么不是其他搜索技术？"><a href="#1-1-4-为什么不是其他搜索技术？" class="headerlink" title="1.1.4.为什么不是其他搜索技术？"></a>1.1.4.为什么不是其他搜索技术？</h3><p>目前比较知名的搜索引擎技术排名：</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720195142535.png" alt="image-20210720195142535"></p>
+<p><img src="/2023/01/08/elasticsearch/01/image-20210720195142535.png" alt="image-20210720195142535"></p>
 <p>虽然在早期，Apache Solr是最主要的搜索引擎技术，但随着发展elasticsearch已经渐渐超越了Solr，独占鳌头：</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720195306484.png" alt="image-20210720195306484"></p>
+<p><img src="/2023/01/08/elasticsearch/01/image-20210720195306484.png" alt="image-20210720195306484"></p>
 <h3 id="1-1-5-总结"><a href="#1-1-5-总结" class="headerlink" title="1.1.5.总结"></a>1.1.5.总结</h3><p>什么是elasticsearch？</p>
 <ul>
 <li>一个开源的分布式搜索引擎，可以用来实现搜索、日志统计、分析、系统监控等功能</li>
@@ -481,7 +481,7 @@
 </ul>
 <h2 id="1-2-倒排索引"><a href="#1-2-倒排索引" class="headerlink" title="1.2.倒排索引"></a>1.2.倒排索引</h2><p>倒排索引的概念是基于MySQL这样的正向索引而言的。</p>
 <h3 id="1-2-1-正向索引"><a href="#1-2-1-正向索引" class="headerlink" title="1.2.1.正向索引"></a>1.2.1.正向索引</h3><p>那么什么是正向索引呢？例如给下表（tb_goods）中的id创建索引：</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720195531539.png" alt="image-20210720195531539"></p>
+<p><img src="/2023/01/08/elasticsearch/01/image-20210720195531539.png" alt="image-20210720195531539"></p>
 <p>如果是根据id查询，那么直接走索引，查询速度非常快。</p>
 <p>但如果是基于title做模糊查询，只能是逐行扫描数据，流程如下：</p>
 <p>1）用户搜索数据，条件是title符合<code>&quot;%手机%&quot;</code></p>
@@ -501,14 +501,14 @@
 <li>因为词条唯一性，可以给词条创建索引，例如hash表结构索引</li>
 </ul>
 <p>如图：</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720200457207.png" alt="image-20210720200457207"></p>
+<p><img src="/2023/01/08/elasticsearch/01/image-20210720200457207.png" alt="image-20210720200457207"></p>
 <p>倒排索引的<strong>搜索流程</strong>如下（以搜索”华为手机”为例）：</p>
 <p>1）用户输入条件<code>&quot;华为手机&quot;</code>进行搜索。</p>
 <p>2）对用户输入内容<strong>分词</strong>，得到词条：<code>华为</code>、<code>手机</code>。</p>
 <p>3）拿着词条在倒排索引中查找，可以得到包含词条的文档id：1、2、3。</p>
 <p>4）拿着文档id到正向索引中查找具体文档。</p>
 <p>如图：</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720201115192.png" alt="image-20210720201115192"></p>
+<p><img src="/2023/01/08/elasticsearch/01/image-20210720201115192.png" alt="image-20210720201115192"></p>
 <p>虽然要先查询倒排索引，再查询倒排索引，但是无论是词条、还是文档id都建立了索引，查询速度非常快！无需全表扫描。</p>
 <h3 id="1-2-3-正向和倒排"><a href="#1-2-3-正向和倒排" class="headerlink" title="1.2.3.正向和倒排"></a>1.2.3.正向和倒排</h3><p>那么为什么一个叫做正向索引，一个叫做倒排索引呢？</p>
 <ul>
@@ -545,7 +545,7 @@
 </ul>
 <h2 id="1-3-es的一些概念"><a href="#1-3-es的一些概念" class="headerlink" title="1.3.es的一些概念"></a>1.3.es的一些概念</h2><p>elasticsearch中有很多独有的概念，与mysql中略有差别，但也有相似之处。</p>
 <h3 id="1-3-1-文档和字段"><a href="#1-3-1-文档和字段" class="headerlink" title="1.3.1.文档和字段"></a>1.3.1.文档和字段</h3><p>elasticsearch是面向<strong>文档（Document）</strong>存储的，可以是数据库中的一条商品数据，一个订单信息。文档数据会被序列化为json格式后存储在elasticsearch中：</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720202707797.png" alt="image-20210720202707797"></p>
+<p><img src="/2023/01/08/elasticsearch/01/image-20210720202707797.png" alt="image-20210720202707797"></p>
 <p>而Json文档中往往包含很多的<strong>字段（Field）</strong>，类似于数据库中的列。</p>
 <h3 id="1-3-2-索引和映射"><a href="#1-3-2-索引和映射" class="headerlink" title="1.3.2.索引和映射"></a>1.3.2.索引和映射</h3><p><strong>索引（Index）</strong>，就是相同类型的文档的集合。</p>
 <p>例如：</p>
@@ -554,7 +554,7 @@
 <li>所有商品的文档，可以组织在一起，称为商品的索引；</li>
 <li>所有订单的文档，可以组织在一起，称为订单的索引；</li>
 </ul>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720203022172.png" alt="image-20210720203022172"></p>
+<p><img src="/2023/01/08/elasticsearch/01/image-20210720203022172.png" alt="image-20210720203022172"></p>
 <p>因此，我们可以把索引当做是数据库中的表。</p>
 <p>数据库的表会有约束信息，用来定义表的结构、字段的名称、类型等信息。因此，索引库中就有<strong>映射（mapping）</strong>，是索引中文档的字段约束信息，类似表的结构约束。</p>
 <h3 id="1-3-3-mysql与elasticsearch"><a href="#1-3-3-mysql与elasticsearch" class="headerlink" title="1.3.3.mysql与elasticsearch"></a>1.3.3.mysql与elasticsearch</h3><p>我们统一的把mysql与elasticsearch的概念做一下对比：</p>
@@ -606,11 +606,11 @@
 <li>对查询性能要求较高的搜索需求，使用elasticsearch实现</li>
 <li>两者再基于某种方式，实现数据的同步，保证一致性</li>
 </ul>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720203534945.png" alt="image-20210720203534945"></p>
+<p><img src="/2023/01/08/elasticsearch/01/image-20210720203534945.png" alt="image-20210720203534945"></p>
 <h2 id="1-4-安装es、kibana"><a href="#1-4-安装es、kibana" class="headerlink" title="1.4.安装es、kibana"></a>1.4.安装es、kibana</h2><h3 id="1-4-1-安装"><a href="#1-4-1-安装" class="headerlink" title="1.4.1.安装"></a>1.4.1.安装</h3><p>参考课前资料：</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720203805350.png" alt="image-20210720203805350"> </p>
+<p><img src="/2023/01/08/elasticsearch/01/image-20210720203805350.png" alt="image-20210720203805350"> </p>
 <h3 id="1-4-2-分词器"><a href="#1-4-2-分词器" class="headerlink" title="1.4.2.分词器"></a>1.4.2.分词器</h3><p>参考课前资料：</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720203805350.png" alt="image-20210720203805350"> </p>
+<p><img src="/2023/01/08/elasticsearch/01/image-20210720203805350.png" alt="image-20210720203805350"> </p>
 <h3 id="1-4-3-总结"><a href="#1-4-3-总结" class="headerlink" title="1.4.3.总结"></a>1.4.3.总结</h3><p>分词器的作用是什么？</p>
 <ul>
 <li>创建倒排索引时对文档分词</li>
@@ -689,7 +689,7 @@
 
 
 <p><strong>示例</strong>：</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720211019329.png" alt="image-20210720211019329"></p>
+<p><img src="/2023/01/08/elasticsearch/01/image-20210720211019329.png" alt="image-20210720211019329"></p>
 <h3 id="2-2-3-修改索引库"><a href="#2-2-3-修改索引库" class="headerlink" title="2.2.3.修改索引库"></a>2.2.3.修改索引库</h3><p>倒排索引结构虽然不复杂，但是一旦数据结构改变（比如改变了分词器），就需要重新创建倒排索引，这简直是灾难。因此索引库<strong>一旦创建，无法修改mapping</strong>。</p>
 <p>虽然无法修改mapping中已有的字段，但是却允许添加新的字段到mapping中，因为不会对倒排索引产生影响。</p>
 <p><strong>语法说明</strong>：</p>
@@ -698,7 +698,7 @@
 
 
 <p><strong>示例</strong>：</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720212357390.png" alt="image-20210720212357390"></p>
+<p><img src="/2023/01/08/elasticsearch/01/image-20210720212357390.png" alt="image-20210720212357390"></p>
 <h3 id="2-2-4-删除索引库"><a href="#2-2-4-删除索引库" class="headerlink" title="2.2.4.删除索引库"></a>2.2.4.删除索引库</h3><p><strong>语法：</strong></p>
 <ul>
 <li><p>请求方式：DELETE</p>
@@ -712,7 +712,7 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DELETE /索引库名</span><br></pre></td></tr></table></figure>
 
 <p>在kibana中测试：</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720212123420.png" alt="image-20210720212123420"></p>
+<p><img src="/2023/01/08/elasticsearch/01/image-20210720212123420.png" alt="image-20210720212123420"></p>
 <h3 id="2-2-5-总结"><a href="#2-2-5-总结" class="headerlink" title="2.2.5.总结"></a>2.2.5.总结</h3><p>索引库操作有哪些？</p>
 <ul>
 <li>创建索引库：PUT &#x2F;索引库名</li>
@@ -727,7 +727,7 @@
 <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">POST /heima/_doc/<span class="number">1</span></span><br><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;info&quot;</span><span class="punctuation">:</span> <span class="string">&quot;黑马程序员Java讲师&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;email&quot;</span><span class="punctuation">:</span> <span class="string">&quot;zy@itcast.cn&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;firstName&quot;</span><span class="punctuation">:</span> <span class="string">&quot;云&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;lastName&quot;</span><span class="punctuation">:</span> <span class="string">&quot;赵&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
 
 <p><strong>响应：</strong></p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720212933362.png" alt="image-20210720212933362"></p>
+<p><img src="/2023/01/08/elasticsearch/01/image-20210720212933362.png" alt="image-20210720212933362"></p>
 <h2 id="3-2-查询文档"><a href="#3-2-查询文档" class="headerlink" title="3.2.查询文档"></a>3.2.查询文档</h2><p>根据rest风格，新增是post，查询应该是get，不过查询一般都需要条件，这里我们把文档id带上。</p>
 <p><strong>语法：</strong></p>
 <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GET /<span class="punctuation">&#123;</span>索引库名称<span class="punctuation">&#125;</span>/_doc/<span class="punctuation">&#123;</span>id<span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
@@ -736,7 +736,7 @@
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable constant_">GET</span> /heima/_doc/<span class="number">1</span></span><br></pre></td></tr></table></figure>
 
 <p><strong>查看结果：</strong></p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720213345003.png" alt="image-20210720213345003"></p>
+<p><img src="/2023/01/08/elasticsearch/01/image-20210720213345003.png" alt="image-20210720213345003"></p>
 <h2 id="3-3-删除文档"><a href="#3-3-删除文档" class="headerlink" title="3.3.删除文档"></a>3.3.删除文档</h2><p>删除使用DELETE请求，同样，需要根据id进行删除：</p>
 <p><strong>语法：</strong></p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable constant_">DELETE</span> /&#123;索引库名&#125;/_doc/id值</span><br></pre></td></tr></table></figure>
@@ -745,7 +745,7 @@
 <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 根据id删除数据</span><br><span class="line">DELETE /heima/_doc/<span class="number">1</span></span><br></pre></td></tr></table></figure>
 
 <p><strong>结果：</strong></p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720213634918.png" alt="image-20210720213634918"></p>
+<p><img src="/2023/01/08/elasticsearch/01/image-20210720213634918.png" alt="image-20210720213634918"></p>
 <h2 id="3-4-修改文档"><a href="#3-4-修改文档" class="headerlink" title="3.4.修改文档"></a>3.4.修改文档</h2><p>修改有两种方式：</p>
 <ul>
 <li>全量修改：直接覆盖原来的文档</li>
@@ -795,19 +795,19 @@
 <li>Java Low Level Rest Client</li>
 <li>Java High Level Rest Client</li>
 </ul>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720214555863.png" alt="image-20210720214555863"></p>
+<p><img src="/2023/01/08/elasticsearch/01/image-20210720214555863.png" alt="image-20210720214555863"></p>
 <p>我们学习的是Java HighLevel Rest Client客户端API</p>
 <h2 id="4-0-导入Demo工程"><a href="#4-0-导入Demo工程" class="headerlink" title="4.0.导入Demo工程"></a>4.0.导入Demo工程</h2><h3 id="4-0-1-导入数据"><a href="#4-0-1-导入数据" class="headerlink" title="4.0.1.导入数据"></a>4.0.1.导入数据</h3><p>首先导入课前资料提供的数据库数据：</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720220400297.png" alt="image-20210720220400297"> </p>
+<p><img src="/2023/01/08/elasticsearch/01/image-20210720220400297.png" alt="image-20210720220400297"> </p>
 <p>数据结构如下：</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> `tb_hotel` (</span><br><span class="line">  `id` <span class="type">bigint</span>(<span class="number">20</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span> COMMENT <span class="string">&#x27;酒店id&#x27;</span>,</span><br><span class="line">  `name` <span class="type">varchar</span>(<span class="number">255</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span> COMMENT <span class="string">&#x27;酒店名称；例：7天酒店&#x27;</span>,</span><br><span class="line">  `address` <span class="type">varchar</span>(<span class="number">255</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span> COMMENT <span class="string">&#x27;酒店地址；例：航头路&#x27;</span>,</span><br><span class="line">  `price` <span class="type">int</span>(<span class="number">10</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span> COMMENT <span class="string">&#x27;酒店价格；例：329&#x27;</span>,</span><br><span class="line">  `score` <span class="type">int</span>(<span class="number">2</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span> COMMENT <span class="string">&#x27;酒店评分；例：45，就是4.5分&#x27;</span>,</span><br><span class="line">  `brand` <span class="type">varchar</span>(<span class="number">32</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span> COMMENT <span class="string">&#x27;酒店品牌；例：如家&#x27;</span>,</span><br><span class="line">  `city` <span class="type">varchar</span>(<span class="number">32</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span> COMMENT <span class="string">&#x27;所在城市；例：上海&#x27;</span>,</span><br><span class="line">  `star_name` <span class="type">varchar</span>(<span class="number">16</span>) <span class="keyword">DEFAULT</span> <span class="keyword">NULL</span> COMMENT <span class="string">&#x27;酒店星级，从低到高分别是：1星到5星，1钻到5钻&#x27;</span>,</span><br><span class="line">  `business` <span class="type">varchar</span>(<span class="number">255</span>) <span class="keyword">DEFAULT</span> <span class="keyword">NULL</span> COMMENT <span class="string">&#x27;商圈；例：虹桥&#x27;</span>,</span><br><span class="line">  `latitude` <span class="type">varchar</span>(<span class="number">32</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span> COMMENT <span class="string">&#x27;纬度；例：31.2497&#x27;</span>,</span><br><span class="line">  `longitude` <span class="type">varchar</span>(<span class="number">32</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span> COMMENT <span class="string">&#x27;经度；例：120.3925&#x27;</span>,</span><br><span class="line">  `pic` <span class="type">varchar</span>(<span class="number">255</span>) <span class="keyword">DEFAULT</span> <span class="keyword">NULL</span> COMMENT <span class="string">&#x27;酒店图片；例:/img/1.jpg&#x27;</span>,</span><br><span class="line">  <span class="keyword">PRIMARY</span> KEY (`id`)</span><br><span class="line">) ENGINE<span class="operator">=</span>InnoDB <span class="keyword">DEFAULT</span> CHARSET<span class="operator">=</span>utf8mb4;</span><br></pre></td></tr></table></figure>
 
 
 
 <h3 id="4-0-2-导入项目"><a href="#4-0-2-导入项目" class="headerlink" title="4.0.2.导入项目"></a>4.0.2.导入项目</h3><p>然后导入课前资料提供的项目:</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720220503411.png" alt="image-20210720220503411"> </p>
+<p><img src="/2023/01/08/elasticsearch/01/image-20210720220503411.png" alt="image-20210720220503411"> </p>
 <p>项目结构如图：</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720220647541.png" alt="image-20210720220647541"></p>
+<p><img src="/2023/01/08/elasticsearch/01/image-20210720220647541.png" alt="image-20210720220647541"></p>
 <h3 id="4-0-3-mapping映射分析"><a href="#4-0-3-mapping映射分析" class="headerlink" title="4.0.3.mapping映射分析"></a>4.0.3.mapping映射分析</h3><p>创建索引库，最关键的是mapping映射，而mapping映射要考虑的信息包括：</p>
 <ul>
 <li>字段名</li>
@@ -834,9 +834,9 @@
 <li>all：一个组合字段，其目的是将多字段的值 利用copy_to合并，提供给用户搜索</li>
 </ul>
 <p>地理坐标说明：</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720222110126.png" alt="image-20210720222110126"></p>
+<p><img src="/2023/01/08/elasticsearch/01/image-20210720222110126.png" alt="image-20210720222110126"></p>
 <p>copy_to说明：</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720222221516.png" alt="image-20210720222221516"></p>
+<p><img src="/2023/01/08/elasticsearch/01/image-20210720222221516.png" alt="image-20210720222221516"></p>
 <h3 id="4-0-4-初始化RestClient"><a href="#4-0-4-初始化RestClient" class="headerlink" title="4.0.4.初始化RestClient"></a>4.0.4.初始化RestClient</h3><p>在elasticsearch提供的API中，与elasticsearch一切交互都封装在一个名为RestHighLevelClient的类中，必须先完成这个对象的初始化，建立与elasticsearch的连接。</p>
 <p>分为三步：</p>
 <p>1）引入es的RestHighLevelClient依赖：</p>
@@ -863,7 +863,7 @@
 
 
 <h2 id="4-1-创建索引库"><a href="#4-1-创建索引库" class="headerlink" title="4.1.创建索引库"></a>4.1.创建索引库</h2><h3 id="4-1-1-代码解读"><a href="#4-1-1-代码解读" class="headerlink" title="4.1.1.代码解读"></a>4.1.1.代码解读</h3><p>创建索引库的API如下：</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720223049408.png" alt="image-20210720223049408"></p>
+<p><img src="/2023/01/08/elasticsearch/01/image-20210720223049408.png" alt="image-20210720223049408"></p>
 <p>代码分为三步：</p>
 <ul>
 <li>1）创建Request对象。因为是创建索引库的操作，因此Request是CreateIndexRequest。</li>
@@ -951,7 +951,7 @@
 <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">POST /<span class="punctuation">&#123;</span>索引库名<span class="punctuation">&#125;</span>/_doc/<span class="number">1</span></span><br><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Jack&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;age&quot;</span><span class="punctuation">:</span> <span class="number">21</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
 
 <p>对应的java代码如图：</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720230027240.png" alt="image-20210720230027240"></p>
+<p><img src="/2023/01/08/elasticsearch/01/image-20210720230027240.png" alt="image-20210720230027240"></p>
 <p>可以看到与创建索引库类似，同样是三步走：</p>
 <ul>
 <li>1）创建Request对象</li>
@@ -990,7 +990,7 @@
 <li>发送请求</li>
 </ul>
 <p>不过查询的目的是得到结果，解析为HotelDoc，因此难点是结果的解析。完整代码如下：</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720230811674.png" alt="image-20210720230811674"></p>
+<p><img src="/2023/01/08/elasticsearch/01/image-20210720230811674.png" alt="image-20210720230811674"></p>
 <p>可以看到，结果是一个JSON，其中文档放在一个<code>_source</code>属性中，因此解析就是拿到<code>_source</code>，反序列化为Java对象即可。</p>
 <p>与之前类似，也是三步走：</p>
 <ul>
@@ -1035,7 +1035,7 @@
 </ul>
 <p>这里不再赘述，我们主要关注增量修改。</p>
 <p>代码示例如图：</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720231040875.png" alt="image-20210720231040875"></p>
+<p><img src="/2023/01/08/elasticsearch/01/image-20210720231040875.png" alt="image-20210720231040875"></p>
 <p>与之前类似，也是三步走：</p>
 <ul>
 <li>1）准备Request对象。这次是修改，所以是UpdateRequest</li>
@@ -1061,7 +1061,7 @@
 </ul>
 <h3 id="5-5-1-语法说明"><a href="#5-5-1-语法说明" class="headerlink" title="5.5.1.语法说明"></a>5.5.1.语法说明</h3><p>批量处理BulkRequest，其本质就是将多个普通的CRUD请求组合在一起发送。</p>
 <p>其中提供了一个add方法，用来添加其他请求：</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720232105943.png" alt="image-20210720232105943"></p>
+<p><img src="/2023/01/08/elasticsearch/01/image-20210720232105943.png" alt="image-20210720232105943"></p>
 <p>可以看到，能添加的请求包括：</p>
 <ul>
 <li>IndexRequest，也就是新增</li>
@@ -1069,7 +1069,7 @@
 <li>DeleteRequest，也就是删除</li>
 </ul>
 <p>因此Bulk中添加了多个IndexRequest，就是批量新增功能了。示例：</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/image-20210720232431383.png" alt="image-20210720232431383"></p>
+<p><img src="/2023/01/08/elasticsearch/01/image-20210720232431383.png" alt="image-20210720232431383"></p>
 <p>其实还是三步走：</p>
 <ul>
 <li>1）创建Request对象。这里是BulkRequest</li>

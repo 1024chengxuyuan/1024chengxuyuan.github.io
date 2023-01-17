@@ -25,22 +25,22 @@
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="1 使用场景 关闭空闲连接。服务器中，有很多客户端的连接，空闲一段时间之后需要关闭之。 清理过期数据业务上。比如缓存中的对象，超过了空闲时间，需要从缓存中移出。 任务超时处理。在网络协议滑动窗口请求应答式交互时，处理超时未响应的请求。 下单之后如果三十分钟之内没有付款就自动取消订单。 订餐通知:下单成功后60s之后给用户发送短信通知。 当订单一直处于未支付状态时，如何及时的关闭订单，并退还库存？">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/06/28/1/1.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/06/28/1/2.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/06/28/1/3.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/06/28/1/4.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/06/28/1/5.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/06/28/1/6.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/06/28/1/7.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/06/28/1/8.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/06/28/1/9.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/06/28/1/10.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/06/28/1/11.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/06/28/1/06/28/1/1.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/06/28/1/06/28/1/2.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/06/28/1/06/28/1/3.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/06/28/1/06/28/1/4.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/06/28/1/06/28/1/5.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/06/28/1/06/28/1/6.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/06/28/1/06/28/1/7.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/06/28/1/06/28/1/8.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/06/28/1/06/28/1/9.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/06/28/1/06/28/1/10.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/06/28/1/06/28/1/11.png">
 <meta property="article:published_time" content="2020-06-28T09:10:52.000Z">
 <meta property="article:modified_time" content="2022-01-07T06:26:36.000Z">
 <meta property="article:author" content="野生程序猿">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://1024chengxuyuan.github.io/2020/06/28/1/1.png">
+<meta name="twitter:image" content="https://1024chengxuyuan.github.io/2020/06/28/1/06/28/1/1.png">
   <!-- Canonical links -->
   <link rel="canonical" href="https://1024chengxuyuan.github.io/2020/06/28/1/index.html">
   
@@ -425,8 +425,8 @@
 <h4 id="2-2-DelayQueue"><a href="#2-2-DelayQueue" class="headerlink" title="2.2 DelayQueue"></a>2.2 DelayQueue</h4><p>特点： 无界、延迟、阻塞队列</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">a、BlockingQueue+PriorityQueue（堆排序）+Delayed</span><br><span class="line">b、DelayQueue中存放的对象需要实现compareTo()方法和getDelay()方法。</span><br><span class="line">c、getDelay方法返回该元素距离失效还剩余的时间，当&lt;=0时元素就失效了，</span><br><span class="line">就可以从队列中获取到。</span><br></pre></td></tr></table></figure>
 
-<p><img src="/2020/06/28/1/1.png" alt="1"></p>
-<p><img src="/2020/06/28/1/2.png" alt="2"></p>
+<p><img src="/2020/06/28/1/06/28/1/1.png" alt="1"></p>
+<p><img src="/2020/06/28/1/06/28/1/2.png" alt="2"></p>
 <blockquote>
 <p>这里为什么要用leader&#x2F;follower模式？</p>
 </blockquote>
@@ -435,14 +435,14 @@
 <li>假设取值时，延时时间还没有到，那么需要等待，但这个时候，队列中新加入了一个延时更短的，并放在了队首，那么 此时，for循环由开始了，取得是新加入的元素，那之前的等待就白等了，明显可以早点退出等待！</li>
 <li>还有就是如果好多线程都在此等待，如果时间到了，同时好多线程会充等待队列进入锁池中，去竞争锁资源，但结果只能是一个成功， 多了写无畏的竞争！（多次的等待和唤醒）</li>
 </ul>
-<p><img src="/2020/06/28/1/3.png" alt="3"></p>
-<h4 id="2-3-Timer与TimerTask"><a href="#2-3-Timer与TimerTask" class="headerlink" title="2.3 Timer与TimerTask"></a>2.3 Timer与TimerTask</h4><p><img src="/2020/06/28/1/4.png" alt="3"></p>
+<p><img src="/2020/06/28/1/06/28/1/3.png" alt="3"></p>
+<h4 id="2-3-Timer与TimerTask"><a href="#2-3-Timer与TimerTask" class="headerlink" title="2.3 Timer与TimerTask"></a>2.3 Timer与TimerTask</h4><p><img src="/2020/06/28/1/06/28/1/4.png" alt="3"></p>
 <ul>
 <li>TaskQueue中的排序是对TimerTask中的下一次执行时间进行堆排序，每次去取数组第一个。</li>
 <li>而delayQueue是对queue中的元素的getDelay()结果进行排序</li>
 </ul>
-<p><img src="/2020/06/28/1/5.png" alt="3"></p>
-<p><img src="/2020/06/28/1/6.png" alt="3"></p>
+<p><img src="/2020/06/28/1/06/28/1/5.png" alt="3"></p>
+<p><img src="/2020/06/28/1/06/28/1/6.png" alt="3"></p>
 <h4 id="2-4-时间轮-kafka"><a href="#2-4-时间轮-kafka" class="headerlink" title="2.4 时间轮(kafka)"></a>2.4 时间轮(kafka)</h4><blockquote>
 <p>时间轮名词解释：</p>
 </blockquote>
@@ -453,8 +453,8 @@
 <li>间隔（tickDuration）：每个时间格之间的间隔</li>
 <li>总间隔（interval）：当前时间轮总间隔，也就是等于ticksPerWheel*tickDuration</li>
 </ul>
-<p><img src="/2020/06/28/1/7.png" alt="3"></p>
-<p><img src="/2020/06/28/1/8.png" alt="3"></p>
+<p><img src="/2020/06/28/1/06/28/1/7.png" alt="3"></p>
+<p><img src="/2020/06/28/1/06/28/1/8.png" alt="3"></p>
 <blockquote>
 <p>根据每个TimerTaskEntry的过期时间和当前时间轮的时间，选择一个合适的bucket(实际上就是TimerTaskList),把这个TimerTaskEntry对象放进去，同时如果bucket的过期时间有更新，就将这个bucket推进DelayQueue，重新排序</p>
 </blockquote>
@@ -465,8 +465,8 @@
 <blockquote>
 <p>RabbitMQ可以针对Queue和Message设置 x-message-tt，来控制消息的生存时间，如果超时，则消息变为dead letter RabbitMQ针对队列中的消息过期时间有两种方法可以设置。 A: 通过队列属性设置，队列中所有消息都有相同的过期时间。 B: 对消息进行单独设置，每条消息TTL可以不同。</p>
 </blockquote>
-<p><img src="/2020/06/28/1/9.png" alt="3"></p>
-<h4 id="2-6-Quartz"><a href="#2-6-Quartz" class="headerlink" title="2.6 Quartz"></a>2.6 Quartz</h4><p><img src="/2020/06/28/1/10.png" alt="3"></p>
+<p><img src="/2020/06/28/1/06/28/1/9.png" alt="3"></p>
+<h4 id="2-6-Quartz"><a href="#2-6-Quartz" class="headerlink" title="2.6 Quartz"></a>2.6 Quartz</h4><p><img src="/2020/06/28/1/06/28/1/10.png" alt="3"></p>
 <blockquote>
 <p>为什么不用Timer?</p>
 </blockquote>
@@ -480,7 +480,7 @@
 <p>核心概念：调度器、任务和触发器。</p>
 </blockquote>
 <p>三者关系：调度器负责调度各个任务，到了某个时刻或者过了一定时间，触发器触动了，特定任务便启动执行。</p>
-<p><img src="/2020/06/28/1/11.png" alt="3"></p>
+<p><img src="/2020/06/28/1/06/28/1/11.png" alt="3"></p>
 <ol>
 <li>scheduler是一个计划调度器容器（总部），容器里面可以盛放众多的JobDetail和trigger，当容器启动后，里面的每个JobDetail都会根据trigger按部就班自动去执行。</li>
 <li>JobDetail是一个可执行的工作，它本身是有状态的。</li>

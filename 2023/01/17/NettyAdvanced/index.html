@@ -25,16 +25,16 @@
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="三. Netty 进阶1. 粘包与半包1.1 粘包现象服务端代码 12345678910111213141516171819202122232425262728293031323334353637383940414243444546public class HelloWorldServer &amp;#123;    static final Logger log &#x3D; LoggerFactory.getL">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/Netty03-%E8%BF%9B%E9%98%B6/0049.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/Netty03-%E8%BF%9B%E9%98%B6/0051.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/17/NettyAdvanced/0049.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/17/NettyAdvanced/0051.png">
 <meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/17/NettyAdvanced/0031.jpg">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/Netty03-%E8%BF%9B%E9%98%B6/0013.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/17/NettyAdvanced/0013.png">
 <meta property="article:published_time" content="2023-01-17T02:59:17.000Z">
 <meta property="article:modified_time" content="2023-01-17T04:36:01.604Z">
 <meta property="article:author" content="野生程序猿">
 <meta property="article:tag" content="Netty">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://1024chengxuyuan.github.io/Netty03-%E8%BF%9B%E9%98%B6/0049.png">
+<meta name="twitter:image" content="https://1024chengxuyuan.github.io/2023/01/17/NettyAdvanced/0049.png">
   <!-- Canonical links -->
   <link rel="canonical" href="https://1024chengxuyuan.github.io/2023/01/17/NettyAdvanced/index.html">
   
@@ -451,10 +451,10 @@
 <p>滑动窗口</p>
 <ul>
 <li><p>TCP 以一个段（segment）为单位，每发送一个段就需要进行一次确认应答（ack）处理，但如果这么做，缺点是包的往返时间越长性能就越差</p>
-<p><img src="/Netty03-%E8%BF%9B%E9%98%B6/0049.png"></p>
+<p><img src="/2023/01/17/NettyAdvanced/0049.png"></p>
 </li>
 <li><p>为了解决此问题，引入了窗口概念，窗口大小即决定了无需等待应答而可以继续发送的数据最大值</p>
-<p><img src="/Netty03-%E8%BF%9B%E9%98%B6/0051.png"></p>
+<p><img src="/2023/01/17/NettyAdvanced/0051.png"></p>
 </li>
 <li><p>窗口实际就起到一个缓冲区的作用，同时也能起到流量控制的作用</p>
 <ul>
@@ -622,7 +622,7 @@
 
 
 <p>解读</p>
-<p><img src="/Netty03-%E8%BF%9B%E9%98%B6/0013.png"></p>
+<p><img src="/2023/01/17/NettyAdvanced/0013.png"></p>
 <h4 id="💡-什么时候可以加-Sharable"><a href="#💡-什么时候可以加-Sharable" class="headerlink" title="💡 什么时候可以加 @Sharable"></a>💡 什么时候可以加 @Sharable</h4><ul>
 <li>当 handler 不保存状态时，就可以安全地在多线程下被共享</li>
 <li>但要注意对于编解码器类，不能继承 ByteToMessageCodec 或 CombinedChannelDuplexHandler 父类，他们的构造方法对 @Sharable 有限制</li>

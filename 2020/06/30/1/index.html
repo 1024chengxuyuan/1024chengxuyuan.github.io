@@ -25,22 +25,22 @@
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="转载：https:&#x2F;&#x2F;juejin.im&#x2F;post&#x2F;5e479c2cf265da575f4e65e4#heading-7 导读： 类加载器是怎么被创建出来的？ 什么是双亲委派机制？为什么要有这种机制？ Class实例和类加载器究竟是在Java Heap中，还是在方法区中？  类加载器： 可以实现通过一个类的全限定名称来获取描述此类的二进制字节流。实现这个动作的代码模块成为”类加载器“。 通过自定义">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/06/30/1/1.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/06/30/1/2.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/06/30/1/3.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/06/30/1/4.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/06/30/1/5.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/06/30/1/6.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/06/30/1/7.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/06/30/1/8.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/06/30/1/9.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/06/30/1/06/30/1/1.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/06/30/1/06/30/1/2.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/06/30/1/06/30/1/3.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/06/30/1/06/30/1/4.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/06/30/1/06/30/1/5.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/06/30/1/06/30/1/6.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/06/30/1/06/30/1/7.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/06/30/1/06/30/1/8.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/06/30/1/06/30/1/9.png">
 <meta property="article:published_time" content="2020-06-30T06:55:40.000Z">
 <meta property="article:modified_time" content="2022-01-07T07:48:38.000Z">
 <meta property="article:author" content="野生程序猿">
 <meta property="article:tag" content="Java虚拟机">
 <meta property="article:tag" content="Jvm模型">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://1024chengxuyuan.github.io/2020/06/30/1/1.png">
+<meta name="twitter:image" content="https://1024chengxuyuan.github.io/2020/06/30/1/06/30/1/1.png">
   <!-- Canonical links -->
   <link rel="canonical" href="https://1024chengxuyuan.github.io/2020/06/30/1/index.html">
   
@@ -407,7 +407,7 @@
 </ol>
 <p><strong>类加载器：</strong> 可以实现通过一个类的全限定名称来获取描述此类的二进制字节流。实现这个动作的代码模块成为”类加载器“。</p>
 <p>通过自定义类加载器可以实现各种有趣而强大的功能更：OSGi，热部署，代码加密等。</p>
-<h3 id="1、类加载器的加载流程"><a href="#1、类加载器的加载流程" class="headerlink" title="1、类加载器的加载流程"></a>1、类加载器的加载流程</h3><p><img src="/2020/06/30/1/1.png" alt="1"></p>
+<h3 id="1、类加载器的加载流程"><a href="#1、类加载器的加载流程" class="headerlink" title="1、类加载器的加载流程"></a>1、类加载器的加载流程</h3><p><img src="/2020/06/30/1/06/30/1/1.png" alt="1"></p>
 <p>如上图为类加载器的加载流程。</p>
 <p>这里简单描述下：</p>
 <h4 id="1-1、启动类加载器"><a href="#1-1、启动类加载器" class="headerlink" title="1.1、启动类加载器"></a>1.1、启动类加载器</h4><p><strong>启动类加载器：</strong>系统启动的时候，首先会通过由C++实现的启动类加载器，加载<JAVA_HOME>&#x2F;lib目录下面的jar包，或者被-Xbootclasspath参数指定的路径并且被虚拟机识别的文件名的jar包。把相关Class加载到方法区中。</JAVA_HOME></p>
@@ -418,8 +418,8 @@
 </ul>
 <blockquote>
 <p>可以反编译rt.jar文件查看详细代码：</p>
-<p><img src="/2020/06/30/1/2.png" alt="1"></p>
-<p><img src="/2020/06/30/1/3.png" alt="1"></p>
+<p><img src="/2020/06/30/1/06/30/1/2.png" alt="1"></p>
+<p><img src="/2020/06/30/1/06/30/1/3.png" alt="1"></p>
 </blockquote>
 <p>在加载到Launcher类完成后，会对该类进行初始化，初始化的过程中，会创建 ExtClassLoader 和 AppClassLoader，源码如下：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">public Launcher() &#123;</span><br><span class="line">    ExtClassLoader extClassLoader;</span><br><span class="line">    try &#123;</span><br><span class="line">      extClassLoader = ExtClassLoader.getExtClassLoader();</span><br><span class="line">    &#125; catch (IOException iOException) &#123;</span><br><span class="line">      throw new InternalError(&quot;Could not create extension class loader&quot;, iOException);</span><br><span class="line">    &#125;</span><br><span class="line">    try &#123;</span><br><span class="line">      this.loader = AppClassLoader.getAppClassLoader(extClassLoader);</span><br><span class="line">    &#125; catch (IOException iOException) &#123;</span><br><span class="line">      throw new InternalError(&quot;Could not create application class loader&quot;, iOException);</span><br><span class="line">    &#125;</span><br><span class="line">    Thread.currentThread().setContextClassLoader(this.loader);</span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
@@ -442,7 +442,7 @@
 <p>注意，如上图通过以上三个类加载器加载类到方法区之后，方法区中分别对应有各自的类信息存储区。不同类加载器加载的同一个类文件不相等。</p>
 <h3 id="2、类加载器的双亲委派机制"><a href="#2、类加载器的双亲委派机制" class="headerlink" title="2、类加载器的双亲委派机制"></a>2、类加载器的双亲委派机制</h3><h4 id="2-1、双亲委派机制原理"><a href="#2-1、双亲委派机制原理" class="headerlink" title="2.1、双亲委派机制原理"></a>2.1、双亲委派机制原理</h4><p><em>双亲委派模型在JDK1.2之后被引入，并广泛使用，这不是一个强制性的约束模型，二货思Java设计者推荐给开发者的一种类加载器实现方式。我们也可以覆盖对应的方式，实现自己的加载模型。</em></p>
 <p>类加载器的双亲委派机制如下：</p>
-<p><img src="/2020/06/30/1/4.png" alt="1"><br>也就是说：</p>
+<p><img src="/2020/06/30/1/06/30/1/4.png" alt="1"><br>也就是说：</p>
 <ul>
 <li>一个类加载器收到了类加载请求，不会自己立刻尝试加载类，而是把请求委托给父加载器去完成，每一层都是如此，所有的家在请求最终都传递到最顶层的类加载器进行处理；</li>
 <li>如果父加载器不存在了，那么尝试判断有没有被启动类加载器加载；</li>
@@ -461,9 +461,9 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> Class&lt;?&gt; loadClass(String name, <span class="type">boolean</span> resolve)</span><br><span class="line">        <span class="keyword">throws</span> ClassNotFoundException</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (getClassLoadingLock(name)) &#123;</span><br><span class="line">            <span class="comment">// First, check if the class has already been loaded</span></span><br><span class="line">            Class&lt;?&gt; c = findLoadedClass(name);</span><br><span class="line">            <span class="keyword">if</span> (c == <span class="literal">null</span>) &#123;</span><br><span class="line">                <span class="type">long</span> <span class="variable">t0</span> <span class="operator">=</span> System.nanoTime();</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    <span class="keyword">if</span> (parent != <span class="literal">null</span>) &#123;</span><br><span class="line">                        c = parent.loadClass(name, <span class="literal">false</span>);</span><br><span class="line">                    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                        c = findBootstrapClassOrNull(name);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125; <span class="keyword">catch</span> (ClassNotFoundException e) &#123;</span><br><span class="line">                    <span class="comment">// ClassNotFoundException thrown if class not found</span></span><br><span class="line">                    <span class="comment">// from the non-null parent class loader</span></span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (c == <span class="literal">null</span>) &#123;</span><br><span class="line">                    <span class="comment">// If still not found, then invoke findClass in order</span></span><br><span class="line">                    <span class="comment">// to find the class.</span></span><br><span class="line">                    <span class="type">long</span> <span class="variable">t1</span> <span class="operator">=</span> System.nanoTime();</span><br><span class="line">                    c = findClass(name);</span><br><span class="line"></span><br><span class="line">                    <span class="comment">// this is the defining class loader; record the stats</span></span><br><span class="line">                    sun.misc.PerfCounter.getParentDelegationTime().addTime(t1 - t0);</span><br><span class="line">                    sun.misc.PerfCounter.getFindClassTime().addElapsedTimeFrom(t1);</span><br><span class="line">                    sun.misc.PerfCounter.getFindClasses().increment();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (resolve) &#123;</span><br><span class="line">                resolveClass(c);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> c;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
 
 <p>转成流程图，即是：</p>
-<p><img src="/2020/06/30/1/5.png" alt="1"></p>
+<p><img src="/2020/06/30/1/06/30/1/5.png" alt="1"></p>
 <p>如山图所以，总是先回尝试让父类加载器先加载，其次判断启动类加载器是否已经加载了，最后才尝试从当前类加载器加载。转换为更清晰的模型如下：</p>
-<p><img src="/2020/06/30/1/6.png" alt="1"></p>
+<p><img src="/2020/06/30/1/06/30/1/6.png" alt="1"></p>
 <p>双亲委派模型具有以下特点：</p>
 <ul>
 <li>可见性原则：<ul>
@@ -479,7 +479,7 @@
 <h4 id="2-3、类加载器和Class实例的题外话"><a href="#2-3、类加载器和Class实例的题外话" class="headerlink" title="2.3、类加载器和Class实例的题外话"></a>2.3、类加载器和Class实例的题外话</h4><p>启动类加载器，扩展类加载器，应用程序类加载器，他们分别管理者各自方法区里的一个区块。</p>
 <p>根据上一篇文章我们知道，方法区里面主要存储的是类的运行时数据结构，这个类的在方法区中的各种数据结构信息通过类的Class实例进行访问。</p>
 <p>如下图：</p>
-<p><img src="/2020/06/30/1/7.png" alt="1"></p>
+<p><img src="/2020/06/30/1/06/30/1/7.png" alt="1"></p>
 <p>方法区里面存储着加载进来的类信息，方法区同时雇佣了两类工种帮忙干活：</p>
 <ul>
 <li><strong>类加载器：</strong>负责管理各个存储区的类信息，如加载和卸载类信息；</li>
@@ -503,11 +503,11 @@
 <li><strong>&#x2F;shared&#x2F;：</strong> 该目录下的类库可被所有的WebApp共同使用，但对Tomcat自己不可见；</li>
 </ul>
 <p>另外Web应用程序还有自身的类库，放在<code>/WebApp/WEB-INF</code>目录中：这里面的类库仅仅可以被此Web应用程序使用，对Tomcat和其他Web应用程序都不可见。 为了实现以上各个目录的类库可见性效果，Tomat提供了如下的自定义类加载器：</p>
-<p><img src="/2020/06/30/1/8.png" alt="1"></p>
+<p><img src="/2020/06/30/1/06/30/1/8.png" alt="1"></p>
 <p>现在如下场景：</p>
 <p>我们发现Tomcat下面有若干个webapp，每个webapp都用到了spring，于是我们把spring的jar包放到了<code>shared</code>目录中。</p>
 <p>于是问题出现了：由于spring的jar包是由Shared类加载器加载的，假设我们要使用SpringContext的getBean方法，获取webapp中的Bean，如果是按照双亲委派模型，就会有问题了，因为webapp中的Java类是对SharedClassLoader不可见的：</p>
-<p><img src="/2020/06/30/1/9.png" alt="1"></p>
+<p><img src="/2020/06/30/1/06/30/1/9.png" alt="1"></p>
 <p><strong>Spring中的线程上下文类加载器</strong></p>
 <p>为了解决这个问题，Spring使用了线程上下文类加载器，即从ThreadLocal中获取到当前线程的上下文类加载器，来加载所有的类库和类。</p>
 <p>关于Spring初始化源码相关解读，参考这篇文章：<a target="_blank" rel="noopener" href="https://www.itzhai.com/spring/spring-ioc-theory-analyse.html">Spring IoC原理剖析</a>。</p>

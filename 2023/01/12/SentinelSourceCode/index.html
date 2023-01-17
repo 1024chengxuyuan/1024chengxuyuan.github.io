@@ -25,50 +25,50 @@
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="Sentinal源码分析1.Sentinel的基本概念Sentinel实现限流、隔离、降级、熔断等功能，本质要做的就是两件事情：  统计数据：统计某个资源的访问数据（QPS、RT等信息） 规则判断：判断限流规则、隔离规则、降级规则、熔断规则是否满足  这里的资源就是希望被Sentinel保护的业务，例如项目中定义的controller方法就是默认被Sentinel保护的资源。 1.1.Proces">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925092845529.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925103029924.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925104726158.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925113122759.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925141507603.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925115601560.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925115740281.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925141553785.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925115601560.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925115740281.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925115824345.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925115946064.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925120119030.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925120221883.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925142313050.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925142438552.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925144355865.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925144010507.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925144233302.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925101327080.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925152626648.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925153228036.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925153719891.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925163744108.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/sentinel.jpg">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925172542274.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925175221211.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925180522926.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925180619492.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925180810181.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925180954856.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925181359203.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925181714605.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925182127206.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925210716675.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925211020881.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925213440686.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925213939035.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/12/SentinelSourceCode/image-20210925092845529.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/12/SentinelSourceCode/image-20210925103029924.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/12/SentinelSourceCode/image-20210925104726158.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/12/SentinelSourceCode/image-20210925113122759.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/12/SentinelSourceCode/image-20210925141507603.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/12/SentinelSourceCode/image-20210925115601560.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/12/SentinelSourceCode/image-20210925115740281.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/12/SentinelSourceCode/image-20210925141553785.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/12/SentinelSourceCode/image-20210925115601560.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/12/SentinelSourceCode/image-20210925115740281.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/12/SentinelSourceCode/image-20210925115824345.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/12/SentinelSourceCode/image-20210925115946064.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/12/SentinelSourceCode/image-20210925120119030.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/12/SentinelSourceCode/image-20210925120221883.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/12/SentinelSourceCode/image-20210925142313050.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/12/SentinelSourceCode/image-20210925142438552.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/12/SentinelSourceCode/image-20210925144355865.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/12/SentinelSourceCode/image-20210925144010507.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/12/SentinelSourceCode/image-20210925144233302.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/12/SentinelSourceCode/image-20210925101327080.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/12/SentinelSourceCode/image-20210925152626648.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/12/SentinelSourceCode/image-20210925153228036.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/12/SentinelSourceCode/image-20210925153719891.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/12/SentinelSourceCode/image-20210925163744108.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/12/SentinelSourceCode/sentinel.jpg">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/12/SentinelSourceCode/image-20210925172542274.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/12/SentinelSourceCode/image-20210925175221211.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/12/SentinelSourceCode/image-20210925180522926.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/12/SentinelSourceCode/image-20210925180619492.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/12/SentinelSourceCode/image-20210925180810181.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/12/SentinelSourceCode/image-20210925180954856.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/12/SentinelSourceCode/image-20210925181359203.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/12/SentinelSourceCode/image-20210925181714605.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/12/SentinelSourceCode/image-20210925182127206.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/12/SentinelSourceCode/image-20210925210716675.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/12/SentinelSourceCode/image-20210925211020881.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/12/SentinelSourceCode/image-20210925213440686.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/12/SentinelSourceCode/image-20210925213939035.png">
 <meta property="article:published_time" content="2023-01-12T13:35:16.000Z">
 <meta property="article:modified_time" content="2023-01-12T13:49:28.623Z">
 <meta property="article:author" content="野生程序猿">
 <meta property="article:tag" content="Sentinel">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://1024chengxuyuan.github.io/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925092845529.png">
+<meta name="twitter:image" content="https://1024chengxuyuan.github.io/2023/01/12/SentinelSourceCode/image-20210925092845529.png">
   <!-- Canonical links -->
   <link rel="canonical" href="https://1024chengxuyuan.github.io/2023/01/12/SentinelSourceCode/index.html">
   
@@ -444,7 +444,7 @@
 <p>这里的<strong>资源</strong>就是希望被Sentinel保护的业务，例如项目中定义的controller方法就是默认被Sentinel保护的资源。</p>
 <h2 id="1-1-ProcessorSlotChain"><a href="#1-1-ProcessorSlotChain" class="headerlink" title="1.1.ProcessorSlotChain"></a>1.1.ProcessorSlotChain</h2><p>实现上述功能的核心骨架是一个叫做ProcessorSlotChain的类。这个类基于责任链模式来设计，将不同的功能（限流、降级、系统保护）封装为一个个的Slot，请求进入后逐个执行即可。</p>
 <p>其工作流如图：</p>
-<p><img src="/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925092845529.png" alt="image-20210925092845529"></p>
+<p><img src="/2023/01/12/SentinelSourceCode/image-20210925092845529.png" alt="image-20210925092845529"></p>
 <p>责任链中的Slot也分为两大类：</p>
 <ul>
 <li>统计数据构建部分（statistic）<ul>
@@ -463,7 +463,7 @@
 </li>
 </ul>
 <h2 id="1-2-Node"><a href="#1-2-Node" class="headerlink" title="1.2.Node"></a>1.2.Node</h2><p>Sentinel中的簇点链路是由一个个的Node组成的，Node是一个接口，包括下面的实现：</p>
-<p><img src="/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925103029924.png" alt="image-20210925103029924"></p>
+<p><img src="/2023/01/12/SentinelSourceCode/image-20210925103029924.png" alt="image-20210925103029924"></p>
 <p>所有的节点都可以记录对资源的访问统计数据，所以都是StatisticNode的子类。</p>
 <p>按照作用分为两类Node：</p>
 <ul>
@@ -477,7 +477,7 @@
 <li>业务2：controller中的资源<code>/order/save</code>访问了service中的资源<code>/goods</code></li>
 </ul>
 <p>创建的链路图如下：</p>
-<p><img src="/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925104726158.png" alt="image-20210925104726158"></p>
+<p><img src="/2023/01/12/SentinelSourceCode/image-20210925104726158.png" alt="image-20210925104726158"></p>
 <h2 id="1-3-Entry"><a href="#1-3-Entry" class="headerlink" title="1.3.Entry"></a>1.3.Entry</h2><p>默认情况下，Sentinel会将controller中的方法作为被保护资源，那么问题来了，我们该如何将自己的一段代码标记为一个Sentinel的资源呢？</p>
 <p>Sentinel中的资源用Entry来表示。声明Entry的API示例：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 资源名可使用任意有业务语义的字符串，比如方法名、接口名或其它可唯一标识的字符串。</span></span><br><span class="line"><span class="keyword">try</span> (<span class="type">Entry</span> <span class="variable">entry</span> <span class="operator">=</span> SphU.entry(<span class="string">&quot;resourceName&quot;</span>)) &#123;</span><br><span class="line">  <span class="comment">// 被保护的业务逻辑</span></span><br><span class="line">  <span class="comment">// do something here...</span></span><br><span class="line">&#125; <span class="keyword">catch</span> (BlockException ex) &#123;</span><br><span class="line">  <span class="comment">// 资源访问阻止，被限流或被降级</span></span><br><span class="line">  <span class="comment">// 在此处进行相应的处理操作</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -500,16 +500,16 @@
 <p>4）访问</p>
 <p>打开浏览器，访问order服务：<a target="_blank" rel="noopener" href="http://localhost:8080/order/101">http://localhost:8080/order/101</a></p>
 <p>然后打开sentinel控制台，查看簇点链路：</p>
-<p><img src="/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925113122759.png" alt="image-20210925113122759"></p>
+<p><img src="/2023/01/12/SentinelSourceCode/image-20210925113122759.png" alt="image-20210925113122759"></p>
 <h3 id="1-3-2-基于注解标记资源"><a href="#1-3-2-基于注解标记资源" class="headerlink" title="1.3.2.基于注解标记资源"></a>1.3.2.基于注解标记资源</h3><p>在之前学习Sentinel的时候，我们知道可以通过给方法添加@SentinelResource注解的形式来标记资源。</p>
-<p><img src="/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925141507603.png" alt="image-20210925141507603"></p>
+<p><img src="/2023/01/12/SentinelSourceCode/image-20210925141507603.png" alt="image-20210925141507603"></p>
 <p>这个是怎么实现的呢？</p>
 <p>来看下我们引入的Sentinel依赖包：</p>
-<p><img src="/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925115601560.png" alt="image-20210925115601560"></p>
+<p><img src="/2023/01/12/SentinelSourceCode/image-20210925115601560.png" alt="image-20210925115601560"></p>
 <p>其中的spring.factories声明需要就是自动装配的配置类，内容如下：</p>
-<p><img src="/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925115740281.png" alt="image-20210925115740281"></p>
+<p><img src="/2023/01/12/SentinelSourceCode/image-20210925115740281.png" alt="image-20210925115740281"></p>
 <p>我们来看下<code>SentinelAutoConfiguration</code>这个类：</p>
-<p><img src="/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925141553785.png" alt="image-20210925141553785"></p>
+<p><img src="/2023/01/12/SentinelSourceCode/image-20210925141553785.png" alt="image-20210925141553785"></p>
 <p>可以看到，在这里声明了一个Bean，<code>SentinelResourceAspect</code>：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Aspect for methods with &#123;<span class="doctag">@link</span> SentinelResource&#125; annotation.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Eric Zhao</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Aspect</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SentinelResourceAspect</span> <span class="keyword">extends</span> <span class="title class_">AbstractSentinelAspectSupport</span> &#123;</span><br><span class="line">	<span class="comment">// 切点是添加了 @SentinelResource注解的类</span></span><br><span class="line">    <span class="meta">@Pointcut(&quot;@annotation(com.alibaba.csp.sentinel.annotation.SentinelResource)&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">sentinelResourceAnnotationPointcut</span><span class="params">()</span> &#123;</span><br><span class="line">    &#125;</span><br><span class="line">	</span><br><span class="line">    <span class="comment">// 环绕增强</span></span><br><span class="line">    <span class="meta">@Around(&quot;sentinelResourceAnnotationPointcut()&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> Object <span class="title function_">invokeResourceWithSentinel</span><span class="params">(ProceedingJoinPoint pjp)</span> <span class="keyword">throws</span> Throwable &#123;</span><br><span class="line">        <span class="comment">// 获取受保护的方法</span></span><br><span class="line">        <span class="type">Method</span> <span class="variable">originMethod</span> <span class="operator">=</span> resolveMethod(pjp);</span><br><span class="line">		<span class="comment">// 获取 @SentinelResource注解</span></span><br><span class="line">        <span class="type">SentinelResource</span> <span class="variable">annotation</span> <span class="operator">=</span> originMethod.getAnnotation(SentinelResource.class);</span><br><span class="line">        <span class="keyword">if</span> (annotation == <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="comment">// Should not go through here.</span></span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">IllegalStateException</span>(<span class="string">&quot;Wrong state for SentinelResource annotation&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 获取注解上的资源名称</span></span><br><span class="line">        <span class="type">String</span> <span class="variable">resourceName</span> <span class="operator">=</span> getResourceName(annotation.value(), originMethod);</span><br><span class="line">        <span class="type">EntryType</span> <span class="variable">entryType</span> <span class="operator">=</span> annotation.entryType();</span><br><span class="line">        <span class="type">int</span> <span class="variable">resourceType</span> <span class="operator">=</span> annotation.resourceType();</span><br><span class="line">        <span class="type">Entry</span> <span class="variable">entry</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// 创建资源 Entry</span></span><br><span class="line">            entry = SphU.entry(resourceName, resourceType, entryType, pjp.getArgs());</span><br><span class="line">            <span class="comment">// 执行受保护的方法</span></span><br><span class="line">            <span class="type">Object</span> <span class="variable">result</span> <span class="operator">=</span> pjp.proceed();</span><br><span class="line">            <span class="keyword">return</span> result;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (BlockException ex) &#123;</span><br><span class="line">            <span class="keyword">return</span> handleBlockException(pjp, annotation, ex);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Throwable ex) &#123;</span><br><span class="line">            Class&lt;? <span class="keyword">extends</span> <span class="title class_">Throwable</span>&gt;[] exceptionsToIgnore = annotation.exceptionsToIgnore();</span><br><span class="line">            <span class="comment">// The ignore list will be checked first.</span></span><br><span class="line">            <span class="keyword">if</span> (exceptionsToIgnore.length &gt; <span class="number">0</span> &amp;&amp; exceptionBelongsTo(ex, exceptionsToIgnore)) &#123;</span><br><span class="line">                <span class="keyword">throw</span> ex;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (exceptionBelongsTo(ex, annotation.exceptionsToTrace())) &#123;</span><br><span class="line">                traceException(ex);</span><br><span class="line">                <span class="keyword">return</span> handleFallback(pjp, annotation, ex);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// No fallback function can handle the exception, so throw it out.</span></span><br><span class="line">            <span class="keyword">throw</span> ex;</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (entry != <span class="literal">null</span>) &#123;</span><br><span class="line">                entry.exit(<span class="number">1</span>, pjp.getArgs());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
@@ -531,18 +531,18 @@
 
 <h3 id="1-4-2-Context的初始化"><a href="#1-4-2-Context的初始化" class="headerlink" title="1.4.2.Context的初始化"></a>1.4.2.Context的初始化</h3><p>那么这个Context又是在何时完成初始化的呢？</p>
 <h4 id="1-4-2-1-自动装配"><a href="#1-4-2-1-自动装配" class="headerlink" title="1.4.2.1.自动装配"></a>1.4.2.1.自动装配</h4><p>来看下我们引入的Sentinel依赖包：</p>
-<p><img src="/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925115601560.png" alt="image-20210925115601560"></p>
+<p><img src="/2023/01/12/SentinelSourceCode/image-20210925115601560.png" alt="image-20210925115601560"></p>
 <p>其中的spring.factories声明需要就是自动装配的配置类，内容如下：</p>
-<p><img src="/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925115740281.png" alt="image-20210925115740281"></p>
+<p><img src="/2023/01/12/SentinelSourceCode/image-20210925115740281.png" alt="image-20210925115740281"></p>
 <p>我们先看SentinelWebAutoConfiguration这个类：</p>
-<p><img src="/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925115824345.png" alt="image-20210925115824345"></p>
+<p><img src="/2023/01/12/SentinelSourceCode/image-20210925115824345.png" alt="image-20210925115824345"></p>
 <p>这个类实现了WebMvcConfigurer，我们知道这个是SpringMVC自定义配置用到的类，可以配置HandlerInterceptor：</p>
-<p><img src="/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925115946064.png" alt="image-20210925115946064"></p>
+<p><img src="/2023/01/12/SentinelSourceCode/image-20210925115946064.png" alt="image-20210925115946064"></p>
 <p>可以看到这里配置了一个<code>SentinelWebInterceptor</code>的拦截器。</p>
 <p><code>SentinelWebInterceptor</code>的声明如下：</p>
-<p><img src="/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925120119030.png" alt="image-20210925120119030"></p>
+<p><img src="/2023/01/12/SentinelSourceCode/image-20210925120119030.png" alt="image-20210925120119030"></p>
 <p>发现它继承了<code>AbstractSentinelInterceptor</code>这个类。</p>
-<p><img src="/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925120221883.png" alt="image-20210925120221883"></p>
+<p><img src="/2023/01/12/SentinelSourceCode/image-20210925120221883.png" alt="image-20210925120221883"></p>
 <p><code>HandlerInterceptor</code>拦截器会拦截一切进入controller的方法，执行<code>preHandle</code>前置拦截方法，而Context的初始化就是在这里完成的。</p>
 <h4 id="1-4-2-2-AbstractSentinelInterceptor"><a href="#1-4-2-2-AbstractSentinelInterceptor" class="headerlink" title="1.4.2.2.AbstractSentinelInterceptor"></a>1.4.2.2.AbstractSentinelInterceptor</h4><p><code>HandlerInterceptor</code>拦截器会拦截一切进入controller的方法，执行<code>preHandle</code>前置拦截方法，而Context的初始化就是在这里完成的。</p>
 <p>我们来看看这个类的<code>preHandle</code>实现：</p>
@@ -561,9 +561,9 @@
 
 <h1 id="2-ProcessorSlotChain执行流程"><a href="#2-ProcessorSlotChain执行流程" class="headerlink" title="2.ProcessorSlotChain执行流程"></a>2.ProcessorSlotChain执行流程</h1><p>接下来我们跟踪源码，验证下ProcessorSlotChain的执行流程。</p>
 <h2 id="2-1-入口"><a href="#2-1-入口" class="headerlink" title="2.1.入口"></a>2.1.入口</h2><p>首先，回到一切的入口，<code>AbstractSentinelInterceptor</code>类的<code>preHandle</code>方法：</p>
-<p><img src="/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925142313050.png" alt="image-20210925142313050"></p>
+<p><img src="/2023/01/12/SentinelSourceCode/image-20210925142313050.png" alt="image-20210925142313050"></p>
 <p>还有，<code>SentinelResourceAspect</code>的环绕增强方法：</p>
-<p><img src="/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925142438552.png" alt="image-20210925142438552"></p>
+<p><img src="/2023/01/12/SentinelSourceCode/image-20210925142438552.png" alt="image-20210925142438552"></p>
 <p>可以看到，任何一个资源必定要执行<code>SphU.entry()</code>这个方法:</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> Entry <span class="title function_">entry</span><span class="params">(String name, <span class="type">int</span> resourceType, EntryType trafficType, Object[] args)</span></span><br><span class="line">    <span class="keyword">throws</span> BlockException &#123;</span><br><span class="line">    <span class="keyword">return</span> Env.sph.entryWithType(name, resourceType, trafficType, <span class="number">1</span>, args);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -582,15 +582,15 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">entry</span><span class="params">(Context context, ResourceWrapper resourceWrapper, Object t, <span class="type">int</span> count, <span class="type">boolean</span> prioritized, Object... args)</span></span><br><span class="line">    <span class="keyword">throws</span> Throwable &#123;</span><br><span class="line">    <span class="comment">// first，就是责任链中的第一个 slot</span></span><br><span class="line">    first.transformEntry(context, resourceWrapper, t, count, prioritized, args);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>这里的first，类型是AbstractLinkedProcessorSlot：</p>
-<p><img src="/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925144355865.png" alt="image-20210925144355865"></p>
+<p><img src="/2023/01/12/SentinelSourceCode/image-20210925144355865.png" alt="image-20210925144355865"></p>
 <p>看下继承关系：</p>
-<p><img src="/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925144010507.png" alt="image-20210925144010507"></p>
+<p><img src="/2023/01/12/SentinelSourceCode/image-20210925144010507.png" alt="image-20210925144010507"></p>
 <p>因此，first一定是这些实现类中的一个，按照最早讲的责任链顺序，first应该就是 <code>NodeSelectorSlot</code>。</p>
 <p>不过，既然是基于责任链模式，所以这里只要记住下一个slot就可以了，也就是next：</p>
-<p><img src="/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925144233302.png" alt="image-20210925144233302"></p>
+<p><img src="/2023/01/12/SentinelSourceCode/image-20210925144233302.png" alt="image-20210925144233302"></p>
 <p>next确实是NodeSelectSlot类型。</p>
 <p>而NodeSelectSlot的next一定是ClusterBuilderSlot，依次类推：</p>
-<p><img src="/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925101327080.png" alt="image-20210925101327080"></p>
+<p><img src="/2023/01/12/SentinelSourceCode/image-20210925101327080.png" alt="image-20210925101327080"></p>
 <p>责任链就建立起来了。</p>
 <h2 id="2-3-NodeSelectorSlot"><a href="#2-3-NodeSelectorSlot" class="headerlink" title="2.3.NodeSelectorSlot"></a>2.3.NodeSelectorSlot</h2><p>NodeSelectorSlot负责构建簇点链路中的节点（DefaultNode），将这些节点形成链路树。</p>
 <p>核心代码：</p>
@@ -631,7 +631,7 @@
 <li>DegradeSlot：负责降级规则</li>
 </ul>
 <h2 id="2-6-AuthoritySlot"><a href="#2-6-AuthoritySlot" class="headerlink" title="2.6.AuthoritySlot"></a>2.6.AuthoritySlot</h2><p>负责请求来源origin的授权规则判断，如图：</p>
-<p><img src="/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925152626648.png" alt="image-20210925152626648"></p>
+<p><img src="/2023/01/12/SentinelSourceCode/image-20210925152626648.png" alt="image-20210925152626648"></p>
 <p>核心API：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">entry</span><span class="params">(Context context, ResourceWrapper resourceWrapper, DefaultNode node, <span class="type">int</span> count, <span class="type">boolean</span> prioritized, Object... args)</span></span><br><span class="line">    <span class="keyword">throws</span> Throwable &#123;</span><br><span class="line">    <span class="comment">// 校验黑白名单</span></span><br><span class="line">    checkBlackWhiteAuthority(resourceWrapper, context);</span><br><span class="line">    <span class="comment">// 进入下一个 slot</span></span><br><span class="line">    fireEntry(context, resourceWrapper, node, count, prioritized, args);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -644,7 +644,7 @@
 
 
 <h2 id="2-7-SystemSlot"><a href="#2-7-SystemSlot" class="headerlink" title="2.7.SystemSlot"></a>2.7.SystemSlot</h2><p>SystemSlot是对系统保护的规则校验：</p>
-<p><img src="/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925153228036.png" alt="image-20210925153228036"></p>
+<p><img src="/2023/01/12/SentinelSourceCode/image-20210925153228036.png" alt="image-20210925153228036"></p>
 <p>核心API：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">entry</span><span class="params">(Context context, ResourceWrapper resourceWrapper, DefaultNode node, </span></span><br><span class="line"><span class="params">                  <span class="type">int</span> count,<span class="type">boolean</span> prioritized, Object... args)</span> <span class="keyword">throws</span> Throwable &#123;</span><br><span class="line">    <span class="comment">// 系统规则校验</span></span><br><span class="line">    SystemRuleManager.checkSystem(resourceWrapper);</span><br><span class="line">    <span class="comment">// 进入下一个 slot</span></span><br><span class="line">    fireEntry(context, resourceWrapper, node, count, prioritized, args);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -654,7 +654,7 @@
 
 
 <h2 id="2-8-ParamFlowSlot"><a href="#2-8-ParamFlowSlot" class="headerlink" title="2.8.ParamFlowSlot"></a>2.8.ParamFlowSlot</h2><p>ParamFlowSlot就是热点参数限流，如图：</p>
-<p><img src="/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925153719891.png" alt="image-20210925153719891"></p>
+<p><img src="/2023/01/12/SentinelSourceCode/image-20210925153719891.png" alt="image-20210925153719891"></p>
 <p>是针对进入资源的请求，针对不同的请求参数值分别统计QPS的限流方式。</p>
 <ul>
 <li><p>这里的单机阈值，就是最大令牌数量：maxCount</p>
@@ -669,16 +669,16 @@
 
 
 <h3 id="2-8-1-令牌桶"><a href="#2-8-1-令牌桶" class="headerlink" title="2.8.1.令牌桶"></a>2.8.1.令牌桶</h3><p>热点规则判断采用了令牌桶算法来实现参数限流，为每一个不同参数值设置令牌桶，Sentinel的令牌桶有两部分组成：</p>
-<p><img src="/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925163744108.png" alt="image-20210925163744108"></p>
+<p><img src="/2023/01/12/SentinelSourceCode/image-20210925163744108.png" alt="image-20210925163744108"></p>
 <p>这两个Map的key都是请求的参数值，value却不同，其中：</p>
 <ul>
 <li>tokenCounters：用来记录剩余令牌数量</li>
 <li>timeCounters：用来记录上一个请求的时间</li>
 </ul>
 <p>当一个携带参数的请求到来后，基本判断流程是这样的：</p>
-<p><img src="/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/sentinel.jpg" alt="sentinel"></p>
+<p><img src="/2023/01/12/SentinelSourceCode/sentinel.jpg" alt="sentinel"></p>
 <h2 id="2-9-FlowSlot"><a href="#2-9-FlowSlot" class="headerlink" title="2.9.FlowSlot"></a>2.9.FlowSlot</h2><p>FlowSlot是负责限流规则的判断，如图：</p>
-<p><img src="/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925172542274.png" alt="image-20210925172542274"></p>
+<p><img src="/2023/01/12/SentinelSourceCode/image-20210925172542274.png" alt="image-20210925172542274"></p>
 <p>包括：</p>
 <ul>
 <li>三种流控模式：直接模式、关联模式、链路模式</li>
@@ -720,7 +720,7 @@
 
 <p>这里对规则的判断先要通过<code>FlowRule#getRater()</code>获取流量控制器<code>TrafficShapingController</code>，然后再做限流。</p>
 <p>而<code>TrafficShapingController</code>有3种实现：</p>
-<p><img src="/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925175221211.png" alt="image-20210925175221211"></p>
+<p><img src="/2023/01/12/SentinelSourceCode/image-20210925175221211.png" alt="image-20210925175221211"></p>
 <ul>
 <li>DefaultController：快速失败，默认的方式，基于滑动时间窗口算法</li>
 <li>WarmUpController：预热模式，基于滑动时间窗口算法，只不过阈值是动态的</li>
@@ -734,19 +734,19 @@
 </ul>
 <p>先来看时间区间窗口的QPS计数功能。</p>
 <h4 id="2-9-2-1-时间窗口请求量统计"><a href="#2-9-2-1-时间窗口请求量统计" class="headerlink" title="2.9.2.1.时间窗口请求量统计"></a>2.9.2.1.时间窗口请求量统计</h4><p>回顾2.5章节中的StatisticSlot部分，有这样一段代码：</p>
-<p><img src="/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925180522926.png" alt="image-20210925180522926"></p>
+<p><img src="/2023/01/12/SentinelSourceCode/image-20210925180522926.png" alt="image-20210925180522926"></p>
 <p>就是在统计通过该节点的QPS，我们跟入看看，这里进入了DefaultNode内部：</p>
-<p><img src="/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925180619492.png" alt="image-20210925180619492"></p>
+<p><img src="/2023/01/12/SentinelSourceCode/image-20210925180619492.png" alt="image-20210925180619492"></p>
 <p>发现同时对<code>DefaultNode</code>和<code>ClusterNode</code>在做QPS统计，我们知道<code>DefaultNode</code>和<code>ClusterNode</code>都是<code>StatisticNode</code>的子类，这里调用<code>addPassRequest()</code>方法，最终都会进入<code>StatisticNode</code>中。</p>
 <p>随便跟入一个：</p>
-<p><img src="/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925180810181.png" alt="image-20210925180810181"></p>
+<p><img src="/2023/01/12/SentinelSourceCode/image-20210925180810181.png" alt="image-20210925180810181"></p>
 <p>这里有秒、分两种纬度的统计，对应两个计数器。找到对应的成员变量，可以看到：</p>
-<p><img src="/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925180954856.png" alt="image-20210925180954856"></p>
+<p><img src="/2023/01/12/SentinelSourceCode/image-20210925180954856.png" alt="image-20210925180954856"></p>
 <p>两个计数器都是ArrayMetric类型，并且传入了两个参数：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// intervalInMs：是滑动窗口的时间间隔，默认为 1 秒</span></span><br><span class="line"><span class="comment">// sampleCount: 时间窗口的分隔数量，默认为 2，就是把 1秒分为 2个小时间窗</span></span><br><span class="line"><span class="keyword">public</span> <span class="title function_">ArrayMetric</span><span class="params">(<span class="type">int</span> sampleCount, <span class="type">int</span> intervalInMs)</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.data = <span class="keyword">new</span> <span class="title class_">OccupiableBucketLeapArray</span>(sampleCount, intervalInMs);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>如图：</p>
-<p><img src="/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925181359203.png" alt="image-20210925181359203"></p>
+<p><img src="/2023/01/12/SentinelSourceCode/image-20210925181359203.png" alt="image-20210925181359203"></p>
 <p>接下来，我们进入<code>ArrayMetric</code>类的<code>addPass</code>方法：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">addPass</span><span class="params">(<span class="type">int</span> count)</span> &#123;</span><br><span class="line">    <span class="comment">// 获取当前时间所在的时间窗</span></span><br><span class="line">    WindowWrap&lt;MetricBucket&gt; wrap = data.currentWindow();</span><br><span class="line">    <span class="comment">// 计数器 +1</span></span><br><span class="line">    wrap.value().addPass(count);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -754,14 +754,14 @@
 
 <p>那么，计数器如何知道当前所在的窗口是哪个呢？</p>
 <p>这里的data是一个LeapArray：</p>
-<p><img src="/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925181714605.png" alt="image-20210925181714605"></p>
+<p><img src="/2023/01/12/SentinelSourceCode/image-20210925181714605.png" alt="image-20210925181714605"></p>
 <p>LeapArray的四个属性：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title class_">LeapArray</span>&lt;T&gt; &#123;</span><br><span class="line">    <span class="comment">// 小窗口的时间长度，默认是500ms ，值 = intervalInMs / sampleCount</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="type">int</span> windowLengthInMs;</span><br><span class="line">    <span class="comment">// 滑动窗口内的 小窗口 数量，默认为 2</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="type">int</span> sampleCount;</span><br><span class="line">    <span class="comment">// 滑动窗口的时间间隔，默认为 1000ms</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="type">int</span> intervalInMs;</span><br><span class="line">    <span class="comment">// 滑动窗口的时间间隔，单位为秒，默认为 1</span></span><br><span class="line">    <span class="keyword">private</span> <span class="type">double</span> intervalInSecond;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 
 
 <p>LeapArray是一个环形数组，因为时间是无限的，数组长度不可能无限，因此数组中每一个格子放入一个时间窗（window），当数组放满后，角标归0，覆盖最初的window。</p>
-<p><img src="/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925182127206.png" alt="image-20210925182127206"></p>
+<p><img src="/2023/01/12/SentinelSourceCode/image-20210925182127206.png" alt="image-20210925182127206"></p>
 <p>因为滑动窗口最多分成sampleCount数量的小窗口，因此数组长度只要大于sampleCount，那么最近的一个滑动窗口内的2个小窗口就永远不会被覆盖，就不用担心旧数据被覆盖的问题了。</p>
 <p>我们跟入<code> data.currentWindow();</code>方法：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> WindowWrap&lt;T&gt; <span class="title function_">currentWindow</span><span class="params">(<span class="type">long</span> timeMillis)</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (timeMillis &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">	<span class="comment">// 计算当前时间对应的数组角标</span></span><br><span class="line">    <span class="type">int</span> <span class="variable">idx</span> <span class="operator">=</span> calculateTimeIdx(timeMillis);</span><br><span class="line">    <span class="comment">// 计算当前时间所在窗口的开始时间.</span></span><br><span class="line">    <span class="type">long</span> <span class="variable">windowStart</span> <span class="operator">=</span> calculateWindowStart(timeMillis);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">         * 先根据角标获取数组中保存的 oldWindow 对象，可能是旧数据，需要判断.</span></span><br><span class="line"><span class="comment">         *</span></span><br><span class="line"><span class="comment">         * (1) oldWindow 不存在, 说明是第一次，创建新 window并存入，然后返回即可</span></span><br><span class="line"><span class="comment">         * (2) oldWindow的 starTime = 本次请求的 windowStar, 说明正是要找的窗口，直接返回.</span></span><br><span class="line"><span class="comment">         * (3) oldWindow的 starTime &lt; 本次请求的 windowStar, 说明是旧数据，需要被覆盖，创建 </span></span><br><span class="line"><span class="comment">         *     新窗口，覆盖旧窗口</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">    <span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">        WindowWrap&lt;T&gt; old = array.get(idx);</span><br><span class="line">        <span class="keyword">if</span> (old == <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="comment">// 创建新 window</span></span><br><span class="line">            WindowWrap&lt;T&gt; window = <span class="keyword">new</span> <span class="title class_">WindowWrap</span>&lt;T&gt;(windowLengthInMs, windowStart, newEmptyBucket(timeMillis));</span><br><span class="line">            <span class="comment">// 基于CAS写入数组，避免线程安全问题</span></span><br><span class="line">            <span class="keyword">if</span> (array.compareAndSet(idx, <span class="literal">null</span>, window)) &#123;</span><br><span class="line">                <span class="comment">// 写入成功，返回新的 window</span></span><br><span class="line">                <span class="keyword">return</span> window;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="comment">// 写入失败，说明有并发更新，等待其它人更新完成即可</span></span><br><span class="line">                Thread.<span class="keyword">yield</span>();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (windowStart == old.windowStart()) &#123;</span><br><span class="line">            <span class="keyword">return</span> old;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (windowStart &gt; old.windowStart()) &#123;</span><br><span class="line">            <span class="keyword">if</span> (updateLock.tryLock()) &#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    <span class="comment">// 获取并发锁，覆盖旧窗口并返回</span></span><br><span class="line">                    <span class="keyword">return</span> resetWindowTo(old, windowStart);</span><br><span class="line">                &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">                    updateLock.unlock();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="comment">// 获取锁失败，等待其它线程处理就可以了</span></span><br><span class="line">                Thread.<span class="keyword">yield</span>();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (windowStart &lt; old.windowStart()) &#123;</span><br><span class="line">            <span class="comment">// 这种情况不应该存在，写这里只是以防万一。</span></span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">WindowWrap</span>&lt;T&gt;(windowLengthInMs, windowStart, newEmptyBucket(timeMillis));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -814,10 +814,10 @@
 
 
 <p>与我们之前分析的漏桶算法基本一致：</p>
-<p><img src="/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925210716675.png" alt="image-20210925210716675"></p>
+<p><img src="/2023/01/12/SentinelSourceCode/image-20210925210716675.png" alt="image-20210925210716675"></p>
 <h2 id="2-10-DegradeSlot"><a href="#2-10-DegradeSlot" class="headerlink" title="2.10.DegradeSlot"></a>2.10.DegradeSlot</h2><p>最后一关，就是降级规则判断了。</p>
 <p>Sentinel的降级是基于状态机来实现的：</p>
-<p><img src="/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925211020881.png" alt="image-20210925211020881"></p>
+<p><img src="/2023/01/12/SentinelSourceCode/image-20210925211020881.png" alt="image-20210925211020881"></p>
 <p>对应的实现在DegradeSlot类中，核心API：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">entry</span><span class="params">(Context context, ResourceWrapper resourceWrapper, DefaultNode node, </span></span><br><span class="line"><span class="params">                  <span class="type">int</span> count, <span class="type">boolean</span> prioritized, Object... args)</span> <span class="keyword">throws</span> Throwable &#123;</span><br><span class="line">    <span class="comment">// 熔断降级规则判断</span></span><br><span class="line">    performChecking(context, resourceWrapper);</span><br><span class="line">	<span class="comment">// 继续下一个slot</span></span><br><span class="line">    fireEntry(context, resourceWrapper, node, count, prioritized, args);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -843,9 +843,9 @@
 <li>从HALF_OPEN到CLOSED</li>
 </ul>
 <h3 id="2-10-2-触发断路器"><a href="#2-10-2-触发断路器" class="headerlink" title="2.10.2.触发断路器"></a>2.10.2.触发断路器</h3><p>请求经过所有插槽 后，一定会执行exit方法，而在DegradeSlot的exit方法中：</p>
-<p><img src="/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925213440686.png" alt="image-20210925213440686"></p>
+<p><img src="/2023/01/12/SentinelSourceCode/image-20210925213440686.png" alt="image-20210925213440686"></p>
 <p>会调用CircuitBreaker的onRequestComplete方法。而CircuitBreaker有两个实现：</p>
-<p><img src="/Sentinal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image-20210925213939035.png" alt="image-20210925213939035"></p>
+<p><img src="/2023/01/12/SentinelSourceCode/image-20210925213939035.png" alt="image-20210925213939035"></p>
 <p>我们这里以异常比例熔断为例来看，进入<code>ExceptionCircuitBreaker</code>的<code>onRequestComplete</code>方法：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onRequestComplete</span><span class="params">(Context context)</span> &#123;</span><br><span class="line">    <span class="comment">// 获取资源 Entry</span></span><br><span class="line">    <span class="type">Entry</span> <span class="variable">entry</span> <span class="operator">=</span> context.getCurEntry();</span><br><span class="line">    <span class="keyword">if</span> (entry == <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 尝试获取 资源中的 异常</span></span><br><span class="line">    <span class="type">Throwable</span> <span class="variable">error</span> <span class="operator">=</span> entry.getError();</span><br><span class="line">    <span class="comment">// 获取计数器，同样采用了滑动窗口来计数</span></span><br><span class="line">    <span class="type">SimpleErrorCounter</span> <span class="variable">counter</span> <span class="operator">=</span> stat.currentWindow().value();</span><br><span class="line">    <span class="keyword">if</span> (error != <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="comment">// 如果出现异常，则 error计数器 +1</span></span><br><span class="line">        counter.getErrorCount().add(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 不管是否出现异常，total计数器 +1</span></span><br><span class="line">    counter.getTotalCount().add(<span class="number">1</span>);</span><br><span class="line">	<span class="comment">// 判断异常比例是否超出阈值</span></span><br><span class="line">    handleStateChangeWhenThresholdExceeded(error);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 

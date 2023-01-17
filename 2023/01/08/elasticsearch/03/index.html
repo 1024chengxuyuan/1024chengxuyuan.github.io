@@ -25,60 +25,60 @@
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="分布式搜索引擎_数据统计与集群0.学习目标1.数据聚合**聚合（aggregations）**可以让我们极其方便的实现对数据的统计、分析、运算。例如：  什么品牌的手机最受欢迎？ 这些手机的平均价格、最高价格、最低价格？ 这些手机每月的销售情况如何？  实现这些统计功能的比数据库的sql要方便的多，而且查询速度非常快，可以实现近实时搜索效果。 1.1.聚合的种类聚合常见的有三类：  桶（Bucke">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723171948228.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723172404836.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723172917636.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723173057733.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723173215728.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723192605566.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723193730799.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723203915982.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723204936367.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723205932746.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723205722303.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723210126506.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723210427878.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723211829150.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723213546183.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723213759922.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723213917524.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723214021062.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723214758392.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723214931869.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723215140735.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723215518541.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723220237930.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723220354464.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723220511090.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723215850307.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723221843816.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20200104124440086-5602723.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20200104124551912.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723222732427.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723222812619.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723223008967.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723223629142.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723223804995.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723223845754.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723224000555.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723225006058.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723225034637.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723225112029.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723225227928.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723225342120.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723224354904.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723225436084.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723225809848.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723225945963.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723230020574.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723230055974.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723230216642.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/03/image-20210723171948228.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/03/image-20210723172404836.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/03/image-20210723172917636.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/03/image-20210723173057733.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/03/image-20210723173215728.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/03/image-20210723192605566.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/03/image-20210723193730799.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/03/image-20210723203915982.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/03/image-20210723204936367.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/03/image-20210723205932746.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/03/image-20210723205722303.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/03/image-20210723210126506.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/03/image-20210723210427878.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/03/image-20210723211829150.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/03/image-20210723213546183.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/03/image-20210723213759922.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/03/image-20210723213917524.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/03/image-20210723214021062.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/03/image-20210723214758392.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/03/image-20210723214931869.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/03/image-20210723215140735.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/03/image-20210723215518541.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/03/image-20210723220237930.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/03/image-20210723220354464.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/03/image-20210723220511090.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/03/image-20210723215850307.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/03/image-20210723221843816.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/03/image-20200104124440086-5602723.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/03/image-20200104124551912.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/03/image-20210723222732427.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/03/image-20210723222812619.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/03/image-20210723223008967.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/03/image-20210723223629142.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/03/image-20210723223804995.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/03/image-20210723223845754.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/03/image-20210723224000555.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/03/image-20210723225006058.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/03/image-20210723225034637.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/03/image-20210723225112029.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/03/image-20210723225227928.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/03/image-20210723225342120.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/03/image-20210723224354904.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/03/image-20210723225436084.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/03/image-20210723225809848.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/03/image-20210723225945963.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/03/image-20210723230020574.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/03/image-20210723230055974.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/03/image-20210723230216642.png">
 <meta property="article:published_time" content="2023-01-08T07:16:06.000Z">
 <meta property="article:modified_time" content="2023-01-08T07:40:32.569Z">
 <meta property="article:author" content="野生程序猿">
 <meta property="article:tag" content="elasticsearch">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://1024chengxuyuan.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723171948228.png">
+<meta name="twitter:image" content="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/03/image-20210723171948228.png">
   <!-- Canonical links -->
   <link rel="canonical" href="https://1024chengxuyuan.github.io/2023/01/08/elasticsearch/03/index.html">
   
@@ -480,7 +480,7 @@
 <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">GET /hotel/_search</span><br><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;size&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span>  <span class="comment">// 设置size为0，结果中不包含文档，只包含聚合结果</span></span><br><span class="line">  <span class="attr">&quot;aggs&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span> <span class="comment">// 定义聚合</span></span><br><span class="line">    <span class="attr">&quot;brandAgg&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span> <span class="comment">//给聚合起个名字</span></span><br><span class="line">      <span class="attr">&quot;terms&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span> <span class="comment">// 聚合的类型，按照品牌值聚合，所以选择term</span></span><br><span class="line">        <span class="attr">&quot;field&quot;</span><span class="punctuation">:</span> <span class="string">&quot;brand&quot;</span><span class="punctuation">,</span> <span class="comment">// 参与聚合的字段</span></span><br><span class="line">        <span class="attr">&quot;size&quot;</span><span class="punctuation">:</span> <span class="number">20</span> <span class="comment">// 希望获取的聚合结果数量</span></span><br><span class="line">      <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
 
 <p>结果如图：</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723171948228.png" alt="image-20210723171948228"></p>
+<p><img src="/2023/01/08/elasticsearch/03/image-20210723171948228.png" alt="image-20210723171948228"></p>
 <h3 id="1-2-2-聚合结果排序"><a href="#1-2-2-聚合结果排序" class="headerlink" title="1.2.2.聚合结果排序"></a>1.2.2.聚合结果排序</h3><p>默认情况下，Bucket聚合会统计Bucket内的文档数量，记为_count，并且按照_count降序排序。</p>
 <p>我们可以指定order属性，自定义聚合的排序方式：</p>
 <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">GET /hotel/_search</span><br><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;size&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span> </span><br><span class="line">  <span class="attr">&quot;aggs&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;brandAgg&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;terms&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;field&quot;</span><span class="punctuation">:</span> <span class="string">&quot;brand&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;order&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">          <span class="attr">&quot;_count&quot;</span><span class="punctuation">:</span> <span class="string">&quot;asc&quot;</span> <span class="comment">// 按照_count升序排列</span></span><br><span class="line">        <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;size&quot;</span><span class="punctuation">:</span> <span class="number">20</span></span><br><span class="line">      <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
@@ -494,7 +494,7 @@
 
 
 <p>这次，聚合得到的品牌明显变少了：</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723172404836.png" alt="image-20210723172404836"></p>
+<p><img src="/2023/01/08/elasticsearch/03/image-20210723172404836.png" alt="image-20210723172404836"></p>
 <h3 id="1-2-4-Metric聚合语法"><a href="#1-2-4-Metric聚合语法" class="headerlink" title="1.2.4.Metric聚合语法"></a>1.2.4.Metric聚合语法</h3><p>上节课，我们对酒店按照品牌分组，形成了一个个桶。现在我们需要对桶内的酒店做运算，获取每个品牌的用户评分的min、max、avg等值。</p>
 <p>这就要用到Metric聚合了，例如stat聚合：就可以获取min、max、avg等结果。</p>
 <p>语法如下：</p>
@@ -504,7 +504,7 @@
 
 <p>这次的score_stats聚合是在brandAgg的聚合内部嵌套的子聚合。因为我们需要在每个桶分别计算。</p>
 <p>另外，我们还可以给聚合结果做个排序，例如按照每个桶的酒店平均分做排序：</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723172917636.png" alt="image-20210723172917636"></p>
+<p><img src="/2023/01/08/elasticsearch/03/image-20210723172917636.png" alt="image-20210723172917636"></p>
 <h3 id="1-2-5-小结"><a href="#1-2-5-小结" class="headerlink" title="1.2.5.小结"></a>1.2.5.小结</h3><p>aggs代表聚合，与query同级，此时query的作用是？</p>
 <ul>
 <li>限定聚合的的文档范围</li>
@@ -523,11 +523,11 @@
 </ul>
 <h2 id="1-3-RestAPI实现聚合"><a href="#1-3-RestAPI实现聚合" class="headerlink" title="1.3.RestAPI实现聚合"></a>1.3.RestAPI实现聚合</h2><h3 id="1-3-1-API语法"><a href="#1-3-1-API语法" class="headerlink" title="1.3.1.API语法"></a>1.3.1.API语法</h3><p>聚合条件与query条件同级别，因此需要使用request.source()来指定聚合条件。</p>
 <p>聚合条件的语法：</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723173057733.png" alt="image-20210723173057733"></p>
+<p><img src="/2023/01/08/elasticsearch/03/image-20210723173057733.png" alt="image-20210723173057733"></p>
 <p>聚合的结果也与查询结果不同，API也比较特殊。不过同样是JSON逐层解析：</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723173215728.png" alt="image-20210723173215728"></p>
+<p><img src="/2023/01/08/elasticsearch/03/image-20210723173215728.png" alt="image-20210723173215728"></p>
 <h3 id="1-3-2-业务需求"><a href="#1-3-2-业务需求" class="headerlink" title="1.3.2.业务需求"></a>1.3.2.业务需求</h3><p>需求：搜索页面的品牌、城市等信息不应该是在页面写死，而是通过聚合索引库中的酒店数据得来的：</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723192605566.png" alt="image-20210723192605566"></p>
+<p><img src="/2023/01/08/elasticsearch/03/image-20210723192605566.png" alt="image-20210723192605566"></p>
 <p>分析：</p>
 <p>目前，页面的城市列表、星级列表、品牌列表都是写死的，并不会随着搜索结果的变化而变化。但是用户搜索条件改变时，搜索结果会跟着变化。</p>
 <p>例如：用户搜索“东方明珠”，那搜索的酒店肯定是在上海东方明珠附近，因此，城市只能是上海，此时城市列表中就不应该显示北京、深圳、杭州这些信息了。</p>
@@ -536,10 +536,10 @@
 <p>使用聚合功能，利用Bucket聚合，对搜索结果中的文档基于品牌分组、基于城市分组，就能得知包含哪些品牌、哪些城市了。</p>
 <p>因为是对搜索结果聚合，因此聚合是<strong>限定范围的聚合</strong>，也就是说聚合的限定条件跟搜索文档的条件一致。</p>
 <p>查看浏览器可以发现，前端其实已经发出了这样的一个请求：</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723193730799.png" alt="image-20210723193730799"></p>
+<p><img src="/2023/01/08/elasticsearch/03/image-20210723193730799.png" alt="image-20210723193730799"></p>
 <p>请求<strong>参数与搜索文档的参数完全一致</strong>。</p>
 <p>返回值类型就是页面要展示的最终结果：</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723203915982.png" alt="image-20210723203915982"></p>
+<p><img src="/2023/01/08/elasticsearch/03/image-20210723203915982.png" alt="image-20210723203915982"></p>
 <p>结果是一个Map结构：</p>
 <ul>
 <li>key是字符串，城市、星级、品牌、价格</li>
@@ -573,13 +573,13 @@
 
 
 <h1 id="2-自动补全"><a href="#2-自动补全" class="headerlink" title="2.自动补全"></a>2.自动补全</h1><p>当用户在搜索框输入字符时，我们应该提示出与该字符有关的搜索项，如图：</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723204936367.png" alt="image-20210723204936367"></p>
+<p><img src="/2023/01/08/elasticsearch/03/image-20210723204936367.png" alt="image-20210723204936367"></p>
 <p>这种根据用户输入的字母，提示完整词条的功能，就是自动补全了。</p>
 <p>因为需要根据拼音字母来推断，因此要用到拼音分词功能。</p>
 <h2 id="2-1-拼音分词器"><a href="#2-1-拼音分词器" class="headerlink" title="2.1.拼音分词器"></a>2.1.拼音分词器</h2><p>要实现根据字母做补全，就必须对文档按照拼音分词。在GitHub上恰好有elasticsearch的拼音分词插件。地址：<a target="_blank" rel="noopener" href="https://github.com/medcl/elasticsearch-analysis-pinyin">https://github.com/medcl/elasticsearch-analysis-pinyin</a></p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723205932746.png" alt="image-20210723205932746"></p>
+<p><img src="/2023/01/08/elasticsearch/03/image-20210723205932746.png" alt="image-20210723205932746"></p>
 <p>课前资料中也提供了拼音分词器的安装包：</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723205722303.png" alt="image-20210723205722303"> </p>
+<p><img src="/2023/01/08/elasticsearch/03/image-20210723205722303.png" alt="image-20210723205722303"> </p>
 <p>安装方式与IK分词器一样，分三步：</p>
 <p>​	①解压</p>
 <p>​	②上传到虚拟机中，elasticsearch的plugin目录</p>
@@ -590,7 +590,7 @@
 <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">POST /_analyze</span><br><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;text&quot;</span><span class="punctuation">:</span> <span class="string">&quot;如家酒店还不错&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;analyzer&quot;</span><span class="punctuation">:</span> <span class="string">&quot;pinyin&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
 
 <p>结果：</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723210126506.png" alt="image-20210723210126506"> </p>
+<p><img src="/2023/01/08/elasticsearch/03/image-20210723210126506.png" alt="image-20210723210126506"> </p>
 <h2 id="2-2-自定义分词器"><a href="#2-2-自定义分词器" class="headerlink" title="2.2.自定义分词器"></a>2.2.自定义分词器</h2><p>默认的拼音分词器会将每个汉字单独分为拼音，而我们希望的是每个词条形成一组拼音，需要对拼音分词器做个性化定制，形成自定义分词器。</p>
 <p>elasticsearch中分词器（analyzer）的组成包含三部分：</p>
 <ul>
@@ -599,14 +599,14 @@
 <li>tokenizer filter：将tokenizer输出的词条做进一步处理。例如大小写转换、同义词处理、拼音处理等</li>
 </ul>
 <p>文档分词时会依次由这三部分来处理文档：</p>
-<p>   <img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723210427878.png" alt="image-20210723210427878"></p>
+<p>   <img src="/2023/01/08/elasticsearch/03/image-20210723210427878.png" alt="image-20210723210427878"></p>
 <p>声明自定义分词器的语法如下：</p>
 <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">PUT /test</span><br><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;settings&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;analysis&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;analyzer&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span> <span class="comment">// 自定义分词器</span></span><br><span class="line">        <span class="attr">&quot;my_analyzer&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span>  <span class="comment">// 分词器名称</span></span><br><span class="line">          <span class="attr">&quot;tokenizer&quot;</span><span class="punctuation">:</span> <span class="string">&quot;ik_max_word&quot;</span><span class="punctuation">,</span></span><br><span class="line">          <span class="attr">&quot;filter&quot;</span><span class="punctuation">:</span> <span class="string">&quot;py&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line">      <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;filter&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span> <span class="comment">// 自定义tokenizer filter</span></span><br><span class="line">        <span class="attr">&quot;py&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span> <span class="comment">// 过滤器名称</span></span><br><span class="line">          <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;pinyin&quot;</span><span class="punctuation">,</span> <span class="comment">// 过滤器类型，这里是pinyin</span></span><br><span class="line">		  <span class="attr">&quot;keep_full_pinyin&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">          <span class="attr">&quot;keep_joined_full_pinyin&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">          <span class="attr">&quot;keep_original&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">          <span class="attr">&quot;limit_first_letter_length&quot;</span><span class="punctuation">:</span> <span class="number">16</span><span class="punctuation">,</span></span><br><span class="line">          <span class="attr">&quot;remove_duplicated_term&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">          <span class="attr">&quot;none_chinese_pinyin_tokenize&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line">      <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;mappings&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;properties&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;text&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;analyzer&quot;</span><span class="punctuation">:</span> <span class="string">&quot;my_analyzer&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;search_analyzer&quot;</span><span class="punctuation">:</span> <span class="string">&quot;ik_smart&quot;</span></span><br><span class="line">      <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
 
 
 
 <p>测试：</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723211829150.png" alt="image-20210723211829150"></p>
+<p><img src="/2023/01/08/elasticsearch/03/image-20210723211829150.png" alt="image-20210723211829150"></p>
 <p>总结：</p>
 <p>如何使用拼音分词器？</p>
 <ul>
@@ -684,13 +684,13 @@
 
 
 <h3 id="2-4-3-重新导入"><a href="#2-4-3-重新导入" class="headerlink" title="2.4.3.重新导入"></a>2.4.3.重新导入</h3><p>重新执行之前编写的导入数据功能，可以看到新的酒店数据中包含了suggestion：</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723213546183.png" alt="image-20210723213546183"></p>
+<p><img src="/2023/01/08/elasticsearch/03/image-20210723213546183.png" alt="image-20210723213546183"></p>
 <h3 id="2-4-4-自动补全查询的JavaAPI"><a href="#2-4-4-自动补全查询的JavaAPI" class="headerlink" title="2.4.4.自动补全查询的JavaAPI"></a>2.4.4.自动补全查询的JavaAPI</h3><p>之前我们学习了自动补全查询的DSL，而没有学习对应的JavaAPI，这里给出一个示例：</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723213759922.png" alt="image-20210723213759922"></p>
+<p><img src="/2023/01/08/elasticsearch/03/image-20210723213759922.png" alt="image-20210723213759922"></p>
 <p>而自动补全的结果也比较特殊，解析的代码如下：</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723213917524.png" alt="image-20210723213917524"></p>
+<p><img src="/2023/01/08/elasticsearch/03/image-20210723213917524.png" alt="image-20210723213917524"></p>
 <h3 id="2-4-5-实现搜索框自动补全"><a href="#2-4-5-实现搜索框自动补全" class="headerlink" title="2.4.5.实现搜索框自动补全"></a>2.4.5.实现搜索框自动补全</h3><p>查看前端页面，可以发现当我们在输入框键入时，前端会发起ajax请求：</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723214021062.png" alt="image-20210723214021062"></p>
+<p><img src="/2023/01/08/elasticsearch/03/image-20210723214021062.png" alt="image-20210723214021062"></p>
 <p>返回值是补全词条的集合，类型为<code>List&lt;String&gt;</code></p>
 <p>1）在<code>cn.itcast.hotel.web</code>包下的<code>HotelController</code>中添加新接口，接收新的请求：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@GetMapping(&quot;suggestion&quot;)</span></span><br><span class="line"><span class="keyword">public</span> List&lt;String&gt; <span class="title function_">getSuggestions</span><span class="params">(<span class="meta">@RequestParam(&quot;key&quot;)</span> String prefix)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> hotelService.getSuggestions(prefix);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -710,7 +710,7 @@
 
 
 <h1 id="3-数据同步"><a href="#3-数据同步" class="headerlink" title="3.数据同步"></a>3.数据同步</h1><p>elasticsearch中的酒店数据来自于mysql数据库，因此mysql数据发生改变时，elasticsearch也必须跟着改变，这个就是elasticsearch与mysql之间的<strong>数据同步</strong>。</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723214758392.png" alt="image-20210723214758392"></p>
+<p><img src="/2023/01/08/elasticsearch/03/image-20210723214758392.png" alt="image-20210723214758392"></p>
 <h2 id="3-1-思路分析"><a href="#3-1-思路分析" class="headerlink" title="3.1.思路分析"></a>3.1.思路分析</h2><p>常见的数据同步方案有三种：</p>
 <ul>
 <li>同步调用</li>
@@ -718,21 +718,21 @@
 <li>监听binlog</li>
 </ul>
 <h3 id="3-1-1-同步调用"><a href="#3-1-1-同步调用" class="headerlink" title="3.1.1.同步调用"></a>3.1.1.同步调用</h3><p>方案一：同步调用</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723214931869.png" alt="image-20210723214931869"></p>
+<p><img src="/2023/01/08/elasticsearch/03/image-20210723214931869.png" alt="image-20210723214931869"></p>
 <p>基本步骤如下：</p>
 <ul>
 <li>hotel-demo对外提供接口，用来修改elasticsearch中的数据</li>
 <li>酒店管理服务在完成数据库操作后，直接调用hotel-demo提供的接口，</li>
 </ul>
 <h3 id="3-1-2-异步通知"><a href="#3-1-2-异步通知" class="headerlink" title="3.1.2.异步通知"></a>3.1.2.异步通知</h3><p>方案二：异步通知</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723215140735.png" alt="image-20210723215140735"></p>
+<p><img src="/2023/01/08/elasticsearch/03/image-20210723215140735.png" alt="image-20210723215140735"></p>
 <p>流程如下：</p>
 <ul>
 <li>hotel-admin对mysql数据库数据完成增、删、改后，发送MQ消息</li>
 <li>hotel-demo监听MQ，接收到消息后完成elasticsearch数据修改</li>
 </ul>
 <h3 id="3-1-3-监听binlog"><a href="#3-1-3-监听binlog" class="headerlink" title="3.1.3.监听binlog"></a>3.1.3.监听binlog</h3><p>方案三：监听binlog</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723215518541.png" alt="image-20210723215518541"></p>
+<p><img src="/2023/01/08/elasticsearch/03/image-20210723215518541.png" alt="image-20210723215518541"></p>
 <p>流程如下：</p>
 <ul>
 <li>给mysql开启binlog功能</li>
@@ -769,13 +769,13 @@
 </li>
 </ul>
 <h3 id="3-2-2-导入demo"><a href="#3-2-2-导入demo" class="headerlink" title="3.2.2.导入demo"></a>3.2.2.导入demo</h3><p>导入课前资料提供的hotel-admin项目：</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723220237930.png" alt="image-20210723220237930"></p>
+<p><img src="/2023/01/08/elasticsearch/03/image-20210723220237930.png" alt="image-20210723220237930"></p>
 <p>运行后，访问 <a target="_blank" rel="noopener" href="http://localhost:8099/">http://localhost:8099</a></p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723220354464.png" alt="image-20210723220354464"></p>
+<p><img src="/2023/01/08/elasticsearch/03/image-20210723220354464.png" alt="image-20210723220354464"></p>
 <p>其中包含了酒店的CRUD功能：</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723220511090.png" alt="image-20210723220511090"></p>
+<p><img src="/2023/01/08/elasticsearch/03/image-20210723220511090.png" alt="image-20210723220511090"></p>
 <h3 id="3-2-3-声明交换机、队列"><a href="#3-2-3-声明交换机、队列" class="headerlink" title="3.2.3.声明交换机、队列"></a>3.2.3.声明交换机、队列</h3><p>MQ结构如图：</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723215850307.png" alt="image-20210723215850307"></p>
+<p><img src="/2023/01/08/elasticsearch/03/image-20210723215850307.png" alt="image-20210723215850307"></p>
 <h4 id="1）引入依赖"><a href="#1）引入依赖" class="headerlink" title="1）引入依赖"></a>1）引入依赖</h4><p>在hotel-admin、hotel-demo中引入rabbitmq的依赖：</p>
 <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--amqp--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-amqp<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
@@ -792,7 +792,7 @@
 
 
 <h3 id="3-2-4-发送MQ消息"><a href="#3-2-4-发送MQ消息" class="headerlink" title="3.2.4.发送MQ消息"></a>3.2.4.发送MQ消息</h3><p>在hotel-admin中的增、删、改业务中分别发送MQ消息：</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723221843816.png" alt="image-20210723221843816"></p>
+<p><img src="/2023/01/08/elasticsearch/03/image-20210723221843816.png" alt="image-20210723221843816"></p>
 <h3 id="3-2-5-接收MQ消息"><a href="#3-2-5-接收MQ消息" class="headerlink" title="3.2.5.接收MQ消息"></a>3.2.5.接收MQ消息</h3><p>hotel-demo接收到MQ消息要做的事情包括：</p>
 <ul>
 <li>新增消息：根据传递的hotel的id查询hotel信息，然后新增一条数据到索引库</li>
@@ -829,7 +829,7 @@
 </li>
 <li><p><font color="red">分片（shard）</font>：索引可以被拆分为不同的部分进行存储，称为分片。在集群环境下，一个索引的不同分片可以拆分到不同的节点中</p>
 <p>解决问题：数据量太大，单点存储量有限的问题。</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20200104124440086-5602723.png" alt="image-20200104124440086"></p>
+<p><img src="/2023/01/08/elasticsearch/03/image-20200104124440086-5602723.png" alt="image-20200104124440086"></p>
 <blockquote>
 <p>此处，我们把数据分成3片：shard0、shard1、shard2</p>
 </blockquote>
@@ -848,7 +848,7 @@
 <li>然后对每个分片进行备份，放到对方节点，完成互相备份</li>
 </ul>
 <p>这样可以大大减少所需要的服务节点数量，如图，我们以3分片，每个分片备份一份为例：</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20200104124551912.png" alt="image-20200104124551912"></p>
+<p><img src="/2023/01/08/elasticsearch/03/image-20200104124551912.png" alt="image-20200104124551912"></p>
 <p>现在，每个分片都有1个备份，存储在3个节点：</p>
 <ul>
 <li>node0：保存了分片0和1</li>
@@ -856,11 +856,11 @@
 <li>node2：保存了分片1和2</li>
 </ul>
 <h2 id="4-1-搭建ES集群"><a href="#4-1-搭建ES集群" class="headerlink" title="4.1.搭建ES集群"></a>4.1.搭建ES集群</h2><p>参考课前资料的文档：</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723222732427.png" alt="image-20210723222732427"> </p>
+<p><img src="/2023/01/08/elasticsearch/03/image-20210723222732427.png" alt="image-20210723222732427"> </p>
 <p>其中的第四章节：</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723222812619.png" alt="image-20210723222812619"> </p>
+<p><img src="/2023/01/08/elasticsearch/03/image-20210723222812619.png" alt="image-20210723222812619"> </p>
 <h2 id="4-2-集群脑裂问题"><a href="#4-2-集群脑裂问题" class="headerlink" title="4.2.集群脑裂问题"></a>4.2.集群脑裂问题</h2><h3 id="4-2-1-集群职责划分"><a href="#4-2-1-集群职责划分" class="headerlink" title="4.2.1.集群职责划分"></a>4.2.1.集群职责划分</h3><p>elasticsearch中集群节点有不同的职责划分：</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723223008967.png" alt="image-20210723223008967"></p>
+<p><img src="/2023/01/08/elasticsearch/03/image-20210723223008967.png" alt="image-20210723223008967"></p>
 <p>默认情况下，集群中的任何一个节点都同时具备上述四种角色。</p>
 <p>但是真实的集群一定要将集群职责分离：</p>
 <ul>
@@ -870,15 +870,15 @@
 </ul>
 <p>职责分离可以让我们根据不同节点的需求分配不同的硬件去部署。而且避免业务之间的互相干扰。</p>
 <p>一个典型的es集群职责划分如图：</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723223629142.png" alt="image-20210723223629142"></p>
+<p><img src="/2023/01/08/elasticsearch/03/image-20210723223629142.png" alt="image-20210723223629142"></p>
 <h3 id="4-2-2-脑裂问题"><a href="#4-2-2-脑裂问题" class="headerlink" title="4.2.2.脑裂问题"></a>4.2.2.脑裂问题</h3><p>脑裂是因为集群中的节点失联导致的。</p>
 <p>例如一个集群中，主节点与其它节点失联：</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723223804995.png" alt="image-20210723223804995"></p>
+<p><img src="/2023/01/08/elasticsearch/03/image-20210723223804995.png" alt="image-20210723223804995"></p>
 <p>此时，node2和node3认为node1宕机，就会重新选主：</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723223845754.png" alt="image-20210723223845754"></p>
+<p><img src="/2023/01/08/elasticsearch/03/image-20210723223845754.png" alt="image-20210723223845754"></p>
 <p>当node3当选后，集群继续对外提供服务，node2和node3自成集群，node1自成集群，两个集群数据不同步，出现数据差异。</p>
 <p>当网络恢复后，因为集群中有两个master节点，集群状态的不一致，出现脑裂的情况：</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723224000555.png" alt="image-20210723224000555"></p>
+<p><img src="/2023/01/08/elasticsearch/03/image-20210723224000555.png" alt="image-20210723224000555"></p>
 <p>解决脑裂的方案是，要求选票超过 ( eligible节点数量 + 1 ）&#x2F; 2 才能当选为主，因此eligible节点数量最好是奇数。对应配置项是discovery.zen.minimum_master_nodes，在es7.0以后，已经成为默认配置，因此一般不会发生脑裂问题</p>
 <p>例如：3个节点形成的集群，选票必须超过 （3 + 1） &#x2F; 2 ，也就是2票。node3得到node2和node3的选票，当选为主。node1只有自己1票，没有当选。集群中依然只有1个主节点，没有出现脑裂。</p>
 <h3 id="4-2-3-小结"><a href="#4-2-3-小结" class="headerlink" title="4.2.3.小结"></a>4.2.3.小结</h3><p>master eligible节点的作用是什么？</p>
@@ -899,22 +899,22 @@
 </ul>
 <h2 id="4-3-集群分布式存储"><a href="#4-3-集群分布式存储" class="headerlink" title="4.3.集群分布式存储"></a>4.3.集群分布式存储</h2><p>当新增文档时，应该保存到不同分片，保证数据均衡，那么coordinating node如何确定数据该存储到哪个分片呢？</p>
 <h3 id="4-3-1-分片存储测试"><a href="#4-3-1-分片存储测试" class="headerlink" title="4.3.1.分片存储测试"></a>4.3.1.分片存储测试</h3><p>插入三条数据：</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723225006058.png" alt="image-20210723225006058"></p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723225034637.png" alt="image-20210723225034637"></p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723225112029.png" alt="image-20210723225112029"></p>
+<p><img src="/2023/01/08/elasticsearch/03/image-20210723225006058.png" alt="image-20210723225006058"></p>
+<p><img src="/2023/01/08/elasticsearch/03/image-20210723225034637.png" alt="image-20210723225034637"></p>
+<p><img src="/2023/01/08/elasticsearch/03/image-20210723225112029.png" alt="image-20210723225112029"></p>
 <p>测试可以看到，三条数据分别在不同分片：</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723225227928.png" alt="image-20210723225227928"></p>
+<p><img src="/2023/01/08/elasticsearch/03/image-20210723225227928.png" alt="image-20210723225227928"></p>
 <p>结果：</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723225342120.png" alt="image-20210723225342120"></p>
+<p><img src="/2023/01/08/elasticsearch/03/image-20210723225342120.png" alt="image-20210723225342120"></p>
 <h3 id="4-3-2-分片存储原理"><a href="#4-3-2-分片存储原理" class="headerlink" title="4.3.2.分片存储原理"></a>4.3.2.分片存储原理</h3><p>elasticsearch会通过hash算法来计算文档应该存储到哪个分片：</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723224354904.png" alt="image-20210723224354904"></p>
+<p><img src="/2023/01/08/elasticsearch/03/image-20210723224354904.png" alt="image-20210723224354904"></p>
 <p>说明：</p>
 <ul>
 <li>_routing默认是文档的id</li>
 <li>算法与分片数量有关，因此索引库一旦创建，分片数量不能修改！</li>
 </ul>
 <p>新增文档的流程如下：</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723225436084.png" alt="image-20210723225436084"></p>
+<p><img src="/2023/01/08/elasticsearch/03/image-20210723225436084.png" alt="image-20210723225436084"></p>
 <p>解读：</p>
 <ul>
 <li>1）新增一个id&#x3D;1的文档</li>
@@ -931,17 +931,17 @@
 <li><p>gather phase：聚集阶段，coordinating node汇总data node的搜索结果，并处理为最终结果集返回给用户</p>
 </li>
 </ul>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723225809848.png" alt="image-20210723225809848"></p>
+<p><img src="/2023/01/08/elasticsearch/03/image-20210723225809848.png" alt="image-20210723225809848"></p>
 <h2 id="4-5-集群故障转移"><a href="#4-5-集群故障转移" class="headerlink" title="4.5.集群故障转移"></a>4.5.集群故障转移</h2><p>集群的master节点会监控集群中的节点状态，如果发现有节点宕机，会立即将宕机节点的分片数据迁移到其它节点，确保数据安全，这个叫做故障转移。</p>
 <p>1）例如一个集群结构如图：</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723225945963.png" alt="image-20210723225945963"></p>
+<p><img src="/2023/01/08/elasticsearch/03/image-20210723225945963.png" alt="image-20210723225945963"></p>
 <p>现在，node1是主节点，其它两个节点是从节点。</p>
 <p>2）突然，node1发生了故障：</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723230020574.png" alt="image-20210723230020574"></p>
+<p><img src="/2023/01/08/elasticsearch/03/image-20210723230020574.png" alt="image-20210723230020574"></p>
 <p>宕机后的第一件事，需要重新选主，例如选中了node2：</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723230055974.png" alt="image-20210723230055974"></p>
+<p><img src="/2023/01/08/elasticsearch/03/image-20210723230055974.png" alt="image-20210723230055974"></p>
 <p>node2成为主节点后，会检测集群监控状态，发现：shard-1、shard-0没有副本节点。因此需要将node1上的数据迁移到node2、node3：</p>
-<p><img src="/%E5%88%86%E5%B8%83%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E_%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E4%B8%8E%E9%9B%86%E7%BE%A4/image-20210723230216642.png" alt="image-20210723230216642"></p>
+<p><img src="/2023/01/08/elasticsearch/03/image-20210723230216642.png" alt="image-20210723230216642"></p>
 
 			
 			<div id="toc" class="toc-article">

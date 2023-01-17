@@ -25,34 +25,34 @@
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="Redis核心原理Redis的单线程和高性能Redis 单线程为什么还能这么快？因为它所有的数据都在内存中，所有的运算都是内存级别的运算，而且单线程避免了多线程的切换性 能损耗问题。正因为 Redis 是单线程，所以要小心使用 Redis 指令，对于那些耗时的指令(比如 keys)，一定要谨慎使用，一不小心就可能会导致 Redis 卡顿。  Redis 单线程如何处理那么多的并发客户端连接？Red">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/07/04/redis1/11.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/07/04/redis1/12.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/07/04/redis1/13.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/07/04/redis1/14.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/07/04/redis1/15.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/07/04/redis1/16.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/07/04/redis1/17.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/07/04/redis1/18.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/07/04/redis1/19.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/07/04/redis1/20.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/07/04/redis1/2.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/07/04/redis1/1.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/07/04/redis1/3.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/07/04/redis1/4.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/07/04/redis1/5.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/07/04/redis1/6.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/07/04/redis1/7.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/07/04/redis1/8.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/07/04/redis1/9.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/07/04/redis1/10.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/07/04/redis1/22.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/07/04/redis1/07/04/redis1/11.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/07/04/redis1/07/04/redis1/12.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/07/04/redis1/07/04/redis1/13.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/07/04/redis1/07/04/redis1/14.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/07/04/redis1/07/04/redis1/15.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/07/04/redis1/07/04/redis1/16.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/07/04/redis1/07/04/redis1/17.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/07/04/redis1/07/04/redis1/18.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/07/04/redis1/07/04/redis1/19.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/07/04/redis1/07/04/redis1/20.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/07/04/redis1/07/04/redis1/2.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/07/04/redis1/07/04/redis1/1.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/07/04/redis1/07/04/redis1/3.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/07/04/redis1/07/04/redis1/4.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/07/04/redis1/07/04/redis1/5.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/07/04/redis1/07/04/redis1/6.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/07/04/redis1/07/04/redis1/7.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/07/04/redis1/07/04/redis1/8.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/07/04/redis1/07/04/redis1/9.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/07/04/redis1/07/04/redis1/10.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/07/04/redis1/07/04/redis1/22.png">
 <meta property="article:published_time" content="2020-07-04T08:25:14.000Z">
 <meta property="article:modified_time" content="2022-01-07T08:18:58.000Z">
 <meta property="article:author" content="野生程序猿">
 <meta property="article:tag" content="Redis">
 <meta property="article:tag" content="缓存">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://1024chengxuyuan.github.io/2020/07/04/redis1/11.png">
+<meta name="twitter:image" content="https://1024chengxuyuan.github.io/2020/07/04/redis1/07/04/redis1/11.png">
   <!-- Canonical links -->
   <link rel="canonical" href="https://1024chengxuyuan.github.io/2020/07/04/redis1/index.html">
   
@@ -414,16 +414,16 @@
         <h1 id="Redis核心原理"><a href="#Redis核心原理" class="headerlink" title="Redis核心原理"></a>Redis核心原理</h1><h2 id="Redis的单线程和高性能"><a href="#Redis的单线程和高性能" class="headerlink" title="Redis的单线程和高性能"></a>Redis的单线程和高性能</h2><h3 id="Redis-单线程为什么还能这么快？"><a href="#Redis-单线程为什么还能这么快？" class="headerlink" title="Redis 单线程为什么还能这么快？"></a>Redis 单线程为什么还能这么快？</h3><p>因为它所有的数据都在<strong>内存</strong>中，所有的运算都是内存级别的运算，而且单线程避免了多线程的切换性 能损耗问题。正因为 Redis 是单线程，所以要小心使用 Redis 指令，对于那些耗时的指令(比如 keys)，一定要谨慎使用，一不小心就可能会导致 Redis 卡顿。 </p>
 <h3 id="Redis-单线程如何处理那么多的并发客户端连接？"><a href="#Redis-单线程如何处理那么多的并发客户端连接？" class="headerlink" title="Redis 单线程如何处理那么多的并发客户端连接？"></a>Redis 单线程如何处理那么多的并发客户端连接？</h3><p>Redis的<strong>IO多路复用</strong>：redis利用epoll来实现IO多路复用，将连接信息和事件放到队列中，依次放到 文件事件分派器，事件分派器将事件分发给事件处理器。 </p>
 <p>Nginx也是采用IO多路复用原理解决C10K问题 </p>
-<p><img src="/2020/07/04/redis1/11.png" alt="11"></p>
+<p><img src="/2020/07/04/redis1/07/04/redis1/11.png" alt="11"></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 查看redis支持的最大连接数，在redis.conf文件中可修改，# maxclients 10000 </span><br><span class="line">127.0.0.1:6379&gt; CONFIG GET maxclients </span><br><span class="line">##1) &quot;maxclients&quot; </span><br><span class="line">##2) &quot;10000&quot; </span><br></pre></td></tr></table></figure>
 
 <h3 id="其他高级命令"><a href="#其他高级命令" class="headerlink" title="其他高级命令"></a>其他高级命令</h3><p><strong>keys：全量遍历键</strong>，用来列出所有满足特定正则字符串规则的key，当redis数据量比较大时， 性能比较差，要避免使用</p>
-<p><img src="/2020/07/04/redis1/12.png" alt="11"></p>
+<p><img src="/2020/07/04/redis1/07/04/redis1/12.png" alt="11"></p>
 <p><strong>scan：渐进式遍历键</strong> </p>
 <p>SCAN cursor [MATCH pattern] [COUNT count] </p>
 <p>scan 参数提供了三个参数，第一个是 cursor 整数值，第二个是 key 的正则模式，第三个是一次遍 历的key的数量，并不是符合条件的结果数量。第一次遍历时，cursor 值为 0，然后将返回结果中第 一个整数值作为下一次遍历的 cursor。一直遍历到返回的 cursor 值为 0 时结束。</p>
-<p><img src="/2020/07/04/redis1/13.png" alt="11"></p>
-<p><img src="/2020/07/04/redis1/14.png" alt="11"></p>
+<p><img src="/2020/07/04/redis1/07/04/redis1/13.png" alt="11"></p>
+<p><img src="/2020/07/04/redis1/07/04/redis1/14.png" alt="11"></p>
 <p><strong>Info：</strong>查看redis服务运行信息，分为 9 大块，每个块都有非常多的参数，这 9 个块分别是: </p>
 <p>Server 服务器运行的环境参数 </p>
 <p>Clients 客户端相关信息 </p>
@@ -434,7 +434,7 @@
 <p>CPU CPU 使用情况 </p>
 <p>Cluster 集群信息 </p>
 <p>KeySpace 键值对统计数量信息</p>
-<p><img src="/2020/07/04/redis1/15.png" alt="11"></p>
+<p><img src="/2020/07/04/redis1/07/04/redis1/15.png" alt="11"></p>
 <h1 id="Redis持久化"><a href="#Redis持久化" class="headerlink" title="Redis持久化"></a>Redis持久化</h1><p><strong>RDB快照（snapshot）</strong> </p>
 <p>在默认情况下， Redis 将内存数据库快照保存在名字为 dump.rdb 的二进制文件中。 </p>
 <p>你可以对 Redis 进行设置， 让它在“ N 秒内数据集至少有 M 个改动”这一条件被满足时， 自动保存一次数据集。 </p>
@@ -545,8 +545,8 @@
 <p>如果开启了混合持久化，<strong>AOF在重写时</strong>，不再是单纯将内存数据转换为RESP命令写入AOF文件，而是将重写<strong>这一刻之前</strong>的内存做RDB快照处理，并且将RDB快照内容和<strong>增量的</strong>AOF修改内存数据的命令存在一起，都写入新的AOF文件，新的文件一开始不叫appendonly.aof，等到重写完新的AOF文件才会进行改名，原子的覆盖原有的AOF文件，完成新旧两个AOF文件的替换。 </p>
 <p>于是在 Redis 重启的时候，可以先加载 RDB 的内容，然后再重放增量 AOF 日志就可以完全替代之前的AOF 全量文件重放，因此重启效率大幅得到提升。 </p>
 <p>混合持久化AOF文件结构 </p>
-<p><img src="/2020/07/04/redis1/16.png" alt="11"></p>
-<h1 id="Redis主从架构"><a href="#Redis主从架构" class="headerlink" title="Redis主从架构"></a><strong>Redis主从架构</strong></h1><p><img src="/2020/07/04/redis1/17.png" alt="11"></p>
+<p><img src="/2020/07/04/redis1/07/04/redis1/16.png" alt="11"></p>
+<h1 id="Redis主从架构"><a href="#Redis主从架构" class="headerlink" title="Redis主从架构"></a><strong>Redis主从架构</strong></h1><p><img src="/2020/07/04/redis1/07/04/redis1/17.png" alt="11"></p>
 <p><strong>Redis主从工作原理</strong> </p>
 <p>如果你为master配置了一个slave，不管这个slave是否是第一次连接上Master，它都会发送一个<strong>SYNC</strong>命令(redis2.8版本之前的命令)给master请求复制数据。 </p>
 <p>master收到SYNC命令后，会在后台进行数据持久化通过bgsave生成最新的rdb快照文件，持久化期间，master会继续接收客户端的请求，它会把这些可能修改数据集的请求缓存在内存中。当持久化进行完毕以后，master会把这份rdb文件数据集发送给slave，slave会把接收到的数据进行持久化生成rdb，然后再加载到内存中。然后，master再将之前缓存在内存中的命令发送给slave。 </p>
@@ -556,9 +556,9 @@
 <p>从2.8版本开始，slave与master能够在网络连接断开<strong>重连后只进行部分数据复制。</strong> master会在其内存中创建一个复制数据用的缓存队列，缓存最近一段时间的数据，master和它所有的slave都维护了复制的数据下标offset和master的进程id，因此，当网络连接断开后，slave会请求master继续进行未完成的复制，从所记录的数据下标开始。如果master进程id变化了，或者从节点数据下标offset太旧，已经不在master的缓存队列里了，那么将会进行一次全量数据的复制。 </p>
 <p><strong>从2.8版本开始，redis改用可以支持部分数据复制的命令PSYNC去master同步数据</strong> </p>
 <p><strong>主从复制(全量复制)流程图：</strong></p>
-<p><img src="/2020/07/04/redis1/18.png" alt="11"></p>
+<p><img src="/2020/07/04/redis1/07/04/redis1/18.png" alt="11"></p>
 <p><strong>主从复制(部分复制)流程图：</strong></p>
-<p><img src="/2020/07/04/redis1/19.png" alt="11"></p>
+<p><img src="/2020/07/04/redis1/07/04/redis1/19.png" alt="11"></p>
 <h2 id="redis主从架构搭建，配置从节点步骤："><a href="#redis主从架构搭建，配置从节点步骤：" class="headerlink" title="redis主从架构搭建，配置从节点步骤："></a><strong>redis主从架构搭建，配置从节点步骤：</strong></h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">1 1、复制一份redis.conf文件 </span><br><span class="line">2 2、将相关配置修改为如下值： </span><br><span class="line">3 port 6380 </span><br><span class="line">4 pidfile /var/run/redis_6380.pid6 </span><br><span class="line">5 logfile &quot;6380.log&quot; </span><br><span class="line">6 dir /usr/local/redis‐5.0.3/data/6380 </span><br><span class="line">7 3、配置主从复制 </span><br><span class="line">8 replicaof 192.168.0.60 6379 # 从本机6379的redis实例复制数据 </span><br><span class="line">9 replica‐read‐only yes </span><br><span class="line">10 4、启动从节点 </span><br><span class="line">11 redis‐server redis.conf </span><br><span class="line">12 5、连接从节点 </span><br><span class="line">13 redis‐cli ‐p 6380 </span><br><span class="line">14 6、测试在6379实例上写数据，6380实例是否能及时同步新修改数据 </span><br><span class="line">15 7、可以自己再配置一个6381的从节点 </span><br></pre></td></tr></table></figure>
 
 <p>Jedis连接代码示例： </p>
@@ -606,7 +606,7 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">jedis.set(&quot;product_stock_10016&quot;, &quot;15&quot;); //初始化商品10016的库存 </span><br><span class="line">String script = &quot; local count = redis.call(&#x27;get&#x27;, KEYS[1]) &quot; + </span><br><span class="line">&quot; local a = tonumber(count) &quot; + </span><br><span class="line">&quot; local b = tonumber(ARGV[1]) &quot; +6 &quot; if a &gt;= b then &quot; + </span><br><span class="line">&quot; redis.call(&#x27;set&#x27;, KEYS[1], count‐b) &quot; + </span><br><span class="line">&quot; return 1 &quot; + </span><br><span class="line">&quot; end &quot; + </span><br><span class="line">&quot; return 0 &quot;; </span><br><span class="line">Object obj = jedis.eval(script, Arrays.asList(&quot;product_stock_10016&quot;), Arrays.asList(&quot;10&quot;)); </span><br><span class="line">System.out.println(obj); </span><br></pre></td></tr></table></figure>
 
 <p><strong>注意，不要在Lua脚本中出现死循环和耗时的运算，否则redis会阻塞，将不接受其他的命令， 所以使用时要注意不能出现死循环、耗时的运算。redis是单进程、单线程执行脚本。管道不会阻塞redis。</strong> </p>
-<h1 id="Redis哨兵高可用架构"><a href="#Redis哨兵高可用架构" class="headerlink" title="Redis哨兵高可用架构"></a><strong>Redis哨兵高可用架构</strong></h1><p><img src="/2020/07/04/redis1/20.png" alt="11"></p>
+<h1 id="Redis哨兵高可用架构"><a href="#Redis哨兵高可用架构" class="headerlink" title="Redis哨兵高可用架构"></a><strong>Redis哨兵高可用架构</strong></h1><p><img src="/2020/07/04/redis1/07/04/redis1/20.png" alt="11"></p>
 <p>sentinel哨兵是特殊的redis服务，不提供读写服务，主要用来监控redis实例节点。 </p>
 <p>哨兵架构下client端第一次从哨兵找出redis的主节点，后续就直接访问redis的主节点，不会每次都通过 sentinel代理访问redis的主节点，当redis的主节点发生变化，哨兵会第一时间感知到，并且将新的redis主节点通知给client端(这里面redis的client端一般都实现了订阅功能，订阅sentinel发布的节点变动消息) </p>
 <p><strong>redis哨兵架构搭建步骤：</strong> </p>
@@ -850,7 +850,7 @@
 </tbody></table>
 <h1 id="Redis集群"><a href="#Redis集群" class="headerlink" title="Redis集群"></a>Redis集群</h1><p>Redis3.0以后的版本虽然有了集群功能，提供了比之前版本的哨兵模式更高的性能与可用性，但是集群的水平扩展却比较麻烦，今天就来 </p>
 <p>带大家看看redis高可用集群如何做水平扩展，原始集群(见下图)由6个节点组成，6个节点分布在三台机器上，采用三主三从的模式</p>
-<p><img src="/2020/07/04/redis1/2.png" alt="11"></p>
+<p><img src="/2020/07/04/redis1/07/04/redis1/2.png" alt="11"></p>
 <h2 id="1、启动集群"><a href="#1、启动集群" class="headerlink" title="1、启动集群"></a>1、启动集群</h2><p># 启动整个集群 </p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">1 /usr/local/redis‐5.0.2/src/redis‐server /usr/local/redis‐cluster/8001/redis.conf </span><br><span class="line">2 /usr/local/redis‐5.0.2/src/redis‐server /usr/local/redis‐cluster/8002/redis.conf </span><br><span class="line">3 /usr/local/redis‐5.0.2/src/redis‐server /usr/local/redis‐cluster/8003/redis.conf </span><br><span class="line">4 /usr/local/redis‐5.0.2/src/redis‐server /usr/local/redis‐cluster/8004/redis.conf </span><br><span class="line">5 /usr/local/redis‐5.0.2/src/redis‐server /usr/local/redis‐cluster/8005/redis.conf </span><br><span class="line">6 /usr/local/redis‐5.0.2/src/redis‐server /usr/local/redis‐cluster/8006/redis.conf </span><br></pre></td></tr></table></figure>
 
@@ -860,18 +860,18 @@
 <p># 查看集群状态 </p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1 192.168.0.61:8001&gt; cluster nodes </span><br></pre></td></tr></table></figure>
 
-<p><img src="/2020/07/04/redis1/1.png" alt="11"></p>
+<p><img src="/2020/07/04/redis1/07/04/redis1/1.png" alt="11"></p>
 <p>从上图可以看出，整个集群运行正常，三个master节点和三个slave节点，8001端口的实例节点存储0-5460这些hash槽，8002端口的实 </p>
 <p>例节点存储5461-10922这些hash槽，8003端口的实例节点存储10923-16383这些hash槽，这三个master节点存储的所有hash槽组成 </p>
 <p>redis集群的存储槽位，slave点是每个主节点的备份从节点，不显示存储槽位 </p>
 <h2 id="2、集群操作"><a href="#2、集群操作" class="headerlink" title="2、集群操作"></a>2、集群操作</h2><p>我们在原始集群基础上再增加一主(8007)一从(8008)，增加节点后的集群参见下图，新增节点用虚线框表示</p>
-<p><img src="/2020/07/04/redis1/3.png" alt="11"></p>
+<p><img src="/2020/07/04/redis1/07/04/redis1/3.png" alt="11"></p>
 <h3 id="增加Redis实例"><a href="#增加Redis实例" class="headerlink" title="增加Redis实例"></a>增加Redis实例</h3><p>在&#x2F;usr&#x2F;local&#x2F;redis-cluster下创建8007和8008文件夹，并拷贝8001文件夹下的redis.conf文件到8007和8008这两个文件夹下 </p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">1 mkdir 8007 8008 </span><br><span class="line">2 cd 8001 </span><br><span class="line">3 cp redis.conf /usr/local/redis‐cluster/8007/ </span><br><span class="line">4 cp redis.conf /usr/local/redis‐cluster/8008/ </span><br><span class="line">5</span><br><span class="line">6 # 修改8007文件夹下的redis.conf配置文件 </span><br><span class="line">7 vim /usr/local/redis‐cluster/8007/redis.conf </span><br><span class="line">8 # 修改如下内容： </span><br><span class="line">9 port:8007 </span><br><span class="line">10 dir /usr/local/redis‐cluster/8007/ </span><br><span class="line">11 cluster‐config‐file nodes‐8007.conf </span><br><span class="line">12</span><br><span class="line">13 # 修改8008文件夹下的redis.conf配置文件 </span><br><span class="line">14 vim /usr/local/redis‐cluster/8008/redis.conf </span><br><span class="line">15 修改内容如下： </span><br><span class="line">16 port:8008 </span><br><span class="line">17 dir /usr/local/redis‐cluster/8008/ </span><br><span class="line">18 cluster‐config‐file nodes8008.conf </span><br><span class="line">19</span><br><span class="line">20 # 启动8007和8008俩个服务并查看服务状态 </span><br><span class="line">21 /usr/local/redis‐5.0.3/src/redis‐server /usr/local/redis‐cluster/8007/redis.conf </span><br><span class="line">22 /usr/local/redis‐5.0.3/src/redis‐server /usr/local/redis‐cluster/8008/redis.conf </span><br><span class="line">23 ps ‐el | grep redis </span><br></pre></td></tr></table></figure>
 
 <h3 id="查看redis集群的命令帮助"><a href="#查看redis集群的命令帮助" class="headerlink" title="查看redis集群的命令帮助"></a><strong>查看redis集群的命令帮助</strong></h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1 cd /usr/local/redis‐5.0.3 </span><br><span class="line">2 src/redis‐cli ‐‐cluster help</span><br></pre></td></tr></table></figure>
 
-<p><img src="/2020/07/04/redis1/4.png" alt="11"></p>
+<p><img src="/2020/07/04/redis1/07/04/redis1/4.png" alt="11"></p>
 <p>1.create：创建一个集群环境host1:port1 … hostN:portN </p>
 <p>2.call：可以执行redis命令 </p>
 <p>3.add-node：将一个节点添加到集群里，第一个参数为新节点的ip:port，第二个参数为集群中任意一个已经存在的节点的ip:port </p>
@@ -885,7 +885,7 @@
 <p># 查看集群状态</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1 /usr/local/redis‐5.0.3/src/redis‐cli ‐a zhuge ‐c ‐h 192.168.0.61 ‐p 8001 </span><br><span class="line">2 192.168.0.61:8001&gt; cluster nodes </span><br></pre></td></tr></table></figure>
 
-<p><img src="/2020/07/04/redis1/5.png" alt="11"></p>
+<p><img src="/2020/07/04/redis1/07/04/redis1/5.png" alt="11"></p>
 <p>注意：当添加节点成功以后，新增的节点不会有任何数据，因为它还没有分配任何的slot(hash槽)，我们需要为新节点手工分配hash槽 </p>
 <p># 使用redis-cli命令为8007分配hash槽，找到集群中的任意一个主节点，对其进行重新分片工作。 </p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1 /usr/local/redis‐5.0.3/src/redis‐cli ‐a zhuge ‐‐cluster reshard 192.168.0.61:8001 </span><br></pre></td></tr></table></figure>
@@ -907,25 +907,25 @@
 <p># 查看下最新的集群状态 </p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1 /usr/local/redis‐5.0.3/src/redis‐cli ‐a zhuge ‐c ‐h 192.168.0.61 ‐p 8001 </span><br><span class="line">2 192.168.0.61:8001&gt; cluster nodes </span><br></pre></td></tr></table></figure>
 
-<p><img src="/2020/07/04/redis1/6.png" alt="11"></p>
+<p><img src="/2020/07/04/redis1/07/04/redis1/6.png" alt="11"></p>
 <p>如上图所示，现在我们的8007已经有hash槽了，也就是说可以在8007上进行读写数据啦！到此为止我们的8007已经加入到集群中，并且 </p>
 <p>是主节点(Master)</p>
 <h3 id="配置8008为8007的从节点"><a href="#配置8008为8007的从节点" class="headerlink" title="配置8008为8007的从节点"></a><strong>配置8008为8007的从节点</strong></h3><p># 添加从节点8008到集群中去并查看集群状态 </p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1 /usr/local/redis‐5.0.3/src/redis‐cli ‐a zhuge ‐‐cluster add‐node 192.168.0.61:8008 192.168.0.61:8001</span><br></pre></td></tr></table></figure>
 
-<p><img src="/2020/07/04/redis1/7.png" alt="11"></p>
+<p><img src="/2020/07/04/redis1/07/04/redis1/7.png" alt="11"></p>
 <p>如图所示，还是一个master节点，没有被分配任何的hash槽。 </p>
 <p># 我们需要执行replicate命令来指定当前节点(从节点)的主节点id为哪个,首先需要连接新加的8008节点的客户端，然后使用集群命令进行 </p>
 <p>操作，把当前的8008(slave)节点指定到一个主节点下(这里使用之前创建的8007主节点) </p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1 /usr/local/redis‐5.0.3/src/redis‐cli ‐a zhuge ‐c ‐h 192.168.0.61 ‐p 8008 </span><br><span class="line">2 192.168.0.61:8008&gt; cluster replicate 2728a594a0498e98e4b83a537e19f9a0a3790f38 #后面这串id为8007的节点id </span><br></pre></td></tr></table></figure>
 
 <p># 查看集群状态，8008节点已成功添加为8007节点的从节点 </p>
-<p><img src="/2020/07/04/redis1/8.png" alt="11"></p>
+<p><img src="/2020/07/04/redis1/07/04/redis1/8.png" alt="11"></p>
 <h3 id="删除8008从节点"><a href="#删除8008从节点" class="headerlink" title="删除8008从节点"></a><strong>删除8008从节点</strong></h3><p># 用del-node删除从节点8008，指定删除节点ip和端口，以及节点id(红色为8008节点id) </p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1 /usr/local/redis‐5.0.3/src/redis‐cli ‐a zhuge ‐‐cluster del‐node 192.168.0.61:8008 a1cfe35722d151cf70585cee21275565393c0956 </span><br></pre></td></tr></table></figure>
 
 <p># 再次查看集群状态，如下图所示，8008这个slave节点已经移除，并且该节点的redis服务也已被停止</p>
-<p><img src="/2020/07/04/redis1/9.png" alt="11"></p>
+<p><img src="/2020/07/04/redis1/07/04/redis1/9.png" alt="11"></p>
 <h3 id="删除8007从节点"><a href="#删除8007从节点" class="headerlink" title="删除8007从节点"></a><strong>删除8007从节点</strong></h3><p>最后，我们尝试删除之前加入的主节点8007，这个步骤相对比较麻烦一些，因为主节点的里面是有分配了hash槽的，所以我们这里必须 </p>
 <p>先把8007里的hash槽放入到其他的可用主节点中去，然后再进行移除节点操作，不然会出现数据丢失问题(目前只能把master的数据迁移 </p>
 <p>到一个节点上，暂时做不了平均分配功能)，执行命令如下： </p>
@@ -947,12 +947,12 @@
 <p>(ps:这里输入yes开始迁移) </p>
 <p>至此，我们已经成功的把8007主节点的数据迁移到8001上去了，我们可以看一下现在的集群状态如下图，你会发现8007下面已经没有任 </p>
 <p>何hash槽了，证明迁移成功！ </p>
-<p><img src="/2020/07/04/redis1/10.png" alt="11"></p>
+<p><img src="/2020/07/04/redis1/07/04/redis1/10.png" alt="11"></p>
 <p># 最后我们直接使用del-node命令删除8007主节点即可 </p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1 /usr/local/redis‐5.0.3/src/redis‐cli ‐a zhuge ‐‐cluster del‐node 192.168.0.61:8007 2728a594a0498e98e4b83a537e19f9a0a3790f38 </span><br></pre></td></tr></table></figure>
 
 <p># 查看集群状态，一切还原为最初始状态啦！大功告成！</p>
-<p><img src="/2020/07/04/redis1/22.png" alt="11"></p>
+<p><img src="/2020/07/04/redis1/07/04/redis1/22.png" alt="11"></p>
 
 			
       

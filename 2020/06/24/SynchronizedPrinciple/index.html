@@ -25,15 +25,15 @@
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="转载：https:&#x2F;&#x2F;www.cnblogs.com&#x2F;paddix&#x2F;p&#x2F;5367116.html 一、Synchronized的基本使用Synchronized是Java中解决并发问题的一种最常用的方法，也是最简单的一种方法。Synchronized的作用主要有三个：（1）确保线程互斥的访问同步代码（2）保证共享变量的修改能够及时可见（3）有效解决重排序问题。从语法上讲，Synchronized总">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/06/24/SynchronizedPrinciple/1.png">
-<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/06/24/SynchronizedPrinciple/2.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/06/24/SynchronizedPrinciple/06/24/SynchronizedPrinciple/1.png">
+<meta property="og:image" content="https://1024chengxuyuan.github.io/2020/06/24/SynchronizedPrinciple/06/24/SynchronizedPrinciple/2.png">
 <meta property="article:published_time" content="2020-06-24T08:30:53.000Z">
 <meta property="article:modified_time" content="2022-01-07T06:20:04.000Z">
 <meta property="article:author" content="野生程序猿">
 <meta property="article:tag" content="JMM內存模型">
 <meta property="article:tag" content="Java并发编程">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://1024chengxuyuan.github.io/2020/06/24/SynchronizedPrinciple/1.png">
+<meta name="twitter:image" content="https://1024chengxuyuan.github.io/2020/06/24/SynchronizedPrinciple/06/24/SynchronizedPrinciple/1.png">
   <!-- Canonical links -->
   <link rel="canonical" href="https://1024chengxuyuan.github.io/2020/06/24/SynchronizedPrinciple/index.html">
   
@@ -433,7 +433,7 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.paddx.test.concurrent;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SynchronizedDemo</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">method</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (<span class="built_in">this</span>) &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;Method 1 start&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>反编译结果：</p>
-<p><img src="/2020/06/24/SynchronizedPrinciple/1.png" alt="1"></p>
+<p><img src="/2020/06/24/SynchronizedPrinciple/06/24/SynchronizedPrinciple/1.png" alt="1"></p>
 <p>关于这两条指令的作用，我们直接参考JVM规范中描述：</p>
 <p><strong>monitorenter</strong> ：</p>
 <blockquote>
@@ -462,7 +462,7 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.paddx.test.concurrent;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SynchronizedMethod</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title function_">method</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;Hello World!&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>反编译结果：</p>
-<p><img src="/2020/06/24/SynchronizedPrinciple/2.png" alt="1"></p>
+<p><img src="/2020/06/24/SynchronizedPrinciple/06/24/SynchronizedPrinciple/2.png" alt="1"></p>
 <p>从反编译的结果来看，方法的同步并没有通过指令monitorenter和monitorexit来完成（理论上其实也可以通过这两条指令来实现），不过相对于普通方法，其常量池中多了ACC_SYNCHRONIZED标示符。JVM就是根据该标示符来实现方法的同步的：当方法调用时，调用指令将会检查方法的 ACC_SYNCHRONIZED 访问标志是否被设置，如果设置了，执行线程将先获取monitor，获取成功之后才能执行方法体，方法执行完后再释放monitor。在方法执行期间，其他任何线程都无法再获得同一个monitor对象。 其实本质上没有区别，只是方法的同步是一种隐式的方式来实现，无需通过字节码来完成。</p>
 <h1 id="三、运行结果解释"><a href="#三、运行结果解释" class="headerlink" title="三、运行结果解释"></a>三、运行结果解释</h1><p>有了对Synchronized原理的认识，再来看上面的程序就可以迎刃而解了。</p>
 <p>1、代码段2结果：</p>
